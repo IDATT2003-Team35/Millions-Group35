@@ -2,6 +2,7 @@ package edu.ntnu.idi.idatt.millions.calculator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
  * Calculator for share sale transactions.
@@ -19,13 +20,36 @@ public class SaleCalculator implements TransactionCalculator {
 
   /**
    * Constructs a SaleCalculator for a given share.
+   * Validates that the share and its attributes are non-null and positive.
    *
    * @param share the share being sold
+   * @throws NullPointerException if share or any of its attributes are null
+   * @throws IllegalArgumentException if prices or quantity are not greater than zero
    */
   public SaleCalculator(Share share) {
-    this.purchasePrice = share.getPurchasePrice();
-    this.salesPrice = share.salesPrice();
-    this.quantity = share.getQuantity();
+    Objects.requireNonNull(share, "Share object cannot be null");
+
+    BigDecimal pPrice = share.getPurchasePrice();
+    BigDecimal sPrice = share.salesPrice();
+    BigDecimal qty = share.getQuantity();
+
+    Objects.requireNonNull(pPrice, "Purchase price cannot be null");
+    Objects.requireNonNull(sPrice, "Sales price cannot be null");
+    Objects.requireNonNull(qty, "Quantity cannot be null");
+
+    if (pPrice.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Purchase price must be greater than zero");
+    }
+    if (sPrice.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Sales price must be greater than zero");
+    }
+    if (qty.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Quantity must be greater than zero");
+    }
+
+    this.purchasePrice = pPrice;
+    this.salesPrice = sPrice;
+    this.quantity = qty;
   }
 
   /**

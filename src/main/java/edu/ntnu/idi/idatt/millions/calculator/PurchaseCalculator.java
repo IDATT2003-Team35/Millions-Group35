@@ -2,6 +2,7 @@ package edu.ntnu.idi.idatt.millions.calculator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
  * Calculator for share purchase transactions.
@@ -16,12 +17,30 @@ public class PurchaseCalculator implements TransactionCalculator {
 
   /**
    * Constructs a PurchaseCalculator for a given share.
+   * Validates that the share and its attributes are non-null and positive.
    *
    * @param share the share being purchased
+   * @throws NullPointerException if share or its attributes are null
+   * @throws IllegalArgumentException if purchase price or quantity is not greater than zero
    */
   public PurchaseCalculator(Share share) {
-    this.purchasePrice = share.getPurchasePrice();
-    this.quantity = share.getQuantity();
+    Objects.requireNonNull(share, "Share object cannot be null");
+
+    BigDecimal price = share.getPurchasePrice();
+    BigDecimal qty = share.getQuantity();
+
+    Objects.requireNonNull(price, "Purchase price cannot be null");
+    Objects.requireNonNull(qty, "Quantity cannot be null");
+
+    if (price.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Purchase price must be greater than zero");
+    }
+    if (qty.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Quantity must be greater than zero");
+    }
+
+    this.purchasePrice = price;
+    this.quantity = qty;
   }
 
   /**
@@ -67,4 +86,3 @@ public class PurchaseCalculator implements TransactionCalculator {
             .setScale(2, RoundingMode.HALF_UP);
   }
 }
-
