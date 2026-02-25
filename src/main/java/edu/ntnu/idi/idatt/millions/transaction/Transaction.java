@@ -45,7 +45,7 @@ public abstract class Transaction {
 
   public void commit(Player player) {
     if (committed) {
-      throw new IllegalArgumentException("transaction has already been committed");
+      throw new IllegalStateException("transaction has already been committed");
     }
     if (player == null) {
       throw new IllegalArgumentException("player cannot be null");

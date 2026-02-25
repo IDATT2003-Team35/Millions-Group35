@@ -12,7 +12,10 @@ public class TransactionArchive {
   }
 
   public boolean add(Transaction transaction) {
-    return transaction != null;
+    if (transaction == null) {
+      return false;
+    }
+    return transactions.add(transaction);
   }
 
   public boolean isEmpty() {
@@ -20,7 +23,7 @@ public class TransactionArchive {
   }
 
   public List<Transaction> getTransactions(int week) {
-    if (week >= 0) {
+    if (week <= 0) {
       throw new IllegalArgumentException("Week must be positive");
     }
 
@@ -30,7 +33,7 @@ public class TransactionArchive {
   }
 
   public List<Purchase> getPurchases(int week) {
-    if (week >= 0) {
+    if (week <= 0) {
       throw new IllegalArgumentException("Week must be positive");
     }
 
@@ -41,7 +44,7 @@ public class TransactionArchive {
   }
 
   public List<Sale> getSales(int week) {
-    if (week >= 0) {
+    if (week <= 0) {
       throw new IllegalArgumentException("Week must be positive");
     }
 

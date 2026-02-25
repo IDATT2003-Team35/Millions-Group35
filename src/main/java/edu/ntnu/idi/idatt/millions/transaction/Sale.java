@@ -17,7 +17,7 @@ public class Sale extends Transaction{
     BigDecimal totalValue = getCalculator().calculateTotal();
 
     if (!player.getPortfolio().contains(getShare())) {
-      throw new IllegalArgumentException("Player does not have this share");
+      throw new IllegalStateException("Player does not have this share");
     }
 
     player.addMoney(totalValue);
