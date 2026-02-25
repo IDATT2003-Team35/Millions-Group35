@@ -1,8 +1,8 @@
 package edu.ntnu.idi.idatt.millions.transaction;
 
-import edu.ntnu.idi.idatt.millions.calculator.Share;
 import edu.ntnu.idi.idatt.millions.calculator.TransactionCalculator;
-import edu.ntnu.idi.idatt.millions.transaction.Player;
+import edu.ntnu.idi.idatt.millions.model.Player;
+import edu.ntnu.idi.idatt.millions.model.Share;
 
 public abstract class Transaction {
   private final Share share;

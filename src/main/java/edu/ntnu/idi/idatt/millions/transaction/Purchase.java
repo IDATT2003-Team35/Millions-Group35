@@ -1,7 +1,8 @@
 package edu.ntnu.idi.idatt.millions.transaction;
 
 import edu.ntnu.idi.idatt.millions.calculator.PurchaseCalculator;
-import edu.ntnu.idi.idatt.millions.calculator.Share;
+import edu.ntnu.idi.idatt.millions.model.Player;
+import edu.ntnu.idi.idatt.millions.model.Share;
 
 public class Purchase extends Transaction{
 

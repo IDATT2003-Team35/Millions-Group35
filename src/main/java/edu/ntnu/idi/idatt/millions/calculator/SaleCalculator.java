@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.millions.calculator;
 
+import edu.ntnu.idi.idatt.millions.model.Share;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -30,7 +32,7 @@ public class SaleCalculator implements TransactionCalculator {
     Objects.requireNonNull(share, "Share object cannot be null");
 
     BigDecimal pPrice = share.getPurchasePrice();
-    BigDecimal sPrice = share.salesPrice();
+    BigDecimal sPrice = share.getStock().getSalesPrice();
     BigDecimal qty = share.getQuantity();
 
     Objects.requireNonNull(pPrice, "Purchase price cannot be null");
