@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.millions.calculator;
 
+import edu.ntnu.idi.idatt.millions.model.Share;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
