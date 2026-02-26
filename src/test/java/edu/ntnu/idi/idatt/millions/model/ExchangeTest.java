@@ -1,0 +1,146 @@
+package edu.ntnu.idi.idatt.millions.model;
+
+import edu.ntnu.idi.idatt.millions.transaction.Purchase;
+import edu.ntnu.idi.idatt.millions.transaction.Sale;
+import edu.ntnu.idi.idatt.millions.transaction.Transaction;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ExchangeTest {
+  private Exchange exchange;
+  private Player player;
+  private Stock equinor;
+  private Stock tesla;
+
+  @BeforeEach
+  void setUp() {
+    equinor = new Stock("EQNR", "Equinor", new BigDecimal("29.2"));
+    tesla = new Stock("TSLA", "Tesla", new BigDecimal("23.2"));
+    List<Stock> stocks = List.of(tesla, equinor);
+    exchange = new Exchange("OSEBX", stocks);
+    player = new Player("Petter", new BigDecimal("10000"));
+  }
+
+  @Test
+  void buy_validInput_updatesPlayerStateAndReturnsCommittedPurchase() {
+    Transaction result = exchange.buy("EQNR", new BigDecimal("5"), player);
+    assertInstanceOf(Purchase.class, result);
+    assertTrue(result.isCommitted());
+    assertEquals(exchange.getWeek(), result.getWeek());
+    assertEquals(1, player.getPortfolio().getShares("EQNR").size());
+    assertEquals(1, player.getTransactionArchive().getPurchases(1).size());
+  }
+
+  @Test
+  void buy_insufficientFunds_throwsIllegalStateException() {
+    Player poorPlayer = new Player("Broke", new BigDecimal("1"));
+    assertThrows(IllegalStateException.class, () ->
+        exchange.buy("EQNR", new BigDecimal("1"), poorPlayer));
+  }
+
+  @Test
+  void buy_invalidSymbol_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.buy("INVALID", new BigDecimal("5"), player));
+  }
+
+  @Test
+  void buy_zeroQuantity_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.buy("EQNR", BigDecimal.ZERO, player));
+  }
+
+  @Test
+  void buy_negativeQuantity_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.buy("EQNR", new BigDecimal("-1"), player));
+  }
+
+  @Test
+  void buy_nullQuantity_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.buy("EQNR", null, player));
+  }
+
+  @Test
+  void buy_nullPlayer_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.buy("EQNR", BigDecimal.ONE, null));
+  }
+
+  @Test
+  void hasStock_existingSymbol_returnsTrue() {
+    assertTrue(exchange.hasStock("EQNR"));
+  }
+
+  @Test
+  void hasStock_missingSymbol_returnsFalse() {
+    assertFalse(exchange.hasStock("MSFT"));
+  }
+
+  @Test
+  void getStock_existingSymbol_returnsStock() {
+    assertSame(equinor, exchange.getStock("EQNR"));
+  }
+
+  @Test
+  void findStocks_caseInsensitive_matchesSymbolAndCompany() {
+    List<Stock> bySymbol = exchange.findStocks("tsl");
+    List<Stock> byCompany = exchange.findStocks("EQUIN");
+
+    assertEquals(1, bySymbol.size());
+    assertSame(tesla, bySymbol.get(0));
+    assertEquals(1, byCompany.size());
+    assertSame(equinor, byCompany.get(0));
+  }
+
+  @Test
+  void findStocks_blank_and_null_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.findStocks(" "));
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.findStocks(null));
+  }
+
+  @Test
+  void sell_validShare_updatesPlayerStateAndReturnsCommittedSale() {
+    exchange.buy("EQNR", new BigDecimal("5"), player);
+    Share share = player.getPortfolio().getShares("EQNR").getFirst();
+
+    Transaction result = exchange.sell(share, player);
+
+    assertInstanceOf(Sale.class, result);
+    assertTrue(result.isCommitted());
+    assertEquals(exchange.getWeek(), result.getWeek());
+    assertEquals(0, player.getPortfolio().getShares("EQNR").size());
+    assertEquals(1, player.getTransactionArchive().getSales(1).size());
+  }
+
+
+  @Test
+  void sell_nullShare_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () -> exchange.sell(null, player));
+  }
+
+  @Test
+  void sell_nullPlayer_throwsIllegalArgumentException() {
+    Share share = new Share(equinor, BigDecimal.ONE, equinor.getSalesPrice());
+    assertThrows(IllegalArgumentException.class, () -> exchange.sell(share, null));
+  }
+
+  @Test
+  void advance_WeekKeepsPricesPositive() {
+    int weekBefore = exchange.getWeek();
+    exchange.advance();
+
+    assertEquals(weekBefore + 1, exchange.getWeek());
+    assertTrue(equinor.getSalesPrice().compareTo(new BigDecimal("0.01")) >= 0);
+    assertTrue(tesla.getSalesPrice().compareTo(new BigDecimal("0.01")) >= 0);
+  }
+
+}
