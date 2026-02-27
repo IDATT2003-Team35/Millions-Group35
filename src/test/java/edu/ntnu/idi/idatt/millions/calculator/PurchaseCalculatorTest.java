@@ -20,7 +20,7 @@ class PurchaseCalculatorTest {
   }
 
   @Test
-  void testCalculatePurchaseValues() {
+  void calculatePurchaseValuesReturnsExpectedResults() {
     PurchaseCalculator calc = new PurchaseCalculator(testShare);
 
     assertEquals(new BigDecimal("1000.00"), calc.calculateGross());
@@ -30,7 +30,7 @@ class PurchaseCalculatorTest {
   }
 
   @Test
-  void TestPurchaseValidators() {
+  void constructorInvalidInputThrowsException() {
     PurchaseCalculator calc = new PurchaseCalculator(testShare);
     assertNotNull(calc);
 

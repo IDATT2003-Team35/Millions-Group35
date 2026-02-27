@@ -29,7 +29,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testAddAndIsEmpty() {
+  void addUpdatesEmptyStateAndRejectsNull() {
     assertTrue(archive.isEmpty());
     archive.add(purchaseW1);
     assertFalse(archive.isEmpty());
@@ -37,7 +37,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testGetTransactionsByWeek() {
+  void getTransactionsByWeekReturnsMatchingTransactions() {
     archive.add(purchaseW1);
     archive.add(saleW1);
     archive.add(purchaseW2);
@@ -49,7 +49,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testGetSpecificTransactionTypes() {
+  void getSpecificTransactionTypesReturnsExpectedLists() {
     archive.add(purchaseW1);
     archive.add(saleW1);
 
@@ -63,7 +63,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testCountDistinctWeeks() {
+  void countDistinctWeeksReturnsNumberOfUniqueWeeks() {
     archive.add(purchaseW1);
     archive.add(saleW1); // same week
     archive.add(purchaseW2); // new week
@@ -72,7 +72,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testTransactionConstructorValidation() {
+  void transactionConstructorInvalidInputThrowsException() {
     // Testing the protected constructor logic via a subclass (Purchase)
     assertThrows(NullPointerException.class, () -> new Purchase(null, 1));
     assertThrows(IllegalArgumentException.class, () -> new Purchase(share, 0));
@@ -80,7 +80,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testArchiveInvalidWeekQueries() {
+  void invalidWeekQueriesThrowIllegalArgumentException() {
     TransactionArchive archive = new TransactionArchive();
 
     // Attempting to query negative or zero weeks
@@ -90,7 +90,7 @@ class TransactionArchiveTest {
   }
 
   @Test
-  void testAddNullToArchive() {
+  void addNullTransactionReturnsFalse() {
     TransactionArchive archive = new TransactionArchive();
     assertFalse(archive.add(null));
   }

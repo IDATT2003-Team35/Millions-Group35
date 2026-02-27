@@ -25,7 +25,7 @@ class SaleTest {
   }
 
   @Test
-  void testSuccessfulSale() {
+  void commitValidSaleUpdatesPlayerState() {
     player.getPortfolio().addShare(share);
     Sale sale = new Sale(share, 2);
     sale.commit(player);
@@ -36,13 +36,13 @@ class SaleTest {
   }
 
   @Test
-  void testSaleWithoutOwningShareThrowsException() {
+  void commitWithoutOwnedShareThrowsIllegalStateException() {
     Sale sale = new Sale(share, 2);
     assertThrows(IllegalStateException.class, () -> sale.commit(player));
   }
 
   @Test
-  void testTransactionValidation() {
+  void constructorAndCommitInvalidInputsThrowExceptions() {
     assertThrows(NullPointerException.class, () -> new Sale(null, 1));
     assertThrows(IllegalArgumentException.class, () -> new Sale(share, 0));
 
@@ -51,7 +51,7 @@ class SaleTest {
   }
 
   @Test
-  void testPurchaseWithZeroBalance() {
+  void purchaseCommitWithZeroBalanceThrowsIllegalStateException() {
     Player brokePlayer = new Player("Broke", new BigDecimal("0.01"));
     Purchase purchase = new Purchase(share, 1);
 
@@ -61,7 +61,7 @@ class SaleTest {
   }
 
   @Test
-  void testPurchaseTwiceThrowsException() {
+  void purchaseCommitTwiceThrowsIllegalStateException() {
     Purchase purchase = new Purchase(share, 1);
     purchase.commit(player);
 

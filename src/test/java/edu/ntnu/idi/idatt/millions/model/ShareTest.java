@@ -17,31 +17,31 @@ class ShareTest {
   }
 
   @Test
-  void constructor_nullStock_throwsIllegalArgumentException() {
+  void constructorNullStockThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Share(null, new BigDecimal("5"), new BigDecimal("29.20")));
   }
 
   @Test
-  void constructor_nullQuantity_throwsIllegalArgumentException() {
+  void constructorNullQuantityThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Share(equinor, null, new BigDecimal("29.20")));
   }
 
   @Test
-  void constructor_nullPurchasePrice_throwsIllegalArgumentException() {
+  void constructorNullPurchasePriceThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Share(equinor, new BigDecimal("5"), null));
   }
 
   @Test
-  void constructor_zeroPurchasePrice_throwsIllegalArgumentException() {
+  void constructorZeroPurchasePriceThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Share(equinor, new BigDecimal("5"), BigDecimal.ZERO));
   }
 
   @Test
-  void constructor_validInput_storesValuesCorrectly() {
+  void constructorValidInputStoresValuesCorrectly() {
     Share share = new Share(equinor, new BigDecimal("5"), new BigDecimal("29.20"));
 
     assertSame(equinor, share.getStock());

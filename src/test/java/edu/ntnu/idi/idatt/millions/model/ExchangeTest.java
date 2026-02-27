@@ -27,7 +27,7 @@ class ExchangeTest {
   }
 
   @Test
-  void buy_validInput_updatesPlayerStateAndReturnsCommittedPurchase() {
+  void buyValidInputUpdatesPlayerStateAndReturnsCommittedPurchase() {
     Transaction result = exchange.buy("EQNR", new BigDecimal("5"), player);
     assertInstanceOf(Purchase.class, result);
     assertTrue(result.isCommitted());
@@ -37,59 +37,59 @@ class ExchangeTest {
   }
 
   @Test
-  void buy_insufficientFunds_throwsIllegalStateException() {
+  void buyInsufficientFundsThrowsIllegalStateException() {
     Player poorPlayer = new Player("Broke", new BigDecimal("1"));
     assertThrows(IllegalStateException.class, () ->
         exchange.buy("EQNR", new BigDecimal("1"), poorPlayer));
   }
 
   @Test
-  void buy_invalidSymbol_throwsIllegalArgumentException() {
+  void buyInvalidSymbolThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         exchange.buy("INVALID", new BigDecimal("5"), player));
   }
 
   @Test
-  void buy_zeroQuantity_throwsIllegalArgumentException() {
+  void buyZeroQuantityThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         exchange.buy("EQNR", BigDecimal.ZERO, player));
   }
 
   @Test
-  void buy_negativeQuantity_throwsIllegalArgumentException() {
+  void buyNegativeQuantityThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         exchange.buy("EQNR", new BigDecimal("-1"), player));
   }
 
   @Test
-  void buy_nullQuantity_throwsIllegalArgumentException() {
+  void buyNullQuantityThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         exchange.buy("EQNR", null, player));
   }
 
   @Test
-  void buy_nullPlayer_throwsIllegalArgumentException() {
+  void buyNullPlayerThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         exchange.buy("EQNR", BigDecimal.ONE, null));
   }
 
   @Test
-  void hasStock_existingSymbol_returnsTrue() {
+  void hasStockExistingSymbolReturnsTrue() {
     assertTrue(exchange.hasStock("EQNR"));
   }
 
   @Test
-  void hasStock_missingSymbol_returnsFalse() {
+  void hasStockMissingSymbolReturnsFalse() {
     assertFalse(exchange.hasStock("MSFT"));
   }
 
   @Test
-  void getStock_existingSymbol_returnsStock() {
+  void getStockExistingSymbolReturnsStock() {
     assertSame(equinor, exchange.getStock("EQNR"));
   }
 
   @Test
-  void findStocks_caseInsensitive_matchesSymbolAndCompany() {
+  void findStocksCaseInsensitiveMatchesSymbolAndCompany() {
     List<Stock> bySymbol = exchange.findStocks("tsl");
     List<Stock> byCompany = exchange.findStocks("EQUIN");
 
@@ -100,7 +100,7 @@ class ExchangeTest {
   }
 
   @Test
-  void findStocks_blank_and_null_throwsIllegalArgumentException() {
+  void findStocksBlankAndNullThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         exchange.findStocks(" "));
     assertThrows(IllegalArgumentException.class, () ->
@@ -108,7 +108,7 @@ class ExchangeTest {
   }
 
   @Test
-  void sell_validShare_updatesPlayerStateAndReturnsCommittedSale() {
+  void sellValidShareUpdatesPlayerStateAndReturnsCommittedSale() {
     exchange.buy("EQNR", new BigDecimal("5"), player);
     Share share = player.getPortfolio().getShares("EQNR").getFirst();
 
@@ -123,18 +123,18 @@ class ExchangeTest {
 
 
   @Test
-  void sell_nullShare_throwsIllegalArgumentException() {
+  void sellNullShareThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () -> exchange.sell(null, player));
   }
 
   @Test
-  void sell_nullPlayer_throwsIllegalArgumentException() {
+  void sellNullPlayerThrowsIllegalArgumentException() {
     Share share = new Share(equinor, BigDecimal.ONE, equinor.getSalesPrice());
     assertThrows(IllegalArgumentException.class, () -> exchange.sell(share, null));
   }
 
   @Test
-  void advance_WeekKeepsPricesPositive() {
+  void advanceWeekKeepsPricesPositive() {
     int weekBefore = exchange.getWeek();
     exchange.advance();
 
@@ -142,5 +142,4 @@ class ExchangeTest {
     assertTrue(equinor.getSalesPrice().compareTo(new BigDecimal("0.01")) >= 0);
     assertTrue(tesla.getSalesPrice().compareTo(new BigDecimal("0.01")) >= 0);
   }
-
 }

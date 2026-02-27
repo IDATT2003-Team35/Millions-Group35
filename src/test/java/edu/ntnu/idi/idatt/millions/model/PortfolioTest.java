@@ -22,51 +22,51 @@ class PortfolioTest {
   }
 
   @Test
-  void addShare_validShare_returnsTrue() {
+  void addShareValidShareReturnsTrue() {
     boolean result = portfolio.addShare(share);
     assertTrue(result);
   }
 
   @Test
-  void addShare_validShare_shareIsInPortfolio() {
+  void addShareValidShareShareIsInPortfolio() {
     portfolio.addShare(share);
     assertTrue(portfolio.contains(share));
   }
 
   @Test
-  void addShare_nullShare_throwsIllegalArgumentException() {
+  void addShareNullShareThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         portfolio.addShare(null));
   }
 
   @Test
-  void removeShare_existingShare_returnsTrue() {
+  void removeShareExistingShareReturnsTrue() {
     portfolio.addShare(share);
     boolean result = portfolio.removeShare(share);
     assertTrue(result);
   }
 
   @Test
-  void removeShare_existingShare_shareIsNoLongerInPortfolio() {
+  void removeShareExistingShareShareIsNoLongerInPortfolio() {
     portfolio.addShare(share);
     portfolio.removeShare(share);
     assertFalse(portfolio.contains(share));
   }
 
   @Test
-  void removeShare_shareNotInPortfolio_returnsFalse() {
+  void removeShareShareNotInPortfolioReturnsFalse() {
     boolean result = portfolio.removeShare(share);
     assertFalse(result);
   }
 
   @Test
-  void removeShare_nullShare_throwsIllegalArgumentException() {
+  void removeShareNullShareThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         portfolio.removeShare(null));
   }
 
   @Test
-  void getShares_returnsAllShares() {
+  void getSharesReturnsAllShares() {
     Share share2 = new Share(equinor, new BigDecimal("3"), new BigDecimal("29.20"));
     portfolio.addShare(share);
     portfolio.addShare(share2);
@@ -77,7 +77,7 @@ class PortfolioTest {
   }
 
   @Test
-  void getShares_bySymbol_returnsMatchingShares() {
+  void getSharesBySymbolReturnsMatchingShares() {
     Stock tesla = new Stock("TSLA", "Tesla", new BigDecimal("23.20"));
     Share teslaShare = new Share(tesla, new BigDecimal("2"), new BigDecimal("23.20"));
     portfolio.addShare(share);
@@ -89,24 +89,24 @@ class PortfolioTest {
   }
 
   @Test
-  void getShares_bySymbol_nullSymbol_throwsIllegalArgumentException() {
+  void getSharesBySymbolNullSymbolThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         portfolio.getShares(null));
   }
 
   @Test
-  void getShares_bySymbol_blankSymbol_throwsIllegalArgumentException() {
+  void getSharesBySymbolBlankSymbolThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         portfolio.getShares(" "));
   }
 
   @Test
-  void contains_shareNotInPortfolio_returnsFalse() {
+  void containsShareNotInPortfolioReturnsFalse() {
     assertFalse(portfolio.contains(share));
   }
 
   @Test
-  void contains_nullShare_throwsIllegalArgumentException() {
+  void containsNullShareThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         portfolio.contains(null));
   }
