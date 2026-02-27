@@ -24,9 +24,8 @@ class SaleCalculatorTest {
   }
 
   @Test
-  void testCalculateSaleValuesBreakEven() {
+  void calculateSaleValuesBreakEvenReturnsExpectedResults() {
     SaleCalculator calc = new SaleCalculator(breakEvenShare);
-
     // gross = 100 * 10 = 1000
     assertEquals(new BigDecimal("1000.00"), calc.calculateGross());
     // commission = gross / 10 = 10
@@ -37,7 +36,7 @@ class SaleCalculatorTest {
     assertEquals(new BigDecimal("990.00"), calc.calculateTotal());
   }
   @Test
-  void testCalculateSaleValuesProfit() {
+  void calculateSaleValuesProfitReturnsExpectedResults() {
     SaleCalculator calc = new SaleCalculator(profitShare);
 
     assertEquals(new BigDecimal("1000.00"), calc.calculateGross());
@@ -46,7 +45,7 @@ class SaleCalculatorTest {
     assertEquals(new BigDecimal("843.00"), calc.calculateTotal());
   }
   @Test
-  void testCalculateSaleValuesLoss() {
+  void calculateSaleValuesLossReturnsExpectedResults() {
     SaleCalculator calc = new SaleCalculator(lossShare);
 
     assertEquals(new BigDecimal("1000.00"), calc.calculateGross());
@@ -57,7 +56,7 @@ class SaleCalculatorTest {
   }
 
   @Test
-  void TestSaleValidators() {
+  void constructorInvalidInputThrowsException() {
     SaleCalculator calc = new SaleCalculator(profitShare);
     assertNotNull(calc);
 

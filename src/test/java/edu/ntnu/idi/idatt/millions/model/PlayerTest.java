@@ -17,118 +17,118 @@ class PlayerTest {
   }
 
   @Test
-  void constructor_validInput_setsNameCorrectly() {
+  void constructorValidInputSetsNameCorrectly() {
     assertEquals("Petter", player.getName());
   }
 
   @Test
-  void constructor_validInput_setsMoneyToStartingMoney() {
+  void constructorValidInputSetsMoneyToStartingMoney() {
     assertEquals(new BigDecimal("10000"), player.getMoney());
   }
 
   @Test
-  void constructor_validInput_createsEmptyPortfolio() {
+  void constructorValidInputCreatesEmptyPortfolio() {
     assertTrue(player.getPortfolio().getShares().isEmpty());
   }
 
   @Test
-  void constructor_validInput_createsEmptyTransactionArchive() {
+  void constructorValidInputCreatesEmptyTransactionArchive() {
     assertTrue(player.getTransactionArchive().isEmpty());
   }
 
   @Test
-  void constructor_nullName_throwsIllegalArgumentException() {
+  void constructorNullNameThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Player(null, new BigDecimal("10000")));
   }
 
   @Test
-  void constructor_blankName_throwsIllegalArgumentException() {
+  void constructorBlankNameThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Player(" ", new BigDecimal("10000")));
   }
 
   @Test
-  void constructor_nameTooLong_throwsIllegalArgumentException() {
+  void constructorNameTooLongThrowsIllegalArgumentException() {
     String longName = "A".repeat(51);
     assertThrows(IllegalArgumentException.class, () ->
         new Player(longName, new BigDecimal("10000")));
   }
 
   @Test
-  void constructor_nullStartingMoney_throwsIllegalArgumentException() {
+  void constructorNullStartingMoneyThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Player("Petter", null));
   }
 
   @Test
-  void constructor_zeroStartingMoney_throwsIllegalArgumentException() {
+  void constructorZeroStartingMoneyThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Player("Petter", BigDecimal.ZERO));
   }
 
   @Test
-  void constructor_negativeStartingMoney_throwsIllegalArgumentException() {
+  void constructorNegativeStartingMoneyThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         new Player("Petter", new BigDecimal("-100")));
   }
 
   @Test
-  void addMoney_validAmount_increasesBalance() {
+  void addMoneyValidAmountIncreasesBalance() {
     player.addMoney(new BigDecimal("500"));
     assertEquals(new BigDecimal("10500"), player.getMoney());
   }
 
   @Test
-  void addMoney_nullAmount_throwsIllegalArgumentException() {
+  void addMoneyNullAmountThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.addMoney(null));
   }
 
   @Test
-  void addMoney_zeroAmount_throwsIllegalArgumentException() {
+  void addMoneyZeroAmountThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.addMoney(BigDecimal.ZERO));
   }
 
   @Test
-  void addMoney_negativeAmount_throwsIllegalArgumentException() {
+  void addMoneyNegativeAmountThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.addMoney(new BigDecimal("-100")));
   }
 
   @Test
-  void withdrawMoney_validAmount_decreasesBalance() {
+  void withdrawMoneyValidAmountDecreasesBalance() {
     player.withdrawMoney(new BigDecimal("1000"));
     assertEquals(new BigDecimal("9000"), player.getMoney());
   }
 
   @Test
-  void withdrawMoney_exactBalance_leavesZero() {
+  void withdrawMoneyExactBalanceLeavesZero() {
     player.withdrawMoney(new BigDecimal("10000"));
     assertEquals(BigDecimal.ZERO, player.getMoney());
   }
 
   @Test
-  void withdrawMoney_amountExceedsBalance_throwsIllegalArgumentException() {
+  void withdrawMoneyAmountExceedsBalanceThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.withdrawMoney(new BigDecimal("99999")));
   }
 
   @Test
-  void withdrawMoney_nullAmount_throwsIllegalArgumentException() {
+  void withdrawMoneyNullAmountThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.withdrawMoney(null));
   }
 
   @Test
-  void withdrawMoney_zeroAmount_throwsIllegalArgumentException() {
+  void withdrawMoneyZeroAmountThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.withdrawMoney(BigDecimal.ZERO));
   }
 
   @Test
-  void withdrawMoney_negativeAmount_throwsIllegalArgumentException() {
+  void withdrawMoneyNegativeAmountThrowsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class, () ->
         player.withdrawMoney(new BigDecimal("-100")));
   }

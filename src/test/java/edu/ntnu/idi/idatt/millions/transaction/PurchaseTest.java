@@ -24,7 +24,7 @@ class PurchaseTest {
   }
 
   @Test
-  void testPurchaseConstructorAndGetters() {
+  void constructorSetsFieldsAndGettersReturnValues() {
     Purchase purchase = new Purchase(share, 1);
     assertEquals(share, purchase.getShare());
     assertEquals(1, purchase.getWeek());
@@ -33,7 +33,7 @@ class PurchaseTest {
   }
 
   @Test
-  void testPurchaseSuccessfulExecution() {
+  void commitValidPurchaseUpdatesPlayerState() {
     Purchase purchase = new Purchase(share, 1);
     purchase.commit(player);
 
@@ -43,7 +43,7 @@ class PurchaseTest {
   }
 
   @Test
-  void testPurchaseInsufficientFundsThrows() {
+  void commitInsufficientFundsThrowsIllegalStateException() {
     Player poorPlayer = new Player("Poor Player", new BigDecimal("100.00"));
     Purchase purchase = new Purchase(share, 1);
 
@@ -51,7 +51,7 @@ class PurchaseTest {
   }
 
   @Test
-  void testPurchaseCommitTwiceThrows() {
+  void commitCalledTwiceThrowsIllegalStateException() {
     Purchase purchase = new Purchase(share, 1);
     purchase.commit(player);
 
