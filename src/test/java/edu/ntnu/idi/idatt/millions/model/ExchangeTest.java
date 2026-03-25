@@ -16,12 +16,14 @@ class ExchangeTest {
   private Player player;
   private Stock equinor;
   private Stock tesla;
+  private Stock apple;
 
   @BeforeEach
   void setUp() {
     equinor = new Stock("EQNR", "Equinor", new BigDecimal("29.2"));
     tesla = new Stock("TSLA", "Tesla", new BigDecimal("23.2"));
-    List<Stock> stocks = List.of(tesla, equinor);
+    apple = new Stock("AAPL", "Apple", new BigDecimal("150.0"));
+    List<Stock> stocks = List.of(tesla, equinor, apple);
     exchange = new Exchange("OSEBX", stocks);
     player = new Player("Petter", new BigDecimal("10000"));
   }
@@ -141,5 +143,65 @@ class ExchangeTest {
     assertEquals(weekBefore + 1, exchange.getWeek());
     assertTrue(equinor.getSalesPrice().compareTo(new BigDecimal("0.01")) >= 0);
     assertTrue(tesla.getSalesPrice().compareTo(new BigDecimal("0.01")) >= 0);
+  }
+
+  @Test
+  void getGainersReturnsSortedPositiveChanges() {
+    equinor.addNewSalesPrice(new BigDecimal("34.2")); // +5.0
+    apple.addNewSalesPrice(new BigDecimal("160.0")); // +10.0
+    tesla.addNewSalesPrice(new BigDecimal("21.2")); // -2.0
+
+    List<Stock> gainers = exchange.getGainers(10);
+
+    assertEquals(2, gainers.size());
+    assertSame(apple, gainers.get(0));
+    assertSame(equinor, gainers.get(1));
+  }
+
+  @Test
+  void getLosersReturnsSortedNegativeChanges() {
+    equinor.addNewSalesPrice(new BigDecimal("27.2")); // -2.0
+    apple.addNewSalesPrice(new BigDecimal("140.0")); // -10.0
+    tesla.addNewSalesPrice(new BigDecimal("25.2")); // +2.0
+
+    List<Stock> losers = exchange.getLosers(10);
+
+    assertEquals(2, losers.size());
+    assertSame(apple, losers.get(0));
+    assertSame(equinor, losers.get(1));
+  }
+
+  @Test
+  void getGainersAppliesLimitCorrectly() {
+    equinor.addNewSalesPrice(new BigDecimal("34.2")); // +5.0
+    apple.addNewSalesPrice(new BigDecimal("160.0")); // +10.0
+
+    List<Stock> gainers = exchange.getGainers(1);
+
+    assertEquals(1, gainers.size());
+    assertSame(apple, gainers.get(0));
+  }
+
+  @Test
+  void getLosersAppliesLimitCorrectly() {
+    equinor.addNewSalesPrice(new BigDecimal("27.2")); // -2.0
+    apple.addNewSalesPrice(new BigDecimal("140.0")); // -10.0
+
+    List<Stock> losers = exchange.getLosers(1);
+
+    assertEquals(1, losers.size());
+    assertSame(apple, losers.get(0));
+  }
+
+  @Test
+  void getGainersInvalidLimitThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () -> exchange.getGainers(0));
+    assertThrows(IllegalArgumentException.class, () -> exchange.getGainers(-5));
+  }
+
+  @Test
+  void getLosersInvalidLimitThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () -> exchange.getLosers(0));
+    assertThrows(IllegalArgumentException.class, () -> exchange.getLosers(-5));
   }
 }
