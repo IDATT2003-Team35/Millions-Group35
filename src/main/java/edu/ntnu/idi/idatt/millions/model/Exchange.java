@@ -6,6 +6,7 @@ import edu.ntnu.idi.idatt.millions.transaction.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -175,5 +176,21 @@ public class Exchange {
       newPrice = newPrice.max(BigDecimal.valueOf(0.01));
       stock.addNewSalesPrice(newPrice);
     }
+  }
+
+  public List<Stock> getGainers(int limit) {
+    return stockMap.values().stream()
+            .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) > 0)
+            .sorted(Comparator.comparing(Stock::getLatestPriceChange).reversed())
+            .limit(limit)
+            .toList();
+  }
+
+  public List<Stock> getLosers(int limit) {
+    return stockMap.values().stream()
+            .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) < 0)
+            .sorted(Comparator.comparing(Stock::getLatestPriceChange))
+            .limit(limit)
+            .toList();
   }
 }
