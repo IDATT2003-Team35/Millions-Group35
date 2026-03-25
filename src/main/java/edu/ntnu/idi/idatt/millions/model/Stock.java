@@ -83,4 +83,50 @@ public class Stock {
     }
     prices.add(price);
   }
+
+  /**
+   * Returns a list of all historical prices recorded for this stock.
+   *
+   * @return a new list containing the price history
+   */
+  public List<BigDecimal> getHistoricalPrices() {
+    return new ArrayList<>(prices);
+  }
+
+  /**
+   * Finds the highest price ever recorded for this stock.
+   *
+   * @return the maximum price, or ZERO if no prices exist
+   */
+  public BigDecimal getHighestPrice() {
+    return prices.stream()
+            .max(BigDecimal::compareTo)
+            .orElse(BigDecimal.ZERO);
+  }
+
+  /**
+   * Finds the lowest price ever recorded for this stock.
+   *
+   * @return the minimum price, or ZERO if no prices exist
+   */
+  public BigDecimal getLowestPrice() {
+    return prices.stream()
+            .min(BigDecimal::compareTo)
+            .orElse(BigDecimal.ZERO);
+  }
+
+  /**
+   * Calculates the difference between the current price and the previous week's price.
+   * If only one price is recorded, the change is considered to be zero.
+   *
+   * @return the price change as a BigDecimal
+   */
+  public BigDecimal getLatestPriceChange() {
+    if (prices.size() < 2) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal current = prices.get(prices.size() - 1);
+    BigDecimal previous = prices.get(prices.size() - 2);
+    return current.subtract(previous);
+  }
 }
