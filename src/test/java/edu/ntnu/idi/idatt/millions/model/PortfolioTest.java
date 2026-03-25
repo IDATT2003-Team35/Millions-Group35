@@ -110,4 +110,10 @@ class PortfolioTest {
     assertThrows(IllegalArgumentException.class, () ->
         portfolio.contains(null));
   }
+
+  @Test
+  void checkIfGetNetworhtMethodReturnsCorrectAmount(){
+    portfolio.addShare(share);
+    assertEquals(new BigDecimal("146.00"), portfolio.getNetWorth());
+  }
 }
