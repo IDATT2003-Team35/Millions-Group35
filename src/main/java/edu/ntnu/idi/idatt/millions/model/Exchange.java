@@ -179,6 +179,10 @@ public class Exchange {
   }
 
   public List<Stock> getGainers(int limit) {
+    if (limit <= 0) {
+      throw new IllegalArgumentException("Limit must be positive");
+    }
+
     return stockMap.values().stream()
             .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) > 0)
             .sorted(Comparator.comparing(Stock::getLatestPriceChange).reversed())
@@ -187,6 +191,10 @@ public class Exchange {
   }
 
   public List<Stock> getLosers(int limit) {
+    if (limit <= 0) {
+      throw new IllegalArgumentException("Limit must be positive");
+    }
+
     return stockMap.values().stream()
             .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) < 0)
             .sorted(Comparator.comparing(Stock::getLatestPriceChange))
