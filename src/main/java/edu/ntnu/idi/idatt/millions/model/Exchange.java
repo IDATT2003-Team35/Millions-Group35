@@ -6,6 +6,7 @@ import edu.ntnu.idi.idatt.millions.transaction.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -175,5 +176,43 @@ public class Exchange {
       newPrice = newPrice.max(BigDecimal.valueOf(0.01));
       stock.addNewSalesPrice(newPrice);
     }
+  }
+
+  /**
+   * Retrieves a list of the top gaining stocks, sorted by the highest positive price change.
+   *
+   * @param limit the maximum number of stocks to return; must be positive
+   * @return a list of gaining stocks
+   * @throws IllegalArgumentException if limit is less than or equal to zero
+   */
+  public List<Stock> getGainers(int limit) {
+    if (limit <= 0) {
+      throw new IllegalArgumentException("Limit must be positive");
+    }
+
+    return stockMap.values().stream()
+            .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) > 0)
+            .sorted(Comparator.comparing(Stock::getLatestPriceChange).reversed())
+            .limit(limit)
+            .toList();
+  }
+
+  /**
+   * Retrieves a list of the top losing stocks, sorted by the lowest negative price change.
+   *
+   * @param limit the maximum number of stocks to return; must be positive
+   * @return a list of losing stocks
+   * @throws IllegalArgumentException if limit is less than or equal to zero
+   */
+  public List<Stock> getLosers(int limit) {
+    if (limit <= 0) {
+      throw new IllegalArgumentException("Limit must be positive");
+    }
+
+    return stockMap.values().stream()
+            .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) < 0)
+            .sorted(Comparator.comparing(Stock::getLatestPriceChange))
+            .limit(limit)
+            .toList();
   }
 }
