@@ -132,4 +132,18 @@ class PlayerTest {
     assertThrows(IllegalArgumentException.class, () ->
         player.withdrawMoney(new BigDecimal("-100")));
   }
+
+  @Test
+  void getNetWorthWithEmptyPortfolioReturnsCashBalance() {
+    assertEquals(new BigDecimal("10000"), player.getNetWorth());
+  }
+
+  @Test
+  void getNetWorthIncludesPortfolioValue() {
+    Stock stock = new Stock("AAPL", "Apple Inc.", new BigDecimal("200"));
+    Share share = new Share(stock, new BigDecimal("5"), new BigDecimal("200"));
+    player.getPortfolio().addShare(share);
+
+    assertEquals(new BigDecimal("11000"), player.getNetWorth());
+  }
 }

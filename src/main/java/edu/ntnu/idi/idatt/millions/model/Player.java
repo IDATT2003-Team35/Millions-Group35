@@ -84,6 +84,15 @@ public class Player {
   }
 
   /**
+   * Returns the player's total net worth.
+   *
+   * @return cash balance plus portfolio value
+   */
+  public BigDecimal getNetWorth(){
+    return money.add(portfolio.getNetWorth());
+  }
+
+  /**
    * Returns the player's portfolio.
    *
    * @return the portfolio
