@@ -178,6 +178,13 @@ public class Exchange {
     }
   }
 
+  /**
+   * Retrieves a list of the top gaining stocks, sorted by the highest positive price change.
+   *
+   * @param limit the maximum number of stocks to return; must be positive
+   * @return a list of gaining stocks
+   * @throws IllegalArgumentException if limit is less than or equal to zero
+   */
   public List<Stock> getGainers(int limit) {
     if (limit <= 0) {
       throw new IllegalArgumentException("Limit must be positive");
@@ -190,6 +197,13 @@ public class Exchange {
             .toList();
   }
 
+  /**
+   * Retrieves a list of the top losing stocks, sorted by the lowest negative price change.
+   *
+   * @param limit the maximum number of stocks to return; must be positive
+   * @return a list of losing stocks
+   * @throws IllegalArgumentException if limit is less than or equal to zero
+   */
   public List<Stock> getLosers(int limit) {
     if (limit <= 0) {
       throw new IllegalArgumentException("Limit must be positive");
