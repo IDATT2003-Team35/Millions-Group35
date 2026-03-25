@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,5 +85,20 @@ import java.util.stream.Collectors;
         throw new IllegalArgumentException("Share cannot be null");
       }
       return shares.contains(share);
+    }
+
+    /**
+     * Calculates the total value of all owned shares.
+     *
+     * @return total value of all shares, or zero if empty
+     */
+    public BigDecimal getNetWorth(){
+      if(shares.isEmpty()) {
+        return BigDecimal.ZERO;
+      }
+      return shares.stream()
+          .map(share -> share.getStock().getSalesPrice().multiply(share.getQuantity()))
+          .reduce(BigDecimal.ZERO, BigDecimal::add);
+
     }
   }
