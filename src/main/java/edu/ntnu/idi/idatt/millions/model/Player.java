@@ -92,6 +92,24 @@ public class Player {
     return money.add(portfolio.getNetWorth());
   }
 
+
+  public String getStatus() {
+    int weekAmount = transactionArchive.countDistinctWeeks();
+    BigDecimal currentNetWorth = getNetWorth();
+    BigDecimal speculatorInc = startingMoney.multiply(new BigDecimal("2"));
+    BigDecimal investorInc = startingMoney.multiply(new BigDecimal("1.2"));
+
+    if (currentNetWorth.compareTo(speculatorInc) >= 0 && weekAmount >= 20) {
+      return "Speculator";
+    }
+
+    if (currentNetWorth.compareTo(investorInc) >= 0 && weekAmount >= 10) {
+      return "Investor";
+    }
+
+    return "Novice";
+  }
+
   /**
    * Returns the player's portfolio.
    *
