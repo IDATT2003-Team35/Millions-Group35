@@ -93,21 +93,22 @@ public class Player {
   }
 
 
-  public String getStatus() {
+  public PlayerRank getStatus() {
     int weekAmount = transactionArchive.countDistinctWeeks();
     BigDecimal currentNetWorth = getNetWorth();
     BigDecimal speculatorInc = startingMoney.multiply(new BigDecimal("2"));
     BigDecimal investorInc = startingMoney.multiply(new BigDecimal("1.2"));
 
     if (currentNetWorth.compareTo(speculatorInc) >= 0 && weekAmount >= 20) {
-      return "Speculator";
+      return PlayerRank.SPECULATOR;
     }
 
     if (currentNetWorth.compareTo(investorInc) >= 0 && weekAmount >= 10) {
-      return "Investor";
+      return PlayerRank.INVESTOR;
     }
 
-    return "Novice";
+    return PlayerRank.NOVICE;
+
   }
 
   /**
