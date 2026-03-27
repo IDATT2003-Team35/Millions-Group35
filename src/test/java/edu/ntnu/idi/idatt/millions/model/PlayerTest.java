@@ -1,9 +1,12 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import edu.ntnu.idi.idatt.millions.calculator.PurchaseCalculator;
+import edu.ntnu.idi.idatt.millions.transaction.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -145,5 +148,53 @@ class PlayerTest {
     player.getPortfolio().addShare(share);
 
     assertEquals(new BigDecimal("11000"), player.getNetWorth());
+  }
+
+  @Test
+  void getStatusReturnsNoviceByDefault() {
+    assertEquals(PlayerRank.NOVICE, player.getStatus());
+  }
+
+  @Test
+  void getStatusReturnsNoviceWhenNetWorthMetButNotWeeks() {
+    player.addMoney(new BigDecimal("2000"));
+
+    assertEquals(PlayerRank.NOVICE, player.getStatus());
+  }
+
+  @Test
+  void getStatusReturnsNoviceWhenWeeksMetButNotNetWorth() {
+    addDummyTransactionsForWeeks(10);
+
+    assertEquals(PlayerRank.NOVICE, player.getStatus());
+  }
+
+  @Test
+  void getStatusReturnsInvestorWhenRequirementsMet() {
+    player.addMoney(new BigDecimal("2000"));
+    addDummyTransactionsForWeeks(10);
+
+    assertEquals(PlayerRank.INVESTOR, player.getStatus());
+  }
+
+  @Test
+  void getStatusReturnsSpeculatorWhenRequirementsMet() {
+    player.addMoney(new BigDecimal("10000"));
+    addDummyTransactionsForWeeks(20);
+
+    assertEquals(PlayerRank.SPECULATOR, player.getStatus());
+  }
+
+  private void addDummyTransactionsForWeeks(int amountOfWeeks) {
+    Stock dummyStock = new Stock("DUMMY", "dummy", BigDecimal.ONE);
+    Share dummyShare = new Share(dummyStock, BigDecimal.ONE, BigDecimal.ONE);
+    for (int i = 1; i <= amountOfWeeks; i++) {
+      Transaction dummyTransaction = new Transaction(dummyShare, i, new PurchaseCalculator(dummyShare)) {
+        @Override
+        protected void executeTransaction(Player player) {}
+      };
+
+      player.getTransactionArchive().add(dummyTransaction);
+    }
   }
 }
