@@ -112,8 +112,8 @@ class PortfolioTest {
   }
 
   @Test
-  void checkIfGetNetworhtMethodReturnsCorrectAmount(){
+  void getNetWorthUsesSaleValueForOwnedShares() {
     portfolio.addShare(share);
-    assertEquals(new BigDecimal("146.00"), portfolio.getNetWorth());
+    assertEquals(new BigDecimal("144.54"), portfolio.getNetWorth());
   }
 }

@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import edu.ntnu.idi.idatt.millions.calculator.SaleCalculator;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +99,7 @@ import java.util.stream.Collectors;
         return BigDecimal.ZERO;
       }
       return shares.stream()
-          .map(share -> share.getStock().getSalesPrice().multiply(share.getQuantity()))
+          .map(share -> new SaleCalculator(share).calculateTotal())
           .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     }

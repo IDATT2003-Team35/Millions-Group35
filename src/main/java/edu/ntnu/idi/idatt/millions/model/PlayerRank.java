@@ -20,11 +20,5 @@ public enum PlayerRank {
    * Achieved by players who have traded for at least 20 distinct weeks
    * and have at least doubled their initial net worth.
    */
-  SPECULATOR,
-
-  /**
-   * The absolute pinnacle of stock market domination. Achieved only by legendary
-   * traders who break the very fabric of the economy.
-   */
-  xXGODTIERMASTERSIXSEVENXx
+  SPECULATOR
 }

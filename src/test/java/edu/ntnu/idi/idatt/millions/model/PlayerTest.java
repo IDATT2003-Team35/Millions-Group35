@@ -147,7 +147,7 @@ class PlayerTest {
     Share share = new Share(stock, new BigDecimal("5"), new BigDecimal("200"));
     player.getPortfolio().addShare(share);
 
-    assertEquals(new BigDecimal("11000"), player.getNetWorth());
+    assertEquals(new BigDecimal("10990.00"), player.getNetWorth());
   }
 
   @Test
