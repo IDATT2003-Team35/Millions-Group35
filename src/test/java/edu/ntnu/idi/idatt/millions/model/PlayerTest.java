@@ -1,13 +1,11 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import edu.ntnu.idi.idatt.millions.calculator.PurchaseCalculator;
-import edu.ntnu.idi.idatt.millions.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
+import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {

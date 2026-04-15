@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import edu.ntnu.idi.idatt.millions.calculator.SaleCalculator;
+import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
