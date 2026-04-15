@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.millions.calculator;
+package edu.ntnu.idi.idatt.millions.model.calculator;
 
 import java.math.BigDecimal;
 

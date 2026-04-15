@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import edu.ntnu.idi.idatt.millions.transaction.TransactionArchive;
+import edu.ntnu.idi.idatt.millions.model.transaction.TransactionArchive;
 
 import java.math.BigDecimal;
 

@@ -48,7 +48,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>edu.ntnu.idi.idatt.App</mainClass>
+                    <mainClass>edu.ntnu.idi.idatt.millions.App</mainClass>
                 </configuration>
             </plugin>
 

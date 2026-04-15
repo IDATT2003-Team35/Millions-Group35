@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.millions.transaction;
+package edu.ntnu.idi.idatt.millions.model.transaction;
 
 import java.util.ArrayList;
 import java.util.List;

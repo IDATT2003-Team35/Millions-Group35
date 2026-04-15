@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.millions.calculator;
+package edu.ntnu.idi.idatt.millions.model.calculator;
 
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
@@ -35,6 +35,7 @@ class SaleCalculatorTest {
     // total = gross - commission - tax = 990
     assertEquals(new BigDecimal("990.00"), calc.calculateTotal());
   }
+
   @Test
   void calculateSaleValuesProfitReturnsExpectedResults() {
     SaleCalculator calc = new SaleCalculator(profitShare);
@@ -44,6 +45,7 @@ class SaleCalculatorTest {
     assertEquals(new BigDecimal("147.00"), calc.calculateTax());
     assertEquals(new BigDecimal("843.00"), calc.calculateTotal());
   }
+
   @Test
   void calculateSaleValuesLossReturnsExpectedResults() {
     SaleCalculator calc = new SaleCalculator(lossShare);

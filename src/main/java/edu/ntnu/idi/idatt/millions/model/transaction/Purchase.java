@@ -1,6 +1,6 @@
-package edu.ntnu.idi.idatt.millions.transaction;
+package edu.ntnu.idi.idatt.millions.model.transaction;
 
-import edu.ntnu.idi.idatt.millions.calculator.PurchaseCalculator;
+import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
 

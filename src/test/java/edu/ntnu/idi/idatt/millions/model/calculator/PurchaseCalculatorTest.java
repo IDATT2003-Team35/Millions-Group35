@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.millions.calculator;
+package edu.ntnu.idi.idatt.millions.model.calculator;
 
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
