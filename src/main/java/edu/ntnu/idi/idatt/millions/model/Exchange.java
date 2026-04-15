@@ -1,8 +1,8 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import edu.ntnu.idi.idatt.millions.transaction.Purchase;
-import edu.ntnu.idi.idatt.millions.transaction.Sale;
-import edu.ntnu.idi.idatt.millions.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
+import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
+import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
