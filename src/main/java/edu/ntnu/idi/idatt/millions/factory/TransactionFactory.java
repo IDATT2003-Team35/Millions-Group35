@@ -9,22 +9,20 @@ public class TransactionFactory {
   }
 
   public static Purchase createPurchase(Share share, int week) {
-    if (share == null) {
-      throw new IllegalArgumentException("Share can not be null");
-    }
-    if (week <= 0) {
-      throw new IllegalArgumentException("Week must be positive");
-    }
+    validateInput(share, week);
     return new Purchase(share, week);
   }
 
   public static Sale createSale(Share share, int week) {
+    validateInput(share, week);
+    return new Sale(share, week);
+  }
+  private static void validateInput(Share share, int week) {
     if (share == null) {
-      throw new IllegalArgumentException("Share can not be null");
+      throw new IllegalArgumentException("Share cannot be null");
     }
     if (week <= 0) {
       throw new IllegalArgumentException("Week must be positive");
     }
-    return new Sale(share, week);
   }
 }
