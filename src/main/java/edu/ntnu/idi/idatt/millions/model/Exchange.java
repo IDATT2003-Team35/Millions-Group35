@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import edu.ntnu.idi.idatt.millions.Factory.TransactionFactory;
+import edu.ntnu.idi.idatt.millions.factory.TransactionFactory;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;

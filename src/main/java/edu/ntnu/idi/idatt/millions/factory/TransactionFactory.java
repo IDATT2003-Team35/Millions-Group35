@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.millions.Factory;
+package edu.ntnu.idi.idatt.millions.factory;
 
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
