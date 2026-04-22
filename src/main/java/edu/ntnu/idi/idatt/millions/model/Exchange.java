@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import edu.ntnu.idi.idatt.millions.Factory.TransactionFactory;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
@@ -132,7 +133,7 @@ public class Exchange {
     }
     Stock stock = getStock(symbol);
     Share share = new Share(stock, quantity, stock.getSalesPrice());
-    Purchase purchase = new Purchase(share, week);
+    Purchase purchase = TransactionFactory.createPurchase(share, week);
     purchase.commit(player);
     return purchase;
   }
@@ -155,7 +156,7 @@ public class Exchange {
     if (!player.getPortfolio().contains(share)) {
       throw new IllegalStateException("Player does not have this share");
     }
-    Sale sale = new Sale(share, week);
+    Sale sale = TransactionFactory.createSale(share, week);
     sale.commit(player);
     return sale;
   }
