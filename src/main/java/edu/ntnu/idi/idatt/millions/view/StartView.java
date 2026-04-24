@@ -19,6 +19,7 @@ public class StartView {
   private final TextField fileField;
   private final Button browseButton;
   private final Button startButton;
+  private final Label errorLabel;
 
   public StartView() {
     Label titleLabel = new Label("MILLIONS");
@@ -48,6 +49,9 @@ public class StartView {
     fileBox.setAlignment(Pos.CENTER_LEFT);
     HBox.setHgrow(fileField, Priority.ALWAYS);
 
+    errorLabel = new Label();
+    errorLabel.setWrapText(true);
+
     startButton = new Button("START");
     startButton.setDefaultButton(true);
 
@@ -63,6 +67,7 @@ public class StartView {
             fileLabel,
             fileBox,
             new Separator(),
+            errorLabel,
             startBox
     );
 
@@ -96,5 +101,21 @@ public class StartView {
 
   public Button getStartButton() {
    return startButton;
+  }
+
+  public Label getErrorLabel() {
+    return errorLabel;
+  }
+
+  public void setSelectedFilePath(String path) {
+    fileField.setText(path);
+  }
+
+  public void setErrorMessage(String message) {
+    errorLabel.setText(message);
+  }
+
+  public void clearErrorMessage() {
+    errorLabel.setText("");
   }
 }
