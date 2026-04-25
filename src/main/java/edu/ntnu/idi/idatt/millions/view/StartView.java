@@ -12,6 +12,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * View for the start screen where the user enters game setup information.
+ * Provides the layout and UI controls used by the start controller.
+ */
 public class StartView {
   private final StackPane root;
   private final TextField nameField;
@@ -21,6 +25,9 @@ public class StartView {
   private final Button startButton;
   private final Label errorLabel;
 
+  /**
+   * Creates the start screen layout and initializes its controls.
+   */
   public StartView() {
     Label titleLabel = new Label("MILLIONS");
     Label subtitleLabel = new Label("Stock Trading Simulator");
@@ -79,42 +86,90 @@ public class StartView {
     root.setPadding(new Insets(40));
   }
 
+  /**
+   * Returns the root node of the start view.
+   *
+   * @return the root node
+   */
   public Parent getRoot() {
     return root;
   }
 
+  /**
+   * Returns the text field for the player name.
+   *
+   * @return the player name field
+   */
   public TextField getNameField() {
    return nameField;
   }
 
+  /**
+   * Returns the text field for the starting capital.
+   *
+   * @return the starting capital field
+   */
   public TextField getCapitalField() {
    return capitalField;
   }
 
+  /**
+   * Returns the read-only text field showing the selected file path.
+   *
+   * @return the stock file field
+   */
   public TextField getFileField() {
    return fileField;
   }
 
+  /**
+   * Returns the browse button used to choose a CSV file.
+   *
+   * @return the browse button
+   */
   public Button getBrowseButton() {
    return browseButton;
   }
 
+  /**
+   * Returns the start button used to begin the game.
+   *
+   * @return the start button
+   */
   public Button getStartButton() {
    return startButton;
   }
 
+  /**
+   * Returns the label used to show validation errors.
+   *
+   * @return the error label
+   */
   public Label getErrorLabel() {
     return errorLabel;
   }
 
+  /**
+   * Updates the file field with the chosen file path.
+   *
+   * @param path the selected file path
+   */
   public void setSelectedFilePath(String path) {
     fileField.setText(path);
   }
 
+  /**
+   * Displays an error message on the start screen.
+   *
+   * @param message the error message to show
+   */
   public void setErrorMessage(String message) {
     errorLabel.setText(message);
   }
 
+  /**
+   * Clears any displayed error message.
+   */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }
