@@ -16,7 +16,7 @@ public class MainController {
   private final GameSession session;
   private final MainView view;
 
-  private final Node marketContent = placeholder("Market");
+  private final Node marketContent;
   private final Node portfolioContent = placeholder("Portfolio");
   private final Node transactionContent = placeholder("Transactions");
 
@@ -32,6 +32,8 @@ public class MainController {
     }
     this.session = session;
     this.view = new MainView(session);
+
+    this.marketContent = new MarketController(session, this).getView();
 
     wireStatusBar();
     wireNavigation();
