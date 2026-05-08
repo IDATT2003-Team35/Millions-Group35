@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,15 @@ public class Exchange {
       throw new IllegalArgumentException("Stock not found: " + symbol);
     }
     return stockMap.get(symbol);
+  }
+
+  /**
+   * Returns all stocks listed on this exchange.
+   *
+   * @return a list of all stocks
+   */
+  public List<Stock> getStocks() {
+    return new ArrayList<>(stockMap.values());
   }
 
   /**
