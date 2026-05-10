@@ -58,6 +58,13 @@ public class MainController {
         .setOnAction(e -> view.showContent(transactionContent, view.getSideBar().getTransactionButton()));
   }
 
+  /**
+   * Shows the market view in the center area and marks the Market button active.
+   */
+  public void showMarket() {
+    view.showContent(marketContent, view.getSideBar().getMarketButton());
+  }
+
   private static Node placeholder(String title) {
     VBox box = new VBox(new Label(title + " (placeholder)"));
     box.setPadding(new Insets(10));
