@@ -60,6 +60,7 @@ public class MarketController {
       if (selected == null) {
         return;
       }
+      mainController.showStockDetail(selected);
     });
   }
 }

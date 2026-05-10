@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.MainView;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -19,7 +20,7 @@ public class MainController {
   private final Node marketContent;
   private final Node portfolioContent = placeholder("Portfolio");
   private final Node transactionContent = placeholder("Transactions");
-
+  private final StockDetailController stockDetailController;
   /**
    * Creates the main controller and the main view it manages.
    *
@@ -34,10 +35,11 @@ public class MainController {
     this.view = new MainView(session);
 
     this.marketContent = new MarketController(session, this).getView();
+    this.stockDetailController = new StockDetailController(session, this);
 
     wireStatusBar();
     wireNavigation();
-    view.showContent(marketContent, view.getSideBar().getMarketButton());
+    showMarket();
   }
 
   public MainView getView() {
@@ -50,8 +52,7 @@ public class MainController {
   }
 
   private void wireNavigation() {
-    view.getSideBar().getMarketButton()
-        .setOnAction(e -> view.showContent(marketContent, view.getSideBar().getMarketButton()));
+    view.getSideBar().getMarketButton().setOnAction(e -> showMarket());
     view.getSideBar().getPortfolioButton()
         .setOnAction(e -> view.showContent(portfolioContent, view.getSideBar().getPortfolioButton()));
     view.getSideBar().getTransactionButton()
@@ -63,6 +64,12 @@ public class MainController {
    */
   public void showMarket() {
     view.showContent(marketContent, view.getSideBar().getMarketButton());
+  }
+
+  public void showStockDetail(Stock stock) {
+    stockDetailController.display(stock);
+    view.showContent(stockDetailController.getView(),
+        view.getSideBar().getMarketButton());
   }
 
   private static Node placeholder(String title) {
