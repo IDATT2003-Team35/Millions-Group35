@@ -18,7 +18,7 @@ public class MainController {
   private final MainView view;
 
   private final Node marketContent;
-  private final Node portfolioContent = placeholder("Portfolio");
+  private final Node portfolioContent;
   private final Node transactionContent = placeholder("Transactions");
   private final StockDetailController stockDetailController;
   /**
@@ -35,6 +35,7 @@ public class MainController {
     this.view = new MainView(session);
 
     this.marketContent = new MarketController(session, this).getView();
+    this.portfolioContent = new PortfolioController(session, this).getView();
     this.stockDetailController = new StockDetailController(session, this);
 
     wireStatusBar();
@@ -53,8 +54,7 @@ public class MainController {
 
   private void wireNavigation() {
     view.getSideBar().getMarketButton().setOnAction(e -> showMarket());
-    view.getSideBar().getPortfolioButton()
-        .setOnAction(e -> view.showContent(portfolioContent, view.getSideBar().getPortfolioButton()));
+    view.getSideBar().getPortfolioButton().setOnAction(e -> showPortfolio());
     view.getSideBar().getTransactionButton()
         .setOnAction(e -> view.showContent(transactionContent, view.getSideBar().getTransactionButton()));
   }
@@ -64,6 +64,13 @@ public class MainController {
    */
   public void showMarket() {
     view.showContent(marketContent, view.getSideBar().getMarketButton());
+  }
+
+  /**
+   * Shows the portfolio view in the center area and marks the Portfolio button active.
+   */
+  public void showPortfolio() {
+    view.showContent(portfolioContent, view.getSideBar().getPortfolioButton());
   }
 
   public void showStockDetail(Stock stock) {

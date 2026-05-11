@@ -116,4 +116,31 @@ class PortfolioTest {
     portfolio.addShare(share);
     assertEquals(new BigDecimal("144.54"), portfolio.getNetWorth());
   }
+
+  @Test
+  void getTotalInvestedEmptyPortfolioReturnsZero() {
+    assertEquals(BigDecimal.ZERO, portfolio.getTotalInvested());
+  }
+
+  @Test
+  void getTotalInvestedSingleShareReturnsGrossPurchaseAmount() {
+    portfolio.addShare(share);
+    assertEquals(new BigDecimal("146.00"), portfolio.getTotalInvested());
+  }
+
+  @Test
+  void getTotalInvestedMultipleSharesReturnsSumOfGrossAmounts() {
+    Stock tesla = new Stock("TSLA", "Tesla", new BigDecimal("23.20"));
+    Share teslaShare = new Share(tesla, new BigDecimal("2"), new BigDecimal("23.20"));
+    portfolio.addShare(share);
+    portfolio.addShare(teslaShare);
+    assertEquals(new BigDecimal("192.40"), portfolio.getTotalInvested());
+  }
+
+  @Test
+  void getTotalInvestedExcludesCommission() {
+    portfolio.addShare(share);
+    assertNotEquals(new BigDecimal("146.73"), portfolio.getTotalInvested());
+    assertEquals(new BigDecimal("146.00"), portfolio.getTotalInvested());
+  }
 }
