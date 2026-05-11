@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.millions.view.StockDetailView;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Controller for the stock detail view.
@@ -61,15 +62,14 @@ public class StockDetailController {
       }
 
       BuyView buyView = new BuyView();
-      buyView.setStockSymbol(currentStock.getSymbol());
-      buyView.setPricePerShare(currentStock.getSalesPrice().toPlainString());
-      buyView.setTotalCost("0.00");
-      buyView.setAvailableCash(session.getPlayer().getMoney().toPlainString());
 
       Stage dialogStage = new Stage();
       dialogStage.initModality(Modality.APPLICATION_MODAL);
+      dialogStage.initOwner(view.getScene().getWindow());
+      dialogStage.initStyle(StageStyle.UNDECORATED);
       dialogStage.setTitle("Buy Order");
       dialogStage.setScene(new Scene(buyView.getRoot()));
+      new BuyController(buyView, dialogStage, session, currentStock);
       dialogStage.showAndWait();
     });
   }

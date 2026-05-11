@@ -110,7 +110,7 @@ public class BuyView {
     stockSymbol.setText(symbol);
   }
 
-  public void setPricePerShare(String price) {
+  public void setStockPrice(String price) {
     stockPrice.setText(price);
   }
 
