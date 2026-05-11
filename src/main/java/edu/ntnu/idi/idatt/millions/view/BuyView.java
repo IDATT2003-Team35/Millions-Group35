@@ -1,6 +1,5 @@
 package edu.ntnu.idi.idatt.millions.view;
 
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -15,11 +14,11 @@ import javafx.scene.layout.VBox;
 public class BuyView {
   private final VBox root;
 
-  private final Label stockSymbol;
-  private final Label stockPrice;
+  private final Label stockSymbolValue;
+  private final Label stockPriceValue;
   private final TextField quantityField;
-  private final Label totalCostPrice;
-  private final Label availableCash;
+  private final Label totalCostValue;
+  private final Label availableCashValue;
   private final Label errorLabel;
 
   private final Button cancelButton;
@@ -27,22 +26,12 @@ public class BuyView {
 
   public BuyView() {
     Label titleLabel = new Label("BUY ORDER");
-
-    Label stockSymbolLabel = new Label("Stock:");
-    stockSymbol = new Label();
-
-    Label stockPriceLabel = new Label("Price per Share ($):");
-    stockPrice = new Label();
-
-    Label quantityLabel = new Label("Quantity:");
+    stockSymbolValue = new Label();
+    stockPriceValue = new Label();
     quantityField = new TextField();
     quantityField.setPromptText("Enter quantity");
-
-    Label totalCostLabel = new Label("Total Cost ($):");
-    totalCostPrice = new Label("0.00");
-
-    Label availableCashLabel = new Label("Available Cash: ");
-    availableCash = new Label();
+    totalCostValue = new Label("0.00");
+    availableCashValue = new Label();
 
     errorLabel = new Label();
     errorLabel.setWrapText(true);
@@ -53,15 +42,15 @@ public class BuyView {
 
     VBox infoBox = new VBox(
             12,
-            row(stockSymbolLabel, stockSymbol),
-            row(stockPriceLabel, stockPrice),
-            row(quantityLabel, quantityField)
+            row("Stock:", stockSymbolValue),
+            row("Price per Share ($):", stockPriceValue),
+            row("Quantity:", quantityField)
     );
 
     VBox summaryBox = new VBox(
             12,
-            row(totalCostLabel, totalCostPrice),
-            row(availableCashLabel, availableCash)
+            row("Total Cost ($):", totalCostValue),
+            row("Available Cash ($):", availableCashValue)
     );
 
     HBox buttonRow = new HBox(
@@ -85,8 +74,13 @@ public class BuyView {
     root.setPrefWidth(420);
   }
 
+  private HBox row(String labelText, Node value) {
+    return row(new Label(labelText), value);
+  }
+
   private HBox row(Label label, Node value) {
     HBox row = new HBox(12, label, value);
+    row.setAlignment(Pos.CENTER_LEFT);
     return row;
   }
 
@@ -107,19 +101,19 @@ public class BuyView {
   }
 
   public void setStockSymbol(String symbol) {
-    stockSymbol.setText(symbol);
+    stockSymbolValue.setText(symbol);
   }
 
   public void setStockPrice(String price) {
-    stockPrice.setText(price);
+    stockPriceValue.setText(price);
   }
 
   public void setTotalCost(String totalCost) {
-    totalCostPrice.setText(totalCost);
+    totalCostValue.setText(totalCost);
   }
 
   public void setAvailableCash(String cash) {
-    availableCash.setText(cash);
+    availableCashValue.setText(cash);
   }
 
   public void setErrorMessage(String message) {
