@@ -2,7 +2,11 @@ package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
+import edu.ntnu.idi.idatt.millions.view.BuyView;
 import edu.ntnu.idi.idatt.millions.view.StockDetailView;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Controller for the stock detail view.
@@ -12,6 +16,7 @@ public class StockDetailController {
   private final GameSession session;
   private final MainController mainController;
   private final StockDetailView view;
+  private Stock currentStock;
 
   /**
    * Creates a new stock detail controller and the view it manages.
@@ -32,6 +37,7 @@ public class StockDetailController {
     this.view = new StockDetailView(session);
 
     wireBack();
+    wireBuy();
   }
 
   public StockDetailView getView() {
@@ -44,7 +50,28 @@ public class StockDetailController {
    * @param stock the stock to display
    */
   public void display(Stock stock) {
+    currentStock = stock;
     view.displayStock(stock);
+  }
+
+  private void wireBuy() {
+    view.getBuyButton().setOnAction(e -> {
+      if (currentStock == null) {
+        return;
+      }
+
+      BuyView buyView = new BuyView();
+      buyView.setStockSymbol(currentStock.getSymbol());
+      buyView.setPricePerShare(currentStock.getSalesPrice().toPlainString());
+      buyView.setTotalCost("0.00");
+      buyView.setAvailableCash(session.getPlayer().getMoney().toPlainString());
+
+      Stage dialogStage = new Stage();
+      dialogStage.initModality(Modality.APPLICATION_MODAL);
+      dialogStage.setTitle("Buy Order");
+      dialogStage.setScene(new Scene(buyView.getRoot()));
+      dialogStage.showAndWait();
+    });
   }
 
   private void wireBack() {
