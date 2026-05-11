@@ -2,6 +2,7 @@ package edu.ntnu.idi.idatt.millions.model;
 
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.observer.Subject;
+import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,20 +59,24 @@ public class GameSession implements Subject {
    *
    * @param symbol the stock symbol to buy
    * @param quantity the number of shares to buy
+   * @return the committed purchase transaction
    */
-  public void buyStock(String symbol, BigDecimal quantity) {
-    exchange.buy(symbol, quantity, player);
+  public Transaction buyStock(String symbol, BigDecimal quantity) {
+    Transaction transaction = exchange.buy(symbol, quantity, player);
     notifyObservers();
+    return transaction;
   }
 
   /**
    * Sells a share for the active player and notifies observers if successful.
    *
    * @param share the share to sell
+   * @return the committed sale transaction
    */
-  public void sellShare(Share share) {
-    exchange.sell(share, player);
+  public Transaction sellShare(Share share) {
+    Transaction transaction = exchange.sell(share, player);
     notifyObservers();
+    return transaction;
   }
 
   /**

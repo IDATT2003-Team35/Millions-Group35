@@ -2,8 +2,13 @@ package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
+import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.view.BuyView;
+import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.math.BigDecimal;
 
@@ -34,7 +39,7 @@ public class BuyController {
 
     populate();
     wireButtons();
-    wireQuantityListner();
+    wireQuantityListener();
   }
 
   private void populate() {
@@ -46,10 +51,10 @@ public class BuyController {
 
   private void wireButtons() {
     view.getCancelButton().setOnAction(e -> dialogStage.close());
-    view.getConfirmButton().setOnAction(e -> handelBuy());
+    view.getConfirmButton().setOnAction(e -> handleBuy());
   }
 
-  private void wireQuantityListner() {
+  private void wireQuantityListener() {
     view.getQuantityField().textProperty().addListener(
             (obs, oldTotCost, newTotCost) -> updateTotalCost()
     );
@@ -67,6 +72,7 @@ public class BuyController {
       BigDecimal quantity = new BigDecimal(quantityText);
       if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
         view.setTotalCost("0.00");
+        return;
       }
 
       BigDecimal totalCost = stock.getSalesPrice().multiply(quantity);
@@ -76,7 +82,7 @@ public class BuyController {
     }
   }
 
-  private void handelBuy() {
+  private void handleBuy() {
     view.clearErrorMessage();
 
     String quantityText = view.getQuantityField().getText().trim();
@@ -94,10 +100,24 @@ public class BuyController {
     }
 
     try {
-      session.buyStock(stock.getSymbol(), quantity);
+      Transaction transaction = session.buyStock(stock.getSymbol(), quantity);
       dialogStage.close();
+      showReceipt(transaction);
     } catch (IllegalArgumentException | IllegalStateException e) {
       view.setErrorMessage(e.getMessage());
     }
+  }
+
+  private void showReceipt(Transaction transaction) {
+    TransactionReceiptView receiptView = new TransactionReceiptView();
+
+    Stage receiptStage = new Stage();
+    receiptStage.initModality(Modality.APPLICATION_MODAL);
+    receiptStage.initOwner(dialogStage.getOwner());
+    receiptStage.initStyle(StageStyle.UNDECORATED);
+    receiptStage.setTitle("Transaction Receipt");
+    receiptStage.setScene(new Scene(receiptView.getRoot()));
+    new TransactionReceiptController(receiptView, receiptStage, transaction);
+    receiptStage.showAndWait();
   }
 }
