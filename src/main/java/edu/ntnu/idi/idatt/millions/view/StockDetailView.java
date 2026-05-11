@@ -194,4 +194,8 @@ public class StockDetailView extends BorderPane implements Observer {
   public Button getBackButton() {
     return backButton;
   }
+
+  public Button getBuyButton() {
+    return buyButton;
+  }
 }

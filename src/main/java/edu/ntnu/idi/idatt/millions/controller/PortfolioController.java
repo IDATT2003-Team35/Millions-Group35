@@ -1,7 +1,13 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.view.PortfolioView;
+import edu.ntnu.idi.idatt.millions.view.SellView;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Controller for the portfolio view.
@@ -29,9 +35,33 @@ public class PortfolioController {
     this.session = session;
     this.mainController = mainController;
     this.view = new PortfolioView(session);
+
+    wireSellHandler();
   }
 
   public PortfolioView getView() {
     return view;
+  }
+
+  private void wireSellHandler() {
+    view.setSellHandler(this::showSellPopup);
+  }
+
+  private void showSellPopup(Share share) {
+    if (share == null) {
+      return;
+    }
+
+    SellView sellView = new SellView();
+
+    Stage dialogStage = new Stage();
+    dialogStage.initModality(Modality.APPLICATION_MODAL);
+    dialogStage.initOwner(view.getScene().getWindow());
+    dialogStage.initStyle(StageStyle.UNDECORATED);
+    dialogStage.setTitle("Sell Order");
+    dialogStage.setScene(new Scene(sellView.getRoot()));
+
+    new SellController(sellView, dialogStage, session, share);
+    dialogStage.showAndWait();
   }
 }
