@@ -9,6 +9,8 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.stage.Stage;
 
+import java.math.BigDecimal;
+
 
 public class TransactionReceiptController {
   private final TransactionReceiptView view;
@@ -47,7 +49,7 @@ public class TransactionReceiptController {
     view.setStockSymbol(stock.getSymbol());
     view.setCompanyName(stock.getCompany());
     view.setQuantity(share.getQuantity().toPlainString());
-    view.setPrice(share.getPurchasePrice().toPlainString());
+    view.setPrice(getTransactionPricePerShare(share).toPlainString());
     view.setGross(calculator.calculateGross().toPlainString());
     view.setCommission(calculator.calculateCommission().toPlainString());
     view.setTax(calculator.calculateTax().toPlainString());
@@ -55,6 +57,13 @@ public class TransactionReceiptController {
     view.setTotalLabel(getTotalLabel());
     view.setTotal(calculator.calculateTotal().toPlainString());
     view.setWeek(String.valueOf(transaction.getWeek()));
+  }
+
+  private BigDecimal getTransactionPricePerShare(Share share) {
+    if (transaction instanceof Sale) {
+      return share.getStock().getSalesPrice();
+    }
+    return share.getPurchasePrice();
   }
 
   private void wireButtons() {
