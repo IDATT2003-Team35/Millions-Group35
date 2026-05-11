@@ -14,12 +14,28 @@ import javafx.stage.StageStyle;
 
 import java.math.BigDecimal;
 
+/**
+ * Controller for the sell order popup.
+ *
+ * <p>The controller fills the view with share and price data, performs the
+ * sale through the game session, and opens a receipt when the transaction
+ * succeeds.</p>
+ */
 public class SellController {
   private final SellView view;
   private final Stage dialogStage;
   private final GameSession session;
   private final Share share;
 
+  /**
+   * Creates a controller for a sell order popup.
+   *
+   * @param view view used by the popup
+   * @param dialogStage stage containing the popup
+   * @param session active game session used to perform the sale
+   * @param share share being sold
+   * @throws IllegalArgumentException if any argument is {@code null}
+   */
   public SellController(SellView view, Stage dialogStage, GameSession session, Share share) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");

@@ -10,6 +10,12 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * View for the sell order popup.
+ *
+ * <p>The view displays the selected share, estimated sale result, and action
+ * buttons. Selling logic and validation are handled by the controller.</p>
+ */
 public class SellView {
   private final VBox root;
 
@@ -25,6 +31,9 @@ public class SellView {
   private final Button cancelButton;
   private final Button confirmButton;
 
+  /**
+   * Creates the sell order popup layout.
+   */
   public SellView() {
     Label titleLabel = new Label("SELL ORDER");
 
@@ -85,50 +94,108 @@ public class SellView {
     return row;
   }
 
+  /**
+   * Returns the root node used as the content of the sell popup.
+   *
+   * @return root node for this view
+   */
   public Parent getRoot() {
     return root;
   }
 
+  /**
+   * Returns the button that cancels the sell order.
+   *
+   * @return cancel button
+   */
   public Button getCancelButton() {
     return cancelButton;
   }
 
+  /**
+   * Returns the button that confirms the sell order.
+   *
+   * @return confirm button
+   */
   public Button getConfirmButton() {
     return confirmButton;
   }
 
+  /**
+   * Sets the stock symbol displayed in the popup.
+   *
+   * @param symbol stock symbol to display
+   */
   public void setStockSymbol(String symbol) {
     stockSymbolValue.setText(symbol);
   }
 
+  /**
+   * Sets the company name displayed in the popup.
+   *
+   * @param companyName company name to display
+   */
   public void setCompanyName(String companyName) {
     companyNameValue.setText(companyName);
   }
 
+  /**
+   * Sets the share quantity displayed in the popup.
+   *
+   * @param quantity share quantity to display
+   */
   public void setQuantity(String quantity) {
     quantityValue.setText(quantity);
   }
 
+  /**
+   * Sets the purchase price per share displayed in the popup.
+   *
+   * @param purchasePrice purchase price to display
+   */
   public void setPurchasePrice(String purchasePrice) {
     purchasePriceValue.setText(purchasePrice);
   }
 
+  /**
+   * Sets the current price per share displayed in the popup.
+   *
+   * @param currentPrice current stock price to display
+   */
   public void setCurrentPrice(String currentPrice) {
     currentPriceValue.setText(currentPrice);
   }
 
+  /**
+   * Sets the estimated gain or loss displayed in the popup.
+   *
+   * @param gainLoss gain or loss to display
+   */
   public void setGainLoss(String gainLoss) {
     gainLossValue.setText(gainLoss);
   }
 
+  /**
+   * Sets the estimated sale revenue displayed in the popup.
+   *
+   * @param estimatedRevenue estimated revenue to display
+   */
   public void setEstimatedRevenue(String estimatedRevenue) {
     estimatedRevenueValue.setText(estimatedRevenue);
   }
 
+  /**
+   * Shows an error message in the popup.
+   *
+   * @param message error message to display
+   */
   public void setErrorMessage(String message) {
     errorLabel.setText(message);
   }
 
+  /**
+   * Clears the current error message.
+   */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }

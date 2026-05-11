@@ -10,6 +10,12 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * View for displaying a completed transaction receipt.
+ *
+ * <p>The same receipt view is used for both purchase and sale transactions.
+ * The controller decides which values and labels should be shown.</p>
+ */
 public class TransactionReceiptView {
   private final VBox root;
 
@@ -27,6 +33,9 @@ public class TransactionReceiptView {
   private final Label weekValue;
   private final Button closeButton;
 
+  /**
+   * Creates the transaction receipt popup layout.
+   */
   public TransactionReceiptView() {
     titleLabel = new Label("TRANSACTION RECEIPT");
 
@@ -80,59 +89,131 @@ public class TransactionReceiptView {
     return row;
   }
 
+  /**
+   * Returns the root node used as the content of the receipt popup.
+   *
+   * @return root node for this view
+   */
   public Parent getRoot() {
     return root;
   }
 
+  /**
+   * Returns the button that closes the receipt popup.
+   *
+   * @return close button
+   */
   public Button getCloseButton() {
     return closeButton;
   }
 
+  /**
+   * Sets the receipt title.
+   *
+   * @param title title to display
+   */
   public void setTitle(String title) {
     titleLabel.setText(title);
   }
 
+  /**
+   * Sets the stock symbol displayed in the receipt.
+   *
+   * @param stock stock symbol to display
+   */
   public void setStockSymbol(String stock) {
     stockSymbolValue.setText(stock);
   }
 
+  /**
+   * Sets the company name displayed in the receipt.
+   *
+   * @param company company name to display
+   */
   public void setCompanyName(String company) {
     companyNameValue.setText(company);
   }
 
+  /**
+   * Sets the transaction quantity displayed in the receipt.
+   *
+   * @param quantity quantity to display
+   */
   public void setQuantity(String quantity) {
     quantityValue.setText(quantity);
   }
 
+  /**
+   * Sets the price per share displayed in the receipt.
+   *
+   * @param price price per share to display
+   */
   public void setPrice(String price) {
     priceValue.setText(price);
   }
 
+  /**
+   * Sets the gross transaction amount displayed in the receipt.
+   *
+   * @param gross gross amount to display
+   */
   public void setGross(String gross) {
     grossValue.setText(gross);
   }
 
+  /**
+   * Sets the commission amount displayed in the receipt.
+   *
+   * @param commission commission amount to display
+   */
   public void setCommission(String commission) {
     commissionValue.setText(commission);
   }
 
+  /**
+   * Sets the tax amount displayed in the receipt.
+   *
+   * @param tax tax amount to display
+   */
   public void setTax(String tax) {
     taxValue.setText(tax);
   }
 
+  /**
+   * Shows or hides the tax row.
+   *
+   * <p>Hidden rows are also unmanaged so they do not reserve layout space.</p>
+   *
+   * @param visible {@code true} to show the tax row, {@code false} to hide it
+   */
   public void setTaxVisible(boolean visible) {
     taxRow.setVisible(visible);
     taxRow.setManaged(visible);
   }
 
+  /**
+   * Sets the label used for the final total row.
+   *
+   * @param label total row label to display
+   */
   public void setTotalLabel(String label) {
     totalLabel.setText(label);
   }
 
+  /**
+   * Sets the final transaction total displayed in the receipt.
+   *
+   * @param total total amount to display
+   */
   public void setTotal(String total) {
     totalValue.setText(total);
   }
 
+  /**
+   * Sets the week number displayed in the receipt.
+   *
+   * @param week week number to display
+   */
   public void setWeek(String week) {
     weekValue.setText(week);
   }

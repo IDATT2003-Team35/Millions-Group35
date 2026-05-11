@@ -12,11 +12,25 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 
 
+/**
+ * Controller for the transaction receipt popup.
+ *
+ * <p>The controller reads a completed transaction, calculates the displayed
+ * receipt values, and wires the close button.</p>
+ */
 public class TransactionReceiptController {
   private final TransactionReceiptView view;
   private final Stage dialogStage;
   private final Transaction transaction;
 
+  /**
+   * Creates a controller for a transaction receipt popup.
+   *
+   * @param view view used by the receipt popup
+   * @param dialogStage stage containing the popup
+   * @param transaction completed transaction to display
+   * @throws IllegalArgumentException if any argument is {@code null}
+   */
   public TransactionReceiptController(
       TransactionReceiptView view,
       Stage dialogStage,

@@ -11,6 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * View for the buy order popup.
+ *
+ * <p>The view displays the selected stock, quantity input, estimated total cost,
+ * and action buttons. Buying logic and validation are handled by the controller.</p>
+ */
 public class BuyView {
   private final VBox root;
 
@@ -24,6 +30,9 @@ public class BuyView {
   private final Button cancelButton;
   private final Button confirmButton;
 
+  /**
+   * Creates the buy order popup layout.
+   */
   public BuyView() {
     Label titleLabel = new Label("BUY ORDER");
     stockSymbolValue = new Label();
@@ -84,42 +93,90 @@ public class BuyView {
     return row;
   }
 
+  /**
+   * Returns the root node used as the content of the buy popup.
+   *
+   * @return root node for this view
+   */
   public Parent getRoot() {
     return root;
   }
 
+  /**
+   * Returns the text field where the player enters the quantity to buy.
+   *
+   * @return quantity input field
+   */
   public TextField getQuantityField() {
     return quantityField;
   }
 
+  /**
+   * Returns the button that cancels the buy order.
+   *
+   * @return cancel button
+   */
   public Button getCancelButton() {
     return cancelButton;
   }
 
+  /**
+   * Returns the button that confirms the buy order.
+   *
+   * @return confirm button
+   */
   public Button getConfirmButton() {
     return confirmButton;
   }
 
+  /**
+   * Sets the stock symbol displayed in the popup.
+   *
+   * @param symbol stock symbol to display
+   */
   public void setStockSymbol(String symbol) {
     stockSymbolValue.setText(symbol);
   }
 
+  /**
+   * Sets the price per share displayed in the popup.
+   *
+   * @param price price per share to display
+   */
   public void setStockPrice(String price) {
     stockPriceValue.setText(price);
   }
 
+  /**
+   * Sets the calculated total cost displayed in the popup.
+   *
+   * @param totalCost total cost to display
+   */
   public void setTotalCost(String totalCost) {
     totalCostValue.setText(totalCost);
   }
 
+  /**
+   * Sets the player's available cash displayed in the popup.
+   *
+   * @param cash available cash to display
+   */
   public void setAvailableCash(String cash) {
     availableCashValue.setText(cash);
   }
 
+  /**
+   * Shows an error message in the popup.
+   *
+   * @param message error message to display
+   */
   public void setErrorMessage(String message) {
     errorLabel.setText(message);
   }
 
+  /**
+   * Clears the current error message.
+   */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }

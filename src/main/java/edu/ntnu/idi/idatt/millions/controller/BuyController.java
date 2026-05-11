@@ -12,12 +12,28 @@ import javafx.stage.StageStyle;
 
 import java.math.BigDecimal;
 
+/**
+ * Controller for the buy order popup.
+ *
+ * <p>The controller fills the view with stock and player data, validates the
+ * requested quantity, performs the purchase through the game session, and
+ * opens a receipt when the transaction succeeds.</p>
+ */
 public class BuyController {
   private final BuyView view;
   private final Stage dialogStage;
   private final GameSession session;
   private final Stock stock;
 
+  /**
+   * Creates a controller for a buy order popup.
+   *
+   * @param view view used by the popup
+   * @param dialogStage stage containing the popup
+   * @param session active game session used to perform the purchase
+   * @param stock stock being purchased
+   * @throws IllegalArgumentException if any argument is {@code null}
+   */
   public BuyController(BuyView view, Stage dialogStage, GameSession session, Stock stock) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
