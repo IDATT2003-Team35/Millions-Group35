@@ -22,6 +22,7 @@ public class StartView {
   private final TextField capitalField;
   private final TextField fileField;
   private final Button browseButton;
+  private final Button defaultStockDataButton;
   private final Button startButton;
   private final Label errorLabel;
 
@@ -51,8 +52,9 @@ public class StartView {
     fileField.setFocusTraversable(false);
 
     browseButton = new Button("Browse");
+    defaultStockDataButton = new Button("Default stock data");
 
-    HBox fileBox = new HBox(10, fileField, browseButton);
+    HBox fileBox = new HBox(10, fileField, browseButton, defaultStockDataButton);
     fileBox.setAlignment(Pos.CENTER_LEFT);
     HBox.setHgrow(fileField, Priority.ALWAYS);
 
@@ -129,6 +131,15 @@ public class StartView {
    */
   public Button getBrowseButton() {
    return browseButton;
+  }
+
+  /**
+   * Returns the button used to select the bundled stock data file.
+   *
+   * @return the default stock data button
+   */
+  public Button getDefaultStockDataButton() {
+    return defaultStockDataButton;
   }
 
   /**

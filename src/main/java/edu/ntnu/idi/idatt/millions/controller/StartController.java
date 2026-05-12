@@ -62,7 +62,7 @@ public class StartController {
   private void initialize() {
     view.getBrowseButton().setOnAction(e -> handleBrowse());
     view.getStartButton().setOnAction(e -> handleStart());
-
+    view.getDefaultStockDataButton().setOnAction(e -> handleDefaultStockData());
   }
 
   private void handleBrowse() {
@@ -76,6 +76,12 @@ public class StartController {
       view.setSelectedFilePath(selectedFile.toString());
       view.clearErrorMessage();
     }
+  }
+
+  private void handleDefaultStockData() {
+    selectedFile = Path.of("src/main/resources/sp500.csv");
+    view.setSelectedFilePath(selectedFile.toString());
+    view.clearErrorMessage();
   }
 
   private void handleStart() {
