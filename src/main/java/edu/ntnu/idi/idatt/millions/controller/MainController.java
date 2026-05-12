@@ -3,10 +3,8 @@ package edu.ntnu.idi.idatt.millions.controller;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.MainView;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+
 
 /**
  * Root controller for the main screen. Wires status bar and navigation events
@@ -19,7 +17,7 @@ public class MainController {
 
   private final Node marketContent;
   private final Node portfolioContent;
-  private final Node transactionContent = placeholder("Transactions");
+  private final Node transactionContent;
   private final StockDetailController stockDetailController;
   /**
    * Creates the main controller and the main view it manages.
@@ -37,7 +35,7 @@ public class MainController {
     this.marketContent = new MarketController(session, this).getView();
     this.portfolioContent = new PortfolioController(session, this).getView();
     this.stockDetailController = new StockDetailController(session, this);
-
+    this.transactionContent = new TransactionController(session, this).getView();
     wireStatusBar();
     wireNavigation();
     showMarket();
@@ -55,8 +53,7 @@ public class MainController {
   private void wireNavigation() {
     view.getSideBar().getMarketButton().setOnAction(e -> showMarket());
     view.getSideBar().getPortfolioButton().setOnAction(e -> showPortfolio());
-    view.getSideBar().getTransactionButton()
-        .setOnAction(e -> view.showContent(transactionContent, view.getSideBar().getTransactionButton()));
+    view.getSideBar().getTransactionButton().setOnAction(e -> showTransaction());
   }
 
   /**
@@ -79,9 +76,8 @@ public class MainController {
         view.getSideBar().getMarketButton());
   }
 
-  private static Node placeholder(String title) {
-    VBox box = new VBox(new Label(title + " (placeholder)"));
-    box.setPadding(new Insets(10));
-    return box;
+  public void showTransaction() {
+    view.showContent(transactionContent,
+        view.getSideBar().getTransactionButton());
   }
 }
