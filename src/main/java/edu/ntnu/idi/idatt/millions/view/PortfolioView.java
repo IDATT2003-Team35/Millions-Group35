@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Portfolio;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -157,6 +158,12 @@ public class PortfolioView extends BorderPane implements Observer {
             .subtract(c.getValue().getPurchasePrice())
             .multiply(c.getValue().getQuantity()))));
 
+    TableColumn<Share, String> gainLossPercentCol = new TableColumn<>("Gain / Loss (%)");
+    gainLossPercentCol.setCellValueFactory(c ->
+        new SimpleStringProperty(Percentages.format(Percentages.change(
+            c.getValue().getPurchasePrice(),
+            c.getValue().getStock().getSalesPrice()))));
+
     TableColumn<Share, Void> actionCol = new TableColumn<>("Action");
     actionCol.setCellFactory(col -> new TableCell<Share, Void>() {
       private final Button sellButton = new Button("Sell");
@@ -177,7 +184,7 @@ public class PortfolioView extends BorderPane implements Observer {
 
     holdingsTable.getColumns().addAll(
         symbolCol, companyCol, qtyCol, purchasePriceCol,
-        currentValueCol, gainLossCol, actionCol);
+        currentValueCol, gainLossCol, gainLossPercentCol, actionCol);
   }
 
   @Override

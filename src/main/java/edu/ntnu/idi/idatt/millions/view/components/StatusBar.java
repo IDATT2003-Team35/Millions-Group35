@@ -2,7 +2,9 @@ package edu.ntnu.idi.idatt.millions.view.components;
 
 import edu.ntnu.idi.idatt.millions.model.Exchange;
 import edu.ntnu.idi.idatt.millions.model.Player;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -17,6 +19,7 @@ public class StatusBar extends HBox {
   private final Label nameValue = new Label();
   private final Label cashValue = new Label();
   private final Label netWorthValue = new Label();
+  private final Label changeValue = new Label();
   private final Label levelValue = new Label();
   private final Label weekValue = new Label();
   private final Button advanceButton = new Button("Advance Week");
@@ -27,7 +30,7 @@ public class StatusBar extends HBox {
     getChildren().addAll(
         field("Name", nameValue),
         field("Cash", cashValue),
-        field("Net Worth", netWorthValue),
+        field("Net Worth", compact(netWorthValue, changeValue)),
         field("Level", levelValue),
         field("Week", weekValue),
         advanceButton
@@ -44,6 +47,7 @@ public class StatusBar extends HBox {
     nameValue.setText(player.getName());
     cashValue.setText("$" + player.getMoney());
     netWorthValue.setText("$" + player.getNetWorth());
+    changeValue.setText(Percentages.format(player.getTotalGainLossPercent()));
     levelValue.setText(player.getStatus().toString());
     weekValue.setText(String.valueOf(exchange.getWeek()));
   }
@@ -52,9 +56,15 @@ public class StatusBar extends HBox {
     return advanceButton;
   }
 
-  private VBox field(String title, Label valueLabel) {
-    VBox box = new VBox(new Label(title), valueLabel);
+  private VBox field(String title, Node valueNode) {
+    VBox box = new VBox(new Label(title), valueNode);
     box.setSpacing(2);
+    return box;
+  }
+
+  private HBox compact(Label leftLabel, Label rightLabel) {
+    HBox box = new HBox(leftLabel,rightLabel);
+    box.setSpacing(8);
     return box;
   }
 }

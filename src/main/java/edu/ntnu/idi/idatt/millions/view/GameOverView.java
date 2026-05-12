@@ -18,6 +18,7 @@ public class GameOverView {
   private final Label playerNameValue = new Label();
   private final Label netWorthValue = new Label();
   private final Label startingCapitalValue = new Label();
+  private final Label gainLossPercentValue = new Label();
   private final Label rankValue = new Label();
   private final Label weeksValue = new Label();
   private final Label transactionsValue = new Label();
@@ -39,6 +40,7 @@ public class GameOverView {
         row("Player", playerNameValue),
         row("Final Net Worth ($)", netWorthValue),
         row("Starting capital ($)", startingCapitalValue),
+        row("Percentage change", gainLossPercentValue),
         row("Final Rank", rankValue),
         row("Weeks Played", weeksValue),
         row("Transactions Completed", transactionsValue)
@@ -86,6 +88,10 @@ public class GameOverView {
 
   public void setStartingCapital(String startingCapital) {
     startingCapitalValue.setText(startingCapital);
+  }
+
+  public void setGainLossPercentValue(String percentValue) {
+    gainLossPercentValue.setText(percentValue);
   }
 
   public void setRank(String rank) {

@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.GameOverView;
 import edu.ntnu.idi.idatt.millions.view.MainView;
 import javafx.application.Platform;
@@ -110,6 +111,8 @@ public class MainController {
     gameOverView.setPlayerName(player.getName());
     gameOverView.setNetWorth(player.getNetWorth().toPlainString());
     gameOverView.setStartingCapital(player.getStartingMoney().toPlainString());
+    gameOverView.setGainLossPercentValue(
+        Percentages.format(player.getTotalGainLossPercent()));
     gameOverView.setRank(player.getStatus().toString());
     gameOverView.setWeeks(String.valueOf(session.getExchange().getWeek()));
     gameOverView.setTransactions(
