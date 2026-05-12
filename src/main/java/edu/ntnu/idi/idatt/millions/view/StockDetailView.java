@@ -11,9 +11,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
@@ -40,6 +44,10 @@ public class StockDetailView extends BorderPane implements Observer {
   private final Label changeValue = new Label();
   private final Button buyButton = new Button("BUY");
 
+  private final CategoryAxis weekAxis = new CategoryAxis();
+  private final NumberAxis priceAxis = new NumberAxis();
+  private final LineChart<String, Number> historyChart =
+      new LineChart<>(weekAxis, priceAxis);
   private final TableView<PriceHistoryEntry> historyTable = new TableView<>();
 
   /**
@@ -53,6 +61,7 @@ public class StockDetailView extends BorderPane implements Observer {
       throw new IllegalArgumentException("Session cannot be null");
     }
     this.session = session;
+    setupHistoryChart();
     setupHistoryColumns();
     buildLayout();
     session.addObserver(this);
@@ -119,12 +128,22 @@ public class StockDetailView extends BorderPane implements Observer {
 
   private Node buildHistoryPanel() {
     Label sectionTitle = new Label("PRICE HISTORY");
+    Label chartTitle = new Label("WEEKLY CLOSING PRICE");
+    Label tableTitle = new Label("WEEKLY BREAKDOWN");
 
-    VBox panel = new VBox(sectionTitle, historyTable);
+    VBox panel = new VBox(sectionTitle, chartTitle, historyChart, tableTitle, historyTable);
     panel.setSpacing(8);
     panel.setPadding(new Insets(10, 0, 10, 10));
-    VBox.setVgrow(historyTable, javafx.scene.layout.Priority.ALWAYS);
+    VBox.setVgrow(historyTable, Priority.ALWAYS);
     return panel;
+  }
+
+  private void setupHistoryChart() {
+    priceAxis.setForceZeroInRange(false);
+    historyChart.setAnimated(false);
+    historyChart.setCreateSymbols(true);
+    historyChart.setLegendVisible(false);
+    historyChart.setPrefHeight(320);
   }
 
   private void setupHistoryColumns() {
@@ -178,7 +197,19 @@ public class StockDetailView extends BorderPane implements Observer {
     lowValue.setText(currentStock.getLowestPrice().toPlainString());
     changeValue.setText(formatMovement(currentStock.getLatestPriceChange()));
 
-    historyTable.getItems().setAll(buildHistoryEntries(currentStock.getHistoricalPrices()));
+    List<BigDecimal> prices = currentStock.getHistoricalPrices();
+    updateHistoryChart(prices);
+    historyTable.getItems().setAll(buildHistoryEntries(prices));
+  }
+
+  private void updateHistoryChart(List<BigDecimal> prices) {
+    XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+    for (int i = 0; i < prices.size(); i++) {
+      series.getData().add(new XYChart.Data<>("W" + (i + 1), prices.get(i)));
+    }
+
+    historyChart.getData().setAll(series);
   }
 
   private static List<PriceHistoryEntry> buildHistoryEntries(List<BigDecimal> prices) {
