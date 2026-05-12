@@ -43,7 +43,7 @@ public class NetWorthHistory {
   }
 
   /**
-   * Returns the recorded net worth netWorthHistory.
+   * Returns the recorded net worth history.
    *
    * @return a copy of the net worth history
    */

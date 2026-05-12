@@ -10,7 +10,8 @@ import java.util.List;
 
 /**
  * Represents the active game session used by the GUI.
- * Coordinates player and exchange operations and notifies observers after successful changes.
+ * Coordinates player and exchange operations, records net worth snapshots,
+ * and notifies observers after successful changes.
  */
 public class GameSession implements Subject {
   private final Player player;
@@ -93,10 +94,18 @@ public class GameSession implements Subject {
     notifyObservers();
   }
 
+  /**
+   * Returns the recorded net worth history for the active player.
+   *
+   * @return a copy of the net worth history
+   */
   public List<BigDecimal> getNetWorthHistory() {
     return netWorthHistory.getHistory();
   }
 
+  /**
+   * Records the player's current net worth for the current exchange week.
+   */
   private void recordNewNetWorthPoint() {
     netWorthHistory.recordNewPoint(getExchange().getWeek(), getPlayer().getNetWorth());
   }

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Detail view for a single stock. Shows price info and history,
+ * Detail view for a single stock. Shows price info, price graph and history,
  * and refreshes itself when the game session changes.
  */
 public class StockDetailView extends BorderPane implements Observer {

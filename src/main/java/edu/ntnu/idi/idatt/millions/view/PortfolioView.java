@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Portfolio view showing the player's holdings: a summary bar with totals
- * and a table of owned shares. Refreshes itself when the game session changes.
+ * Portfolio view showing the player's net worth graph, summary totals,
+ * and table of owned shares. Refreshes itself when the game session changes.
  */
 public class PortfolioView extends BorderPane implements Observer {
 
