@@ -94,4 +94,25 @@ class TransactionArchiveTest {
     TransactionArchive archive = new TransactionArchive();
     assertFalse(archive.add(null));
   }
+
+  @Test
+  void getAllReturnsAllTransactionsAcrossWeeks() {
+    archive.add(purchaseW1);
+    archive.add(saleW1);
+    archive.add(purchaseW2);
+
+    assertEquals(3, archive.getAll().size());
+  }
+
+  @Test
+  void getAllReturnsEmptyListWhenNoTransactions() {
+    assertTrue(archive.getAll().isEmpty());
+  }
+
+  @Test
+  void getAllReturnsUnmodifiableList() {
+    archive.add(purchaseW1);
+    assertThrows(UnsupportedOperationException.class,
+        () -> archive.getAll().removeFirst());
+  }
 }

@@ -51,8 +51,8 @@ public class TransactionArchive {
     }
 
     return transactions.stream()
-            .filter(t -> t.getWeek() == week)
-            .toList();
+        .filter(t -> t.getWeek() == week)
+        .toList();
   }
 
   /**
@@ -68,9 +68,9 @@ public class TransactionArchive {
     }
 
     return transactions.stream()
-            .filter(t -> t.getWeek() == week && t instanceof Purchase)
-            .map(t -> (Purchase) t)
-            .toList();
+        .filter(t -> t.getWeek() == week && t instanceof Purchase)
+        .map(t -> (Purchase) t)
+        .toList();
   }
 
   /**
@@ -86,9 +86,9 @@ public class TransactionArchive {
     }
 
     return transactions.stream()
-            .filter(t -> t.getWeek() == week && t instanceof Sale)
-            .map(t -> (Sale) t)
-            .toList();
+        .filter(t -> t.getWeek() == week && t instanceof Sale)
+        .map(t -> (Sale) t)
+        .toList();
   }
 
   /**
@@ -98,8 +98,17 @@ public class TransactionArchive {
    */
   public int countDistinctWeeks() {
     return (int) transactions.stream()
-            .map(Transaction::getWeek)
-            .distinct()
-            .count();
+        .map(Transaction::getWeek)
+        .distinct()
+        .count();
+  }
+
+  /**
+   * Retrieves all transactions in the archive across all weeks.
+   *
+   * @return an unmodifiable list of all transactions (empty if none)
+   */
+  public List<Transaction> getAll() {
+    return List.copyOf(transactions);
   }
 }
