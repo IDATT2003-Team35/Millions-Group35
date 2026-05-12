@@ -55,6 +55,15 @@ public class Player {
   }
 
   /**
+   * Returns the player's starting balance.
+   *
+   * @return the starting balance
+   */
+  public BigDecimal getStartingMoney() {
+    return startingMoney;
+  }
+
+  /**
    * Adds money to the player's balance.
    *
    * @param amount the amount to add, must be greater than zero
