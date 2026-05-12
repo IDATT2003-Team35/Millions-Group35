@@ -112,4 +112,15 @@ class StockTest {
     BigDecimal expected = BigDecimal.ZERO;
     assertEquals(expected, stock.getLatestPriceChange());
   }
+
+  @Test
+  void getLatestPercentChangeReturnsCorrectPercent() {
+    stock.addNewSalesPrice(new BigDecimal("35.04")); // (35.04 - 29.20) / 29.20 * 100 = 20.0000
+    assertEquals(0, new BigDecimal("20.0000").compareTo(stock.getLatestPercentChange()));
+  }
+
+  @Test
+  void getLatestPercentChangeReturnsZeroWhenOnlyOnePriceExists() {
+    assertEquals(BigDecimal.ZERO, stock.getLatestPercentChange());
+  }
 }

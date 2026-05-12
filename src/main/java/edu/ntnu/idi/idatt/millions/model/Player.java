@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.millions.model;
 
 import edu.ntnu.idi.idatt.millions.model.transaction.TransactionArchive;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 
 import java.math.BigDecimal;
 
@@ -117,7 +118,10 @@ public class Player {
     }
 
     return PlayerRank.NOVICE;
+  }
 
+  public BigDecimal getTotalGainLossPercent() {
+    return Percentages.change(startingMoney, getNetWorth());
   }
 
   /**

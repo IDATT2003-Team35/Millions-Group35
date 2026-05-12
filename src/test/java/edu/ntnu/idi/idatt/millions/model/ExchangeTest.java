@@ -147,50 +147,50 @@ class ExchangeTest {
 
   @Test
   void getGainersReturnsSortedPositiveChanges() {
-    equinor.addNewSalesPrice(new BigDecimal("34.2")); // +5.0
-    apple.addNewSalesPrice(new BigDecimal("160.0")); // +10.0
-    tesla.addNewSalesPrice(new BigDecimal("21.2")); // -2.0
+    equinor.addNewSalesPrice(new BigDecimal("34.2")); // +17.12%
+    apple.addNewSalesPrice(new BigDecimal("160.0")); // +6.67%
+    tesla.addNewSalesPrice(new BigDecimal("21.2")); // negative
 
     List<Stock> gainers = exchange.getGainers(10);
 
     assertEquals(2, gainers.size());
-    assertSame(apple, gainers.get(0));
-    assertSame(equinor, gainers.get(1));
+    assertSame(equinor, gainers.get(0));
+    assertSame(apple, gainers.get(1));
   }
 
   @Test
   void getLosersReturnsSortedNegativeChanges() {
-    equinor.addNewSalesPrice(new BigDecimal("27.2")); // -2.0
-    apple.addNewSalesPrice(new BigDecimal("140.0")); // -10.0
-    tesla.addNewSalesPrice(new BigDecimal("25.2")); // +2.0
+    equinor.addNewSalesPrice(new BigDecimal("27.2")); // -6.85%
+    apple.addNewSalesPrice(new BigDecimal("140.0")); // -6.67%
+    tesla.addNewSalesPrice(new BigDecimal("25.2")); // positive
 
     List<Stock> losers = exchange.getLosers(10);
 
     assertEquals(2, losers.size());
-    assertSame(apple, losers.get(0));
-    assertSame(equinor, losers.get(1));
+    assertSame(equinor, losers.get(0));
+    assertSame(apple, losers.get(1));
   }
 
   @Test
   void getGainersAppliesLimitCorrectly() {
-    equinor.addNewSalesPrice(new BigDecimal("34.2")); // +5.0
-    apple.addNewSalesPrice(new BigDecimal("160.0")); // +10.0
+    equinor.addNewSalesPrice(new BigDecimal("34.2")); // +17.12%
+    apple.addNewSalesPrice(new BigDecimal("160.0")); // +6.67%
 
     List<Stock> gainers = exchange.getGainers(1);
 
     assertEquals(1, gainers.size());
-    assertSame(apple, gainers.get(0));
+    assertSame(equinor, gainers.get(0));
   }
 
   @Test
   void getLosersAppliesLimitCorrectly() {
-    equinor.addNewSalesPrice(new BigDecimal("27.2")); // -2.0
-    apple.addNewSalesPrice(new BigDecimal("140.0")); // -10.0
+    equinor.addNewSalesPrice(new BigDecimal("27.2")); // -6.85%
+    apple.addNewSalesPrice(new BigDecimal("140.0")); // -6.67%
 
     List<Stock> losers = exchange.getLosers(1);
 
     assertEquals(1, losers.size());
-    assertSame(apple, losers.get(0));
+    assertSame(equinor, losers.get(0));
   }
 
   @Test

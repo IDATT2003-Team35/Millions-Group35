@@ -190,7 +190,7 @@ public class Exchange {
   }
 
   /**
-   * Retrieves a list of the top gaining stocks, sorted by the highest positive price change.
+   * Retrieves a list of the top gaining stocks, sorted by the highest positive percent change.
    *
    * @param limit the maximum number of stocks to return; must be positive
    * @return a list of gaining stocks
@@ -202,14 +202,14 @@ public class Exchange {
     }
 
     return stockMap.values().stream()
-            .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) > 0)
-            .sorted(Comparator.comparing(Stock::getLatestPriceChange).reversed())
+            .filter(stock -> stock.getLatestPercentChange().compareTo(BigDecimal.ZERO) > 0)
+            .sorted(Comparator.comparing(Stock::getLatestPercentChange).reversed())
             .limit(limit)
             .toList();
   }
 
   /**
-   * Retrieves a list of the top losing stocks, sorted by the lowest negative price change.
+   * Retrieves a list of the top losing stocks, sorted by the lowest negative percent change.
    *
    * @param limit the maximum number of stocks to return; must be positive
    * @return a list of losing stocks
@@ -221,8 +221,8 @@ public class Exchange {
     }
 
     return stockMap.values().stream()
-            .filter(stock -> stock.getLatestPriceChange().compareTo(BigDecimal.ZERO) < 0)
-            .sorted(Comparator.comparing(Stock::getLatestPriceChange))
+            .filter(stock -> stock.getLatestPercentChange().compareTo(BigDecimal.ZERO) < 0)
+            .sorted(Comparator.comparing(Stock::getLatestPercentChange))
             .limit(limit)
             .toList();
   }
