@@ -7,6 +7,10 @@ import edu.ntnu.idi.idatt.millions.observer.Observer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -19,6 +23,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -30,6 +35,11 @@ public class PortfolioView extends BorderPane implements Observer {
   private final GameSession session;
 
   private final Label titleLabel = new Label("PORTFOLIO");
+
+  private final CategoryAxis weekAxis = new CategoryAxis();
+  private final NumberAxis netWorthAxis = new NumberAxis();
+  private final LineChart<String, Number> netWorthChart =
+      new LineChart<>(weekAxis, netWorthAxis);
 
   private final Label holdingsValue = new Label();
   private final Label totalInvestedValue = new Label();
@@ -53,6 +63,7 @@ public class PortfolioView extends BorderPane implements Observer {
     }
     this.session = session;
 
+    setupNetWorthChart();
     setupColumns();
     buildLayout();
     session.addObserver(this);
@@ -74,10 +85,26 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   private Node buildContent() {
-    VBox content = new VBox(buildSummaryBar(), holdingsTable);
+    VBox content = new VBox(buildNetWorthChart(), buildSummaryBar(), holdingsTable);
     content.setSpacing(10);
     VBox.setVgrow(holdingsTable, Priority.ALWAYS);
     return content;
+  }
+
+  private Node buildNetWorthChart() {
+    Label chartTitle = new Label("NET WORTH OVER TIME");
+
+    VBox chartBox = new VBox(chartTitle, netWorthChart);
+    chartBox.setSpacing(8);
+    return chartBox;
+  }
+
+  private void setupNetWorthChart() {
+    netWorthAxis.setForceZeroInRange(false);
+    netWorthChart.setAnimated(false);
+    netWorthChart.setCreateSymbols(true);
+    netWorthChart.setLegendVisible(false);
+    netWorthChart.setPrefHeight(320);
   }
 
   private Node buildSummaryBar() {
@@ -130,7 +157,7 @@ public class PortfolioView extends BorderPane implements Observer {
             .subtract(c.getValue().getPurchasePrice())
             .multiply(c.getValue().getQuantity()))));
 
-      TableColumn<Share, Void> actionCol = new TableColumn<>("Action");
+    TableColumn<Share, Void> actionCol = new TableColumn<>("Action");
     actionCol.setCellFactory(col -> new TableCell<Share, Void>() {
       private final Button sellButton = new Button("Sell");
 
@@ -159,7 +186,7 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   /**
-   * Refreshes the summary bar and holdings table from the current session state.
+   * Refreshes the chart, summary bar and holdings table from the current session state.
    */
   public void refresh() {
     Portfolio portfolio = session.getPlayer().getPortfolio();
@@ -170,7 +197,18 @@ public class PortfolioView extends BorderPane implements Observer {
     totalGainLossValue.setText(formatMovement(
         portfolio.getNetWorth().subtract(portfolio.getTotalInvested())));
 
+    updateNetWorthChart(session.getNetWorthHistory());
     holdingsTable.getItems().setAll(portfolio.getShares());
+  }
+
+  private void updateNetWorthChart(List<BigDecimal> netWorthHistory) {
+    XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+    for (int i = 0; i < netWorthHistory.size(); i++) {
+      series.getData().add(new XYChart.Data<>("W" + (i + 1), netWorthHistory.get(i)));
+    }
+
+    netWorthChart.getData().setAll(series);
   }
 
   /**

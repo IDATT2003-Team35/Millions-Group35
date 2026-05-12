@@ -16,6 +16,7 @@ public class GameSession implements Subject {
   private final Player player;
   private final Exchange exchange;
   private final List<Observer> observers;
+  private final NetWorthHistory netWorthHistory;
 
   /**
    * Creates a new game session.
@@ -34,6 +35,8 @@ public class GameSession implements Subject {
     this.player = player;
     this.exchange = exchange;
     this.observers = new ArrayList<>();
+    this.netWorthHistory = new NetWorthHistory();
+    recordNewNetWorthPoint();
   }
 
   /**
@@ -63,6 +66,7 @@ public class GameSession implements Subject {
    */
   public Transaction buyStock(String symbol, BigDecimal quantity) {
     Transaction transaction = exchange.buy(symbol, quantity, player);
+    recordNewNetWorthPoint();
     notifyObservers();
     return transaction;
   }
@@ -75,6 +79,7 @@ public class GameSession implements Subject {
    */
   public Transaction sellShare(Share share) {
     Transaction transaction = exchange.sell(share, player);
+    recordNewNetWorthPoint();
     notifyObservers();
     return transaction;
   }
@@ -84,7 +89,16 @@ public class GameSession implements Subject {
    */
   public void advanceWeek() {
     exchange.advance();
+    recordNewNetWorthPoint();
     notifyObservers();
+  }
+
+  public List<BigDecimal> getNetWorthHistory() {
+    return netWorthHistory.getHistory();
+  }
+
+  private void recordNewNetWorthPoint() {
+    netWorthHistory.recordNewPoint(getExchange().getWeek(), getPlayer().getNetWorth());
   }
 
   @Override
