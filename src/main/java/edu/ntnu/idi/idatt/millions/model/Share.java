@@ -1,5 +1,9 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
+import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
+
 import java.math.BigDecimal;
 
 /**
@@ -77,5 +81,30 @@ public class Share {
    */
   public BigDecimal getQuantity() {
     return quantity;
+  }
+
+  /**
+   * Returns the net gain or loss in dollars for this share at the current market price,
+   * accounting for commission on both the original purchase and a hypothetical sale,
+   * and the tax that would be paid on the realized gain.
+   *
+   * @return the net gain (positive) or loss (negative) as a {@link BigDecimal}
+   */
+  public BigDecimal getNetGainLoss() {
+    BigDecimal saleTotal = new SaleCalculator(this).calculateTotal();
+    BigDecimal purchaseTotal = new PurchaseCalculator(this).calculateTotal();
+    return saleTotal.subtract(purchaseTotal);
+  }
+
+  /**
+   * Returns the net gain or loss as a percentage of the total purchase cost,
+   * accounting for commissions and tax.
+   *
+   * @return the net gain/loss percentage as a {@link BigDecimal}
+   */
+  public BigDecimal getNetGainLossPercent() {
+    BigDecimal saleTotal = new SaleCalculator(this).calculateTotal();
+    BigDecimal purchaseTotal = new PurchaseCalculator(this).calculateTotal();
+    return Percentages.change(purchaseTotal, saleTotal);
   }
 }
