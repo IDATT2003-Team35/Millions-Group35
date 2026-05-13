@@ -4,10 +4,12 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -16,6 +18,7 @@ import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Market view showing all listed stocks with search, plus a side panel
@@ -87,19 +90,34 @@ public class MarketView extends BorderPane implements Observer {
     companyCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getCompany()));
 
-    TableColumn<Stock, String> priceCol = new TableColumn<>("Price ($)");
-    priceCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getSalesPrice().toPlainString()));
+    TableColumn<Stock, BigDecimal> priceCol = new TableColumn<>("Price ($)");
+    priceCol.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getSalesPrice()));
 
-    TableColumn<Stock, String> changeCol = new TableColumn<>("Change ($)");
-    changeCol.setCellValueFactory(c ->
-        new SimpleStringProperty(formatChange(c.getValue().getLatestPriceChange())));
+    TableColumn<Stock, BigDecimal> changeCol = numericColumn(
+        "Change ($)", Stock::getLatestPriceChange, MarketView::formatChange);
+    TableColumn<Stock, BigDecimal> percentChangeCol = numericColumn(
+        "Change (%)", Stock::getLatestPercentChange, Percentages::format);
+    TableColumn<Stock, BigDecimal> allTimeChangeCol = numericColumn(
+        "All-Time Change (%)", Stock::getTotalPercentChange, Percentages::format);
 
-    TableColumn<Stock, String> percentChangeCol = new TableColumn<>("Change (%)");
-    percentChangeCol.setCellValueFactory(c ->
-        new SimpleStringProperty(Percentages.format(c.getValue().getLatestPercentChange())));
+    stockTable.getColumns().addAll(
+        symbolCol, companyCol, priceCol, changeCol, percentChangeCol, allTimeChangeCol);
+  }
 
-    stockTable.getColumns().addAll(symbolCol, companyCol, priceCol, changeCol, percentChangeCol);
+  private static TableColumn<Stock, BigDecimal> numericColumn(
+      String title,
+      Function<Stock, BigDecimal> extractor,
+      Function<BigDecimal, String> formatter) {
+    TableColumn<Stock, BigDecimal> col = new TableColumn<>(title);
+    col.setCellValueFactory(c -> new SimpleObjectProperty<>(extractor.apply(c.getValue())));
+    col.setCellFactory(c -> new TableCell<>() {
+      @Override
+      protected void updateItem(BigDecimal value, boolean empty) {
+        super.updateItem(value, empty);
+        setText(empty || value == null ? "" : formatter.apply(value));
+      }
+    });
+    return col;
   }
 
   @Override

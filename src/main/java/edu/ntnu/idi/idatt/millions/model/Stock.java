@@ -146,4 +146,17 @@ public class Stock {
     BigDecimal previous = prices.get(prices.size() - 2);
     return Percentages.change(previous, current);
   }
+
+  /**
+   * Calculates the percentage change between the first recorded price and the current price.
+   * Returns zero if no prices are recorded.
+   *
+   * @return the all-time percentage change as a BigDecimal
+   */
+  public BigDecimal getTotalPercentChange() {
+    if (prices.isEmpty()) {
+      return BigDecimal.ZERO;
+    }
+    return Percentages.change(prices.get(0), getSalesPrice());
+  }
 }
