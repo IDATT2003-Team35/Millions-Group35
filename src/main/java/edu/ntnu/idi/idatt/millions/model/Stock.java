@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import edu.ntnu.idi.idatt.millions.util.Percentages;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,5 +130,20 @@ public class Stock {
     BigDecimal current = prices.get(prices.size() - 1);
     BigDecimal previous = prices.get(prices.size() - 2);
     return current.subtract(previous);
+  }
+
+  /**
+   * Calculates the percentage change between the current price and the previous week's price.
+   * If only one price is recorded, the change is considered to be zero.
+   *
+   * @return the percentage change as a BigDecimal
+   */
+  public BigDecimal getLatestPercentChange() {
+    if (prices.size() < 2) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal current = prices.get(prices.size() - 1);
+    BigDecimal previous = prices.get(prices.size() - 2);
+    return Percentages.change(previous, current);
   }
 }

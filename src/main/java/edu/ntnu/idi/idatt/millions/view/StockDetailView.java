@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.millions.view;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -42,6 +43,7 @@ public class StockDetailView extends BorderPane implements Observer {
   private final Label highValue = new Label();
   private final Label lowValue = new Label();
   private final Label changeValue = new Label();
+  private final Label percentChangeValue = new Label();
   private final Button buyButton = new Button("BUY");
 
   private final CategoryAxis weekAxis = new CategoryAxis();
@@ -113,6 +115,7 @@ public class StockDetailView extends BorderPane implements Observer {
     addRow(grid, 3, "52-Week High ($):", highValue);
     addRow(grid, 4, "52-Week Low ($):", lowValue);
     addRow(grid, 5, "Price Change ($):", changeValue);
+    addRow(grid, 6, "Price Change (%):", percentChangeValue);
 
     VBox panel = new VBox(sectionTitle, grid, buyButton);
     panel.setSpacing(12);
@@ -155,11 +158,17 @@ public class StockDetailView extends BorderPane implements Observer {
     priceCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().price().toPlainString()));
 
-    TableColumn<PriceHistoryEntry, String> movementCol = new TableColumn<>("Movement");
+    TableColumn<PriceHistoryEntry, String> movementCol = new TableColumn<>("Movement ($)");
     movementCol.setCellValueFactory(c ->
         new SimpleStringProperty(formatMovement(c.getValue().movement())));
 
-    historyTable.getColumns().addAll(weekCol, priceCol, movementCol);
+    TableColumn<PriceHistoryEntry, String> percentMovementCol = new TableColumn<>("Movement (%)");
+    percentMovementCol.setCellValueFactory(c -> {
+      BigDecimal pct = c.getValue().percentMovement();
+      return new SimpleStringProperty(pct == null ? "--" : Percentages.format(pct));
+    });
+
+    historyTable.getColumns().addAll(weekCol, priceCol, movementCol, percentMovementCol);
   }
 
   private static String formatMovement(BigDecimal movement) {
@@ -177,7 +186,7 @@ public class StockDetailView extends BorderPane implements Observer {
    * @param price    the closing price for that week
    * @param movement change vs. previous week, or null for week 1
    */
-  private record PriceHistoryEntry(int week, BigDecimal price, BigDecimal movement) {}
+  private record PriceHistoryEntry(int week, BigDecimal price, BigDecimal movement, BigDecimal percentMovement) {}
   @Override
   public void update() {
     if (currentStock != null) {
@@ -196,6 +205,7 @@ public class StockDetailView extends BorderPane implements Observer {
     highValue.setText(currentStock.getHighestPrice().toPlainString());
     lowValue.setText(currentStock.getLowestPrice().toPlainString());
     changeValue.setText(formatMovement(currentStock.getLatestPriceChange()));
+    percentChangeValue.setText(Percentages.format(currentStock.getLatestPercentChange()));
 
     List<BigDecimal> prices = currentStock.getHistoricalPrices();
     updateHistoryChart(prices);
@@ -217,7 +227,8 @@ public class StockDetailView extends BorderPane implements Observer {
     for (int i = 0; i < prices.size(); i++) {
       BigDecimal price = prices.get(i);
       BigDecimal movement = (i == 0) ? null : price.subtract(prices.get(i - 1));
-      entries.add(new PriceHistoryEntry(i + 1, price, movement));
+      BigDecimal percentMovement = (i == 0) ? null : Percentages.change(prices.get(i - 1), price);
+      entries.add(new PriceHistoryEntry(i + 1, price, movement, percentMovement));
     }
     return entries;
   }

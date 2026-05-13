@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.millions.view;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -94,7 +95,11 @@ public class MarketView extends BorderPane implements Observer {
     changeCol.setCellValueFactory(c ->
         new SimpleStringProperty(formatChange(c.getValue().getLatestPriceChange())));
 
-    stockTable.getColumns().addAll(symbolCol, companyCol, priceCol, changeCol);
+    TableColumn<Stock, String> percentChangeCol = new TableColumn<>("Change (%)");
+    percentChangeCol.setCellValueFactory(c ->
+        new SimpleStringProperty(Percentages.format(c.getValue().getLatestPercentChange())));
+
+    stockTable.getColumns().addAll(symbolCol, companyCol, priceCol, changeCol, percentChangeCol);
   }
 
   @Override
@@ -118,7 +123,7 @@ public class MarketView extends BorderPane implements Observer {
   private void refreshTopList(VBox box, List<Stock> stocks) {
     box.getChildren().clear();
     for (Stock stock : stocks) {
-      String text = stock.getSymbol() + "  " + formatChange(stock.getLatestPriceChange());
+      String text = stock.getSymbol() + "  " + Percentages.format(stock.getLatestPercentChange());
       box.getChildren().add(new Label(text));
     }
   }
