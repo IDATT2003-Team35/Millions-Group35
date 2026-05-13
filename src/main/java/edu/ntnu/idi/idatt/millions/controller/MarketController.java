@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.millions.controller;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.MarketView;
+import javafx.scene.control.TableRow;
 
 import java.util.List;
 
@@ -55,12 +56,15 @@ public class MarketController {
   }
 
   private void wireRowClick() {
-    view.getStockTable().setOnMouseClicked(e -> {
-      Stock selected = view.getStockTable().getSelectionModel().getSelectedItem();
-      if (selected == null) {
-        return;
-      }
-      mainController.showStockDetail(selected);
+    view.getStockTable().setRowFactory(tv -> {
+      TableRow<Stock> row = new TableRow<>();
+      row.setOnMouseClicked(e -> {
+        if (e.getClickCount() == 2 && !row.isEmpty()) {
+          mainController.showStockDetail(row.getItem());
+        }
+      });
+      return row;
     });
   }
 }
+
