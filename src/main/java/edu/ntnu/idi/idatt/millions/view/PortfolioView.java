@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.millions.view;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Portfolio;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
@@ -43,9 +44,9 @@ public class PortfolioView extends BorderPane implements Observer {
       new LineChart<>(weekAxis, netWorthAxis);
 
   private final Label holdingsValue = new Label();
-  private final Label totalInvestedValue = new Label();
-  private final Label currentValueValue = new Label();
+  private final Label stockValueValue = new Label();
   private final Label totalGainLossValue = new Label();
+  private final Label totalGainLossPercentValue = new Label();
 
   private final TableView<Share> holdingsTable = new TableView<>();
 
@@ -111,9 +112,9 @@ public class PortfolioView extends BorderPane implements Observer {
   private Node buildSummaryBar() {
     HBox bar = new HBox(
         buildSummaryBox("Holdings", holdingsValue),
-        buildSummaryBox("Total Invested ($)", totalInvestedValue),
-        buildSummaryBox("Current Value ($)", currentValueValue),
-        buildSummaryBox("Total Gain/Loss ($)", totalGainLossValue)
+        buildSummaryBox("Stock Value ($)", stockValueValue),
+        buildSummaryBox("Total Gain/Loss ($)", totalGainLossValue),
+        buildSummaryBox("Total Gain/Loss (%)", totalGainLossPercentValue)
     );
     bar.setSpacing(10);
     return bar;
@@ -142,27 +143,21 @@ public class PortfolioView extends BorderPane implements Observer {
     qtyCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getQuantity().toPlainString()));
 
-    TableColumn<Share, String> purchasePriceCol = new TableColumn<>("Purchase Price ($)");
-    purchasePriceCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getPurchasePrice()
-            .multiply(c.getValue().getQuantity()).toPlainString()));
+    TableColumn<Share, String> buyPriceCol = new TableColumn<>("Buy Price ($)");
+    buyPriceCol.setCellValueFactory(c ->
+        new SimpleStringProperty(c.getValue().getPurchasePrice().toPlainString()));
 
-    TableColumn<Share, String> currentValueCol = new TableColumn<>("Current Value ($)");
-    currentValueCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getStock().getSalesPrice()
-            .multiply(c.getValue().getQuantity()).toPlainString()));
+    TableColumn<Share, String> currentPriceCol = new TableColumn<>("Current Price ($)");
+    currentPriceCol.setCellValueFactory(c ->
+        new SimpleStringProperty(c.getValue().getStock().getSalesPrice().toPlainString()));
 
     TableColumn<Share, String> gainLossCol = new TableColumn<>("Gain / Loss ($)");
     gainLossCol.setCellValueFactory(c ->
-        new SimpleStringProperty(formatMovement(c.getValue().getStock().getSalesPrice()
-            .subtract(c.getValue().getPurchasePrice())
-            .multiply(c.getValue().getQuantity()))));
+        new SimpleStringProperty(formatMovement(c.getValue().getNetGainLoss())));
 
     TableColumn<Share, String> gainLossPercentCol = new TableColumn<>("Gain / Loss (%)");
     gainLossPercentCol.setCellValueFactory(c ->
-        new SimpleStringProperty(Percentages.format(Percentages.change(
-            c.getValue().getPurchasePrice(),
-            c.getValue().getStock().getSalesPrice()))));
+        new SimpleStringProperty(Percentages.format(c.getValue().getNetGainLossPercent())));
 
     TableColumn<Share, Void> actionCol = new TableColumn<>("Action");
     actionCol.setCellFactory(col -> new TableCell<Share, Void>() {
@@ -183,8 +178,8 @@ public class PortfolioView extends BorderPane implements Observer {
     });
 
     holdingsTable.getColumns().addAll(
-        symbolCol, companyCol, qtyCol, purchasePriceCol,
-        currentValueCol, gainLossCol, gainLossPercentCol, actionCol);
+        symbolCol, companyCol, qtyCol, buyPriceCol,
+        currentPriceCol, gainLossCol, gainLossPercentCol, actionCol);
   }
 
   @Override
@@ -196,13 +191,14 @@ public class PortfolioView extends BorderPane implements Observer {
    * Refreshes the chart, summary bar and holdings table from the current session state.
    */
   public void refresh() {
-    Portfolio portfolio = session.getPlayer().getPortfolio();
+    Player player = session.getPlayer();
+    Portfolio portfolio = player.getPortfolio();
 
     holdingsValue.setText(String.valueOf(portfolio.getShares().size()));
-    totalInvestedValue.setText(portfolio.getTotalInvested().toPlainString());
-    currentValueValue.setText(portfolio.getNetWorth().toPlainString());
+    stockValueValue.setText(portfolio.getNetWorth().toPlainString());
     totalGainLossValue.setText(formatMovement(
-        portfolio.getNetWorth().subtract(portfolio.getTotalInvested())));
+        player.getNetWorth().subtract(player.getStartingMoney())));
+    totalGainLossPercentValue.setText(Percentages.format(player.getTotalGainLossPercent()));
 
     updateNetWorthChart(session.getNetWorthHistory());
     holdingsTable.getItems().setAll(portfolio.getShares());
