@@ -30,6 +30,23 @@ public class TransactionArchive {
   }
 
   /**
+   * Adds a transaction restored from saved data.
+   *
+   * <p>The transaction is marked as committed without executing its transaction
+   * logic again.</p>
+   *
+   * @param transaction the restored transaction to add
+   * @return true if added successfully, false if transaction is null
+   */
+  public boolean addRestored(Transaction transaction) {
+    if (transaction == null) {
+      return false;
+    }
+    transaction.markCommittedForRestore();
+    return transactions.add(transaction);
+  }
+
+  /**
    * Checks if the archive is empty.
    *
    * @return true if there are no transactions, false otherwise

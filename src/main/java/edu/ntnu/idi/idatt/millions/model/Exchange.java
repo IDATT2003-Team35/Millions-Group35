@@ -34,14 +34,32 @@ public class Exchange {
    * @throws IllegalArgumentException if name is null/blank or stocks is null
    */
   public Exchange(String name, List<Stock> stocks) {
+    this(name, stocks, 1);
+  }
+
+  /**
+   * Creates an exchange with a restored week number.
+   *
+   * <p>This constructor is used when loading a saved game where the exchange
+   * should continue from a previously saved week.</p>
+   *
+   * @param name the name of the exchange, must not be null or blank
+   * @param stocks the list of stocks available, must not be null
+   * @param week the current trading week, must be positive
+   * @throws IllegalArgumentException if name, stocks, or week is invalid
+   */
+  public Exchange(String name, List<Stock> stocks, int week) {
     if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be empty");
     }
     if (stocks == null) {
       throw new IllegalArgumentException("Stocks cannot be null");
     }
+    if (week <= 0) {
+      throw new IllegalArgumentException("Week must be positive");
+    }
     this.name = name;
-    this.week = 1;
+    this.week = week;
     this.random = new Random();
     this.stockMap = stocks.stream()
         .collect(Collectors.toMap(Stock::getSymbol, stock -> stock));

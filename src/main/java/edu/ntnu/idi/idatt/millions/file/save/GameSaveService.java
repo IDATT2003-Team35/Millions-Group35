@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.millions.file.save;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ntnu.idi.idatt.millions.factory.TransactionFactory;
 import edu.ntnu.idi.idatt.millions.file.save.dto.*;
 import edu.ntnu.idi.idatt.millions.model.*;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
@@ -12,15 +13,32 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service responsible for saving and loading game sessions as JSON files.
+ *
+ * <p>The service converts between the game model and save DTOs before using
+ * Jackson to read and write JSON.</p>
+ */
 public class GameSaveService {
   private static final Path DEFAULT_SAVE_FOLDER = Path.of("saves");
   private final ObjectMapper objectMapper;
   private final Path saveFolder;
 
+  /**
+   * Creates a save service using the default save folder.
+   *
+   * @throws GameSaveException if the default save folder is invalid
+   */
   public GameSaveService() throws GameSaveException {
     this(DEFAULT_SAVE_FOLDER);
   }
 
+  /**
+   * Creates a save service using the given save folder.
+   *
+   * @param saveFolder the folder where save files are written
+   * @throws GameSaveException if saveFolder is null
+   */
   public GameSaveService(Path saveFolder) throws GameSaveException {
     if (saveFolder == null) {
       throw new GameSaveException("Save folder cannot be null");
@@ -29,6 +47,13 @@ public class GameSaveService {
     this.saveFolder = saveFolder;
   }
 
+  /**
+   * Saves the given game session to a JSON file.
+   *
+   * @param session the game session to save
+   * @return the path to the written save file
+   * @throws GameSaveException if the session is null or the file cannot be written
+   */
   public Path save(GameSession session) throws GameSaveException {
     if (session == null) {
       throw new GameSaveException("Session cannot be null");
@@ -45,6 +70,13 @@ public class GameSaveService {
     }
   }
 
+  /**
+   * Loads a game session from a JSON save file.
+   *
+   * @param path the path to the save file
+   * @return the restored game session
+   * @throws GameSaveException if the path is invalid or the save file cannot be read/restored
+   */
   public GameSession load(Path path) throws GameSaveException {
     if (path == null) {
       throw new GameSaveException("Save file path cannot be null");
@@ -165,8 +197,10 @@ public class GameSaveService {
     List<Stock> stocks = createStocks(gameData.stocks());
     Exchange exchange = createExchange(gameData.exchange(), stocks);
     restoreShares(gameData.shares(), player, exchange);
+    restoreTransactions(gameData.transactions(), player, exchange);
+    List<BigDecimal> netWorthHistory = createNetWorthHistory(gameData.netWorthHistory());
 
-    return new GameSession(player, exchange);
+    return new GameSession(player, exchange, netWorthHistory);
   }
 
   private Player createPlayer(PlayerSaveData playerData) throws GameSaveException {
@@ -177,7 +211,8 @@ public class GameSaveService {
     try {
       return new Player(
               playerData.name(),
-              new BigDecimal(playerData.startingMoney())
+              new BigDecimal(playerData.startingMoney()),
+              new BigDecimal(playerData.money())
       );
     } catch (IllegalArgumentException e) {
       throw new GameSaveException("Could not restore player data", e);
@@ -203,7 +238,11 @@ public class GameSaveService {
     }
 
     try {
-      return new Exchange(exchangeData.name(), stocks);
+      return new Exchange(
+              exchangeData.name(),
+              stocks,
+              exchangeData.week()
+      );
     } catch (IllegalArgumentException e) {
       throw new GameSaveException("Could not restore exchange data", e);
     }
@@ -247,6 +286,64 @@ public class GameSaveService {
       }
     } catch (IllegalArgumentException e) {
       throw new GameSaveException("Could not restore shares", e);
+    }
+  }
+
+  private void restoreTransactions(List<TransactionSaveData> transactionData, Player player, Exchange exchange) throws GameSaveException {
+    if (transactionData == null) {
+      return;
+    }
+
+    try {
+      for (TransactionSaveData data : transactionData) {
+        Transaction transaction = createTransaction(data, exchange);
+        if (data.committed()) {
+          player.getTransactionArchive().addRestored(transaction);
+        } else {
+          player.getTransactionArchive().add(transaction);
+        }
+      }
+    } catch (IllegalArgumentException e) {
+      throw new GameSaveException("Could not restore transaction history.", e);
+    }
+  }
+
+  private Transaction createTransaction(TransactionSaveData data, Exchange exchange) {
+    if (data == null) {
+      throw new IllegalArgumentException("data cannot be null");
+    }
+
+    Stock stock = exchange.getStock(data.stockSymbol());
+    Share share = new Share(
+            stock,
+            new BigDecimal(data.quantity()),
+            new BigDecimal(data.purchasePrice())
+    );
+
+    if ("Purchase".equals(data.type())) {
+      return TransactionFactory.createPurchase(share, data.week());
+    }
+
+    if ("Sale".equals(data.type())) {
+      return TransactionFactory.createSale(share, data.week());
+    }
+
+    throw new IllegalArgumentException("Unknown transaction type: " + data.type());
+  }
+
+  private List<BigDecimal> createNetWorthHistory(List<String> netWorthHistoryData) throws GameSaveException {
+    if (netWorthHistoryData == null) {
+      return List.of();
+    }
+
+    try {
+      List<BigDecimal> netWorthHistory = new ArrayList<>();
+      for (String value : netWorthHistoryData) {
+        netWorthHistory.add(new BigDecimal(value));
+      }
+      return netWorthHistory;
+    } catch (IllegalArgumentException e) {
+      throw new GameSaveException("Could not restore net worth history.", e);
     }
   }
 }
