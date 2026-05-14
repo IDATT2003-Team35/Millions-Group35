@@ -23,17 +23,35 @@ public class Player {
    * @param startingMoney the initial balance, must be greater than zero
    * @throws IllegalArgumentException if name or startingMoney is invalid
    */
-  public Player(String name, BigDecimal startingMoney){
-    if(name == null || name.isBlank() || name.length() > 50){
+  public Player(String name, BigDecimal startingMoney) {
+    this(name, startingMoney, startingMoney);
+  }
+
+  /**
+   * Creates a player with a name, starting balance, and current balance.
+   *
+   * <p>This constructor is used when restoring a saved game where the player's
+   * current money may differ from the starting money.</p>
+   *
+   * @param name the player's name, must be non-blank and max 50 characters
+   * @param startingMoney the player's original starting balance, must be positive
+   * @param money the player's current balance, must not be negative
+   * @throws IllegalArgumentException if name, startingMoney, or money is invalid
+   */
+  public Player(String name, BigDecimal startingMoney, BigDecimal money) {
+    if (name == null || name.isBlank() || name.length() > 50){
       throw new IllegalArgumentException("Name cannot be empty or longer than 50 characters");
     }
-    if(startingMoney == null || startingMoney.compareTo(BigDecimal.ZERO) <= 0){
+    if (startingMoney == null || startingMoney.compareTo(BigDecimal.ZERO) <= 0){
       throw new IllegalArgumentException("Starting money cant null or less than 0");
+    }
+    if (money == null || money.compareTo(BigDecimal.ZERO) < 0) {
+      throw new IllegalArgumentException("Money cannot be null or negative");
     }
     this.name = name;
     this.startingMoney = startingMoney;
+    this.money = money;
     this.portfolio = new Portfolio();
-    this.money = startingMoney;
     this.transactionArchive = new TransactionArchive();
   }
 
@@ -103,6 +121,11 @@ public class Player {
   }
 
 
+  /**
+   * Returns the player's rank based on net worth and transaction history.
+   *
+   * @return the player's current rank
+   */
   public PlayerRank getStatus() {
     int weekAmount = transactionArchive.countDistinctWeeks();
     BigDecimal currentNetWorth = getNetWorth();

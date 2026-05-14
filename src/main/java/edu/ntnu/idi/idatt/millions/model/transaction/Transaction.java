@@ -67,6 +67,10 @@ public abstract class Transaction {
     return committed;
   }
 
+  void markCommittedForRestore() {
+    this.committed = true;
+  }
+
   /**
    * Commits the transaction for the given player.
    * Marks it as committed and adds it to the player's archive.

@@ -21,6 +21,22 @@ public class NetWorthHistory {
   }
 
   /**
+   * Creates a net worth history from saved values.
+   *
+   * @param history the saved net worth values
+   * @throws IllegalArgumentException if history or any value in history is null
+   */
+  public NetWorthHistory(List<BigDecimal> history) {
+    if (history == null) {
+      throw new IllegalArgumentException("History cannot be null");
+    }
+    if (history.stream().anyMatch(value -> value == null)) {
+      throw new IllegalArgumentException("History cannot contain null values");
+    }
+    this.netWorthHistory = new ArrayList<>(history);
+  }
+
+  /**
    * Records a net worth value for the given week.
    *
    * @param week the week number, starting at 1

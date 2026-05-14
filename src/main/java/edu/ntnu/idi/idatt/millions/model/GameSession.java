@@ -27,6 +27,18 @@ public class GameSession implements Subject {
    * @throws IllegalArgumentException if player or exchange is null
    */
   public GameSession(Player player, Exchange exchange) {
+    this(player, exchange, null);
+  }
+
+  /**
+   * Creates a game session from saved game state.
+   *
+   * @param player the active player
+   * @param exchange the active exchange
+   * @param savedNetWorthHistory the saved net worth history, or null to record current net worth
+   * @throws IllegalArgumentException if player or exchange is null
+   */
+  public GameSession(Player player, Exchange exchange, List<BigDecimal> savedNetWorthHistory) {
     if (player == null) {
       throw new IllegalArgumentException("Player cannot be null");
     }
@@ -36,8 +48,12 @@ public class GameSession implements Subject {
     this.player = player;
     this.exchange = exchange;
     this.observers = new ArrayList<>();
-    this.netWorthHistory = new NetWorthHistory();
-    recordNewNetWorthPoint();
+    if (savedNetWorthHistory == null || savedNetWorthHistory.isEmpty()) {
+      this.netWorthHistory = new NetWorthHistory();
+      recordNewNetWorthPoint();
+    } else {
+      this.netWorthHistory = new NetWorthHistory(savedNetWorthHistory);
+    }
   }
 
   /**
