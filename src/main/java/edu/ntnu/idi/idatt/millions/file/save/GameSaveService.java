@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -91,6 +92,31 @@ public class GameSaveService {
       return createGameSession(gameData);
     } catch (IOException e) {
       throw new GameSaveException("Could not read save file: " + path, e);
+    }
+  }
+
+  /**
+   * Lists available JSON save files in the configured save folder.
+   *
+   * @return a sorted list of save file paths
+   * @throws GameSaveException if the save folder cannot be read
+   */
+  public List<Path> listSaveFiles() throws GameSaveException {
+    if (!Files.exists(saveFolder)) {
+      return List.of();
+    }
+    if (!Files.isDirectory(saveFolder)) {
+      throw new GameSaveException("Save folder is not a directory: " + saveFolder);
+    }
+
+    try (var paths = Files.list(saveFolder)) {
+      return paths
+          .filter(Files::isRegularFile)
+          .filter(path -> path.getFileName().toString().toLowerCase().endsWith(".json"))
+          .sorted(Comparator.comparing(path -> path.getFileName().toString()))
+          .toList();
+    } catch (IOException e) {
+      throw new GameSaveException("Could not list save files in: " + saveFolder, e);
     }
   }
 

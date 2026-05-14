@@ -25,6 +25,7 @@ public class StartController {
   private final Stage stage;
   private final Consumer<GameSession> onGameStart;
   private final StockReader stockReader;
+  private final Runnable onBack;
   private Path selectedFile;
 
   /**
@@ -34,9 +35,10 @@ public class StartController {
    * @param stage the application stage used for file chooser dialogs
    * @param onGameStart callback invoked when a valid game session has been created
    * @param stockReader the stock reader used to load stock data from file
+   * @param onBack callback invoked when the user wants to return to the start menu
    * @throws IllegalArgumentException if any constructor argument is null
    */
-  public StartController(StartView view, Stage stage, Consumer<GameSession> onGameStart, StockReader stockReader) {
+  public StartController(StartView view, Stage stage, Consumer<GameSession> onGameStart, StockReader stockReader, Runnable onBack) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
     }
@@ -49,12 +51,16 @@ public class StartController {
     if (stockReader == null) {
       throw new IllegalArgumentException("stockReader cannot be null");
     }
+    if (onBack == null) {
+      throw new IllegalArgumentException("onBack cannot be null");
+    }
 
 
     this.view = view;
     this.stage = stage;
     this.stockReader = stockReader;
     this.onGameStart = onGameStart;
+    this.onBack = onBack;
 
     initialize();
   }
@@ -63,6 +69,7 @@ public class StartController {
     view.getBrowseButton().setOnAction(e -> handleBrowse());
     view.getStartButton().setOnAction(e -> handleStart());
     view.getDefaultStockDataButton().setOnAction(e -> handleDefaultStockData());
+    view.getBackButton().setOnAction(e -> onBack.run());
   }
 
   private void handleBrowse() {
