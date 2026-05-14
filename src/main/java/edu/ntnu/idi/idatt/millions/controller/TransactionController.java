@@ -40,8 +40,10 @@ public class TransactionController {
     this.mainController = mainController;
     this.view = new TransactionView(session);
 
+    view.setOnUpdate(this::applyFilter);
     wireSearch();
     wireTransactionHandler();
+    applyFilter();
   }
 
   public TransactionView getView() {
@@ -52,16 +54,18 @@ public class TransactionController {
     view.setViewTransactionHandler(this::showTransactionReceipt);
   }
 
-
   private void wireSearch() {
-    view.getSearchField().textProperty().addListener((obs, oldValue, newValue) -> {
-      List<Transaction> all = session.getPlayer().getTransactionArchive().getAll();
-      List<Transaction> shown = (newValue == null || newValue.isBlank())
-          ? all
-          : filter(all, newValue);
+    view.getSearchField().textProperty()
+        .addListener((obs, oldValue, newValue) -> applyFilter());
+  }
 
-      view.getTransactionTable().getItems().setAll(shown);
-    });
+  private void applyFilter() {
+    String query = view.getSearchField().getText();
+    List<Transaction> all = session.getPlayer().getTransactionArchive().getAll();
+    List<Transaction> shown = (query == null || query.isBlank())
+        ? all
+        : filter(all, query);
+    view.setTransactions(shown);
   }
 
   private static List<Transaction> filter(List<Transaction> all, String query) {
