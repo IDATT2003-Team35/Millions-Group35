@@ -4,12 +4,12 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
+import edu.ntnu.idi.idatt.millions.util.TableColumns;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -18,15 +18,12 @@ import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Market view showing all listed stocks with search, plus a side panel
  * with top gainers and losers. Refreshes itself when the game session changes.
  */
 public class MarketView extends BorderPane implements Observer {
-
-  private static final int TOP_LIST_LIMIT = 5;
 
   private final GameSession session;
 
@@ -38,6 +35,8 @@ public class MarketView extends BorderPane implements Observer {
 
   private final VBox gainersBox = new VBox();
   private final VBox losersBox = new VBox();
+
+  private Runnable onUpdate = () -> { };
 
   /**
    * Creates a new market view bound to the given game session.
@@ -54,7 +53,6 @@ public class MarketView extends BorderPane implements Observer {
     setupColumns();
     buildLayout();
     session.addObserver(this);
-    refreshTable();
   }
 
   private void buildLayout() {
@@ -93,52 +91,75 @@ public class MarketView extends BorderPane implements Observer {
     TableColumn<Stock, BigDecimal> priceCol = new TableColumn<>("Price ($)");
     priceCol.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getSalesPrice()));
 
-    TableColumn<Stock, BigDecimal> changeCol = numericColumn(
+    TableColumn<Stock, BigDecimal> changeCol = TableColumns.numericColumn(
         "Change ($)", Stock::getLatestPriceChange, MarketView::formatChange);
-    TableColumn<Stock, BigDecimal> percentChangeCol = numericColumn(
+    TableColumn<Stock, BigDecimal> percentChangeCol = TableColumns.numericColumn(
         "Change (%)", Stock::getLatestPercentChange, Percentages::format);
-    TableColumn<Stock, BigDecimal> allTimeChangeCol = numericColumn(
+    TableColumn<Stock, BigDecimal> allTimeChangeCol = TableColumns.numericColumn(
         "All-Time Change (%)", Stock::getTotalPercentChange, Percentages::format);
 
     stockTable.getColumns().addAll(
         symbolCol, companyCol, priceCol, changeCol, percentChangeCol, allTimeChangeCol);
   }
 
-  private static TableColumn<Stock, BigDecimal> numericColumn(
-      String title,
-      Function<Stock, BigDecimal> extractor,
-      Function<BigDecimal, String> formatter) {
-    TableColumn<Stock, BigDecimal> col = new TableColumn<>(title);
-    col.setCellValueFactory(c -> new SimpleObjectProperty<>(extractor.apply(c.getValue())));
-    col.setCellFactory(c -> new TableCell<>() {
-      @Override
-      protected void updateItem(BigDecimal value, boolean empty) {
-        super.updateItem(value, empty);
-        setText(empty || value == null ? "" : formatter.apply(value));
-      }
-    });
-    return col;
-  }
-
   @Override
   public void update() {
-    refreshTable();
+    onUpdate.run();
   }
 
   /**
-   * Refreshes the stock table, gainers, losers and the count label
-   * from the current state of the session's exchange.
+   * Registers a callback invoked when the view receives an Observer update.
+   * The controller uses this to re-apply its current filter and push fresh data.
+   *
+   * @param callback the runnable to execute on each update; must not be null
+   * @throws IllegalArgumentException if callback is null
    */
-  public void refreshTable() {
-    List<Stock> allStocks = session.getExchange().getStocks();
-    stockTable.getItems().setAll(allStocks);
-    countLabel.setText("Showing " + allStocks.size() + " of " + allStocks.size() + " stocks");
-
-    refreshTopList(gainersBox, session.getExchange().getGainers(TOP_LIST_LIMIT));
-    refreshTopList(losersBox, session.getExchange().getLosers(TOP_LIST_LIMIT));
+  public void setOnUpdate(Runnable callback) {
+    if (callback == null) {
+      throw new IllegalArgumentException("Callback cannot be null");
+    }
+    this.onUpdate = callback;
   }
 
-  private void refreshTopList(VBox box, List<Stock> stocks) {
+  /**
+   * Replaces the stocks currently shown in the main table and re-applies any
+   * active column sort so the user's chosen order persists across updates.
+   *
+   * @param stocks the stocks to display
+   */
+  public void setStocks(List<Stock> stocks) {
+    stockTable.getItems().setAll(stocks);
+    stockTable.sort();
+  }
+
+  /**
+   * Updates the count label text shown above the table.
+   *
+   * @param text the text to display
+   */
+  public void setCount(String text) {
+    countLabel.setText(text);
+  }
+
+  /**
+   * Replaces the entries shown in the Top Gainers side panel.
+   *
+   * @param stocks the gaining stocks to list
+   */
+  public void setGainers(List<Stock> stocks) {
+    populateTopList(gainersBox, stocks);
+  }
+
+  /**
+   * Replaces the entries shown in the Top Losers side panel.
+   *
+   * @param stocks the losing stocks to list
+   */
+  public void setLosers(List<Stock> stocks) {
+    populateTopList(losersBox, stocks);
+  }
+
+  private void populateTopList(VBox box, List<Stock> stocks) {
     box.getChildren().clear();
     for (Stock stock : stocks) {
       String text = stock.getSymbol() + "  " + Percentages.format(stock.getLatestPercentChange());
