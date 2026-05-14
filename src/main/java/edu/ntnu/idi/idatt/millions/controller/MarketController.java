@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class MarketController {
 
+  private static final int TOP_LIST_LIMIT = 5;
+
   private final GameSession session;
   private final MainController mainController;
   private final MarketView view;
@@ -35,8 +37,10 @@ public class MarketController {
     this.mainController = mainController;
     this.view = new MarketView(session);
 
+    view.setOnUpdate(this::applyFilter);
     wireSearch();
     wireRowClick();
+    applyFilter();
   }
 
   public MarketView getView() {
@@ -44,15 +48,20 @@ public class MarketController {
   }
 
   private void wireSearch() {
-    view.getSearchField().textProperty().addListener((obs, oldValue, newValue) -> {
-      List<Stock> all = session.getExchange().getStocks();
-      List<Stock> shown = (newValue == null || newValue.isBlank())
-          ? all
-          : session.getExchange().findStocks(newValue);
-      view.getStockTable().getItems().setAll(shown);
-      view.getCountLabel().setText(
-          "Showing " + shown.size() + " of " + all.size() + " stocks");
-    });
+    view.getSearchField().textProperty()
+        .addListener((obs, oldValue, newValue) -> applyFilter());
+  }
+
+  private void applyFilter() {
+    String query = view.getSearchField().getText();
+    List<Stock> all = session.getExchange().getStocks();
+    List<Stock> shown = (query == null || query.isBlank())
+        ? all
+        : session.getExchange().findStocks(query);
+    view.setStocks(shown);
+    view.setCount("Showing " + shown.size() + " of " + all.size() + " stocks");
+    view.setGainers(session.getExchange().getGainers(TOP_LIST_LIMIT));
+    view.setLosers(session.getExchange().getLosers(TOP_LIST_LIMIT));
   }
 
   private void wireRowClick() {

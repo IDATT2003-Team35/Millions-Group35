@@ -1,11 +1,10 @@
 package edu.ntnu.idi.idatt.millions.view;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
-import edu.ntnu.idi.idatt.millions.model.Player;
-import edu.ntnu.idi.idatt.millions.model.Portfolio;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
+import edu.ntnu.idi.idatt.millions.util.TableColumns;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -52,6 +51,7 @@ public class PortfolioView extends BorderPane implements Observer {
 
   /** Handler invoked when a row's Sell button is clicked. No-op by default. */
   private Consumer<Share> sellHandler = share -> { };
+  private Runnable onUpdate = () -> { };
 
   /**
    * Creates a new portfolio view bound to the given game session.
@@ -69,7 +69,6 @@ public class PortfolioView extends BorderPane implements Observer {
     setupColumns();
     buildLayout();
     session.addObserver(this);
-    refresh();
   }
 
   private void buildLayout() {
@@ -139,25 +138,16 @@ public class PortfolioView extends BorderPane implements Observer {
     companyCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getStock().getCompany()));
 
-    TableColumn<Share, String> qtyCol = new TableColumn<>("Qty");
-    qtyCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getQuantity().toPlainString()));
-
-    TableColumn<Share, String> buyPriceCol = new TableColumn<>("Buy Price ($)");
-    buyPriceCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getPurchasePrice().toPlainString()));
-
-    TableColumn<Share, String> currentPriceCol = new TableColumn<>("Current Price ($)");
-    currentPriceCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getStock().getSalesPrice().toPlainString()));
-
-    TableColumn<Share, String> gainLossCol = new TableColumn<>("Gain / Loss ($)");
-    gainLossCol.setCellValueFactory(c ->
-        new SimpleStringProperty(formatMovement(c.getValue().getNetGainLoss())));
-
-    TableColumn<Share, String> gainLossPercentCol = new TableColumn<>("Gain / Loss (%)");
-    gainLossPercentCol.setCellValueFactory(c ->
-        new SimpleStringProperty(Percentages.format(c.getValue().getNetGainLossPercent())));
+    TableColumn<Share, BigDecimal> qtyCol = TableColumns.numericColumn(
+        "Qty", Share::getQuantity, BigDecimal::toPlainString);
+    TableColumn<Share, BigDecimal> buyPriceCol = TableColumns.numericColumn(
+        "Buy Price ($)", Share::getPurchasePrice, BigDecimal::toPlainString);
+    TableColumn<Share, BigDecimal> currentPriceCol = TableColumns.numericColumn(
+        "Current Price ($)", s -> s.getStock().getSalesPrice(), BigDecimal::toPlainString);
+    TableColumn<Share, BigDecimal> gainLossCol = TableColumns.numericColumn(
+        "Gain / Loss ($)", Share::getNetGainLoss, PortfolioView::formatMovement);
+    TableColumn<Share, BigDecimal> gainLossPercentCol = TableColumns.numericColumn(
+        "Gain / Loss (%)", Share::getNetGainLossPercent, Percentages::format);
 
     TableColumn<Share, Void> actionCol = new TableColumn<>("Action");
     actionCol.setCellFactory(col -> new TableCell<Share, Void>() {
@@ -184,33 +174,80 @@ public class PortfolioView extends BorderPane implements Observer {
 
   @Override
   public void update() {
-    refresh();
+    onUpdate.run();
   }
 
   /**
-   * Refreshes the chart, summary bar and holdings table from the current session state.
+   * Registers a callback invoked when the view receives an Observer update.
+   * The controller uses this to push fresh data to the view.
+   *
+   * @param callback the runnable to execute on each update; must not be null
+   * @throws IllegalArgumentException if callback is null
    */
-  public void refresh() {
-    Player player = session.getPlayer();
-    Portfolio portfolio = player.getPortfolio();
-
-    holdingsValue.setText(String.valueOf(portfolio.getShares().size()));
-    stockValueValue.setText(portfolio.getNetWorth().toPlainString());
-    totalGainLossValue.setText(formatMovement(
-        player.getNetWorth().subtract(player.getStartingMoney())));
-    totalGainLossPercentValue.setText(Percentages.format(player.getTotalGainLossPercent()));
-
-    updateNetWorthChart(session.getNetWorthHistory());
-    holdingsTable.getItems().setAll(portfolio.getShares());
+  public void setOnUpdate(Runnable callback) {
+    if (callback == null) {
+      throw new IllegalArgumentException("Callback cannot be null");
+    }
+    this.onUpdate = callback;
   }
 
-  private void updateNetWorthChart(List<BigDecimal> netWorthHistory) {
-    XYChart.Series<String, Number> series = new XYChart.Series<>();
+  /**
+   * Sets the value shown in the Holdings summary box.
+   *
+   * @param count number of distinct shares held
+   */
+  public void setHoldingsCount(int count) {
+    holdingsValue.setText(String.valueOf(count));
+  }
 
+  /**
+   * Sets the value shown in the Stock Value summary box.
+   *
+   * @param text the pre-formatted dollar string to display
+   */
+  public void setStockValue(String text) {
+    stockValueValue.setText(text);
+  }
+
+  /**
+   * Sets the value shown in the Total Gain/Loss ($) summary box.
+   *
+   * @param text the pre-formatted signed dollar string to display
+   */
+  public void setTotalGainLoss(String text) {
+    totalGainLossValue.setText(text);
+  }
+
+  /**
+   * Sets the value shown in the Total Gain/Loss (%) summary box.
+   *
+   * @param text the pre-formatted percent string to display
+   */
+  public void setTotalGainLossPercent(String text) {
+    totalGainLossPercentValue.setText(text);
+  }
+
+  /**
+   * Replaces the shares currently shown in the holdings table and re-applies any
+   * active column sort so the user's chosen order persists across updates.
+   *
+   * @param shares the shares to display
+   */
+  public void setShares(List<Share> shares) {
+    holdingsTable.getItems().setAll(shares);
+    holdingsTable.sort();
+  }
+
+  /**
+   * Replaces the data series in the net-worth chart with the given history.
+   *
+   * @param netWorthHistory the net worth values per week (index = week - 1)
+   */
+  public void setNetWorthHistory(List<BigDecimal> netWorthHistory) {
+    XYChart.Series<String, Number> series = new XYChart.Series<>();
     for (int i = 0; i < netWorthHistory.size(); i++) {
       series.getData().add(new XYChart.Data<>("W" + (i + 1), netWorthHistory.get(i)));
     }
-
     netWorthChart.getData().setAll(series);
   }
 

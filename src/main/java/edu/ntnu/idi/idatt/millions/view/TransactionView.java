@@ -3,7 +3,6 @@ package edu.ntnu.idi.idatt.millions.view;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
-import edu.ntnu.idi.idatt.millions.model.transaction.TransactionArchive;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
@@ -20,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -37,6 +37,7 @@ public class TransactionView extends BorderPane implements Observer {
   private final TableView<Transaction> transactionTable = new TableView<>();
 
   private Consumer<Transaction> transactionHandler = transaction -> { };
+  private Runnable onUpdate = () -> { };
 
   /**
    * Creates a new transaction view bound to the given game session.
@@ -53,7 +54,6 @@ public class TransactionView extends BorderPane implements Observer {
     setupColumns();
     buildLayout();
     session.addObserver(this);
-    refresh();
   }
 
   private void buildLayout() {
@@ -124,15 +124,32 @@ public class TransactionView extends BorderPane implements Observer {
 
   @Override
   public void update() {
-    refresh();
+    onUpdate.run();
   }
 
   /**
-   * Refreshes the transaction table from the current session state.
+   * Registers a callback invoked when the view receives an Observer update.
+   * The controller uses this to re-apply its current filter and push fresh data.
+   *
+   * @param callback the runnable to execute on each update; must not be null
+   * @throws IllegalArgumentException if callback is null
    */
-  public void refresh() {
-    TransactionArchive transactions = session.getPlayer().getTransactionArchive();
-    transactionTable.getItems().setAll(transactions.getAll());
+  public void setOnUpdate(Runnable callback) {
+    if (callback == null) {
+      throw new IllegalArgumentException("Callback cannot be null");
+    }
+    this.onUpdate = callback;
+  }
+
+  /**
+   * Replaces the transactions currently shown in the table and re-applies any
+   * active column sort so the user's chosen order persists across updates.
+   *
+   * @param transactions the transactions to display
+   */
+  public void setTransactions(List<Transaction> transactions) {
+    transactionTable.getItems().setAll(transactions);
+    transactionTable.sort();
   }
 
   /**
