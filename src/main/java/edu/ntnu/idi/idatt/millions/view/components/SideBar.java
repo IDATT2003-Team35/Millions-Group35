@@ -17,6 +17,7 @@ public class SideBar extends VBox {
   private final Button marketButton = new Button("Market");
   private final Button portfolioButton = new Button("Portfolio");
   private final Button transactionButton = new Button("Transactions");
+  private final Button saveButton = new Button("Save Game");
   private final Button sellAllButton = new Button("Sell All and Quit");
 
   public SideBar() {
@@ -32,6 +33,7 @@ public class SideBar extends VBox {
         portfolioButton,
         transactionButton,
         spacer,
+        saveButton,
         sellAllButton
     );
   }
@@ -46,6 +48,10 @@ public class SideBar extends VBox {
 
   public Button getTransactionButton() {
     return transactionButton;
+  }
+
+  public Button getSaveButton() {
+    return saveButton;
   }
 
   public Button getSellAllButton() {
