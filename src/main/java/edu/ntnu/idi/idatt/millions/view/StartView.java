@@ -24,6 +24,7 @@ public class StartView {
   private final Button browseButton;
   private final Button defaultStockDataButton;
   private final Button startButton;
+  private final Button backButton;
   private final Label errorLabel;
 
   /**
@@ -61,10 +62,11 @@ public class StartView {
     errorLabel = new Label();
     errorLabel.setWrapText(true);
 
+    backButton = new Button("BACK");
     startButton = new Button("START");
     startButton.setDefaultButton(true);
 
-    HBox startBox = new HBox(10, startButton);
+    HBox startBox = new HBox(10, backButton, startButton);
     startBox.setAlignment(Pos.CENTER);
 
     VBox inputBox = new VBox(
@@ -149,6 +151,15 @@ public class StartView {
    */
   public Button getStartButton() {
    return startButton;
+  }
+
+  /**
+   * Returns the back button.
+   *
+   * @return the back button
+   */
+  public Button getBackButton() {
+    return backButton;
   }
 
   /**

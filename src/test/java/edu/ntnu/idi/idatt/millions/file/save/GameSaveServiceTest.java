@@ -70,6 +70,32 @@ class GameSaveServiceTest {
   }
 
   @Test
+  void listSaveFilesEmptyFolderReturnsEmptyList() throws Exception {
+    assertTrue(service.listSaveFiles().isEmpty());
+  }
+
+  @Test
+  void listSaveFilesMissingFolderReturnsEmptyList() throws Exception {
+    GameSaveService missingFolderService = new GameSaveService(tempDir.resolve("missing"));
+
+    assertTrue(missingFolderService.listSaveFiles().isEmpty());
+  }
+
+  @Test
+  void listSaveFilesReturnsOnlyJsonFilesSortedByName() throws Exception {
+    Path secondSave = tempDir.resolve("second.json");
+    Path firstSave = tempDir.resolve("first.json");
+    Path textFile = tempDir.resolve("notes.txt");
+    Files.writeString(secondSave, "{}");
+    Files.writeString(firstSave, "{}");
+    Files.writeString(textFile, "not a save");
+
+    List<Path> saveFiles = service.listSaveFiles();
+
+    assertEquals(List.of(firstSave, secondSave), saveFiles);
+  }
+
+  @Test
   void saveAndLoadRestoresPlayerData() throws Exception {
     GameSession original = createSessionWithActivity();
 
