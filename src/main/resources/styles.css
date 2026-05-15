@@ -1,0 +1,198 @@
+/* Millions — global styles */
+
+.root {
+  -fx-bg: #F4ECD6; -fx-surface: #FFFFFF; -fx-ink: #0E0E12;
+  -fx-pink: #C9303F; -fx-gain: #2940C5; -fx-loss: #C9303F;
+  -fx-text: #0E0E12; -fx-text-muted: #6B6660; -fx-border-subtle: #D8CDB2;
+  -fx-font-family: "Helvetica Neue", "Arial", sans-serif;
+  -fx-font-size: 13px;
+  -fx-background-color: -fx-bg;
+}
+
+/* Typography */
+.label { -fx-text-fill: -fx-text; }
+.label.section-title {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-weight: 900; -fx-font-size: 72px; -fx-letter-spacing: -0.02em;
+}
+.field-value.gain, .label.gain, .table-view .table-cell.gain { -fx-text-fill: -fx-gain; }
+.field-value.loss, .label.loss, .table-view .table-cell.loss { -fx-text-fill: -fx-loss; }
+
+/* Inputs */
+.text-field {
+  -fx-background-color: -fx-surface; -fx-text-fill: -fx-text;
+  -fx-prompt-text-fill: -fx-text-muted;
+  -fx-border-color: -fx-ink; -fx-border-width: 1;
+  -fx-background-radius: 0; -fx-border-radius: 0;
+  -fx-padding: 10 14; -fx-font-size: 13px;
+}
+.text-field:focused { -fx-border-color: -fx-pink; }
+
+/* Table */
+.table-wrapper { -fx-background-color: -fx-ink; -fx-padding: 2; }
+.table-view {
+  -fx-background-color: -fx-surface; -fx-padding: 0;
+  -fx-table-cell-border-color: transparent;
+}
+.table-view .column-header-background,
+.table-view .column-header-background .filler,
+.table-view .corner { -fx-background-color: -fx-ink; }
+.table-view .column-header { -fx-background-color: transparent; -fx-padding: 16 14; }
+.table-view .column-header .label {
+  -fx-text-fill: #FFFFFF; -fx-font-size: 10px; -fx-font-weight: bold;
+  -fx-letter-spacing: 0.2em; -fx-alignment: CENTER_LEFT;
+}
+.table-view .table-row-cell,
+.table-view .table-row-cell:odd { -fx-background-color: -fx-surface; }
+.table-view .table-row-cell {
+  -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  -fx-border-width: 0 0 1 0; -fx-cell-size: 52;
+}
+.table-view .table-row-cell:hover { -fx-background-color: rgba(0, 0, 0, 0.03); }
+.table-view .table-row-cell:selected { -fx-background-color: rgba(0, 0, 0, 0.06); }
+.table-view .table-cell { -fx-text-fill: -fx-text; -fx-padding: 18 14; -fx-font-size: 14px; }
+.table-view .table-cell.symbol-cell { -fx-font-weight: bold; -fx-letter-spacing: 0.02em; }
+.table-view .table-cell.numeric-cell { -fx-font-weight: bold; }
+.table-view .placeholder .label { -fx-text-fill: -fx-text-muted; }
+.table-view .table-cell .button {
+  -fx-background-color: transparent; -fx-text-fill: -fx-pink;
+  -fx-border-color: -fx-pink; -fx-border-width: 1;
+  -fx-font-size: 11px; -fx-font-weight: bold;
+  -fx-padding: 6 14; -fx-letter-spacing: 0.08em;
+  -fx-background-radius: 0; -fx-cursor: hand;
+}
+.table-view .table-cell .button:hover { -fx-background-color: -fx-pink; -fx-text-fill: -fx-surface; }
+
+/* Status bar */
+.status-bar {
+  -fx-background-color: -fx-surface; -fx-alignment: CENTER_LEFT;
+  -fx-border-color: -fx-ink; -fx-border-width: 0 0 1 0;
+}
+.logo-block { -fx-background-color: -fx-pink; -fx-pref-width: 220; -fx-min-width: 220; }
+.logo-title {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-weight: 900; -fx-font-size: 42px;
+  -fx-text-fill: #14142B; -fx-letter-spacing: 0.02em;
+}
+.logo-subtitle {
+  -fx-font-size: 10px; -fx-font-weight: bold;
+  -fx-text-fill: rgba(20, 20, 43, 0.7); -fx-letter-spacing: 0.2em;
+}
+.status-stats { -fx-padding: 0 16 0 24; -fx-alignment: CENTER_LEFT; }
+.status-stats > .status-field {
+  -fx-padding: 0 24; -fx-spacing: 4; -fx-alignment: CENTER_LEFT;
+  -fx-border-color: transparent -fx-ink transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+.status-stats > .status-field:last-child { -fx-border-color: transparent; }
+.status-stats .field-title {
+  -fx-font-size: 10px; -fx-font-weight: bold;
+  -fx-text-fill: -fx-text-muted; -fx-letter-spacing: 0.18em;
+}
+.status-stats .field-value {
+  -fx-font-family: "Menlo", "Consolas", monospace;
+  -fx-font-size: 22px; -fx-font-weight: bold;
+}
+.status-bar > .advance-button {
+  -fx-background-color: -fx-ink; -fx-text-fill: #FFFFFF;
+  -fx-font-weight: bold; -fx-font-size: 14px;
+  -fx-letter-spacing: 0.1em; -fx-padding: 16 32;
+  -fx-background-radius: 0; -fx-cursor: hand;
+}
+.status-bar > .advance-button:hover { -fx-background-color: #2A2A30; }
+
+/* Side bar */
+.side-bar {
+  -fx-background-color: -fx-surface; -fx-padding: 28 12 18 12;
+  -fx-spacing: 4; -fx-pref-width: 220;
+  -fx-border-color: transparent -fx-border-subtle transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+.side-bar > .label {
+  -fx-text-fill: -fx-text-muted; -fx-font-size: 10px;
+  -fx-font-weight: bold; -fx-letter-spacing: 0.2em; -fx-padding: 0 16 16 16;
+}
+.side-bar > .button {
+  -fx-background-color: transparent; -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 16px; -fx-font-weight: bold;
+  -fx-alignment: CENTER_LEFT; -fx-padding: 14 16;
+  -fx-background-radius: 0; -fx-cursor: hand;
+  -fx-border-color: transparent; -fx-border-width: 0 0 0 3;
+}
+.side-bar > .button:hover { -fx-background-color: rgba(0, 0, 0, 0.04); -fx-text-fill: -fx-text; }
+.side-bar > .button.active {
+  -fx-text-fill: -fx-text; -fx-background-color: rgba(0, 0, 0, 0.06);
+  -fx-border-color: -fx-pink; -fx-border-width: 0 0 0 4;
+}
+.side-bar > .sell-all-button {
+  -fx-background-color: transparent; -fx-text-fill: -fx-pink;
+  -fx-font-weight: bold; -fx-border-color: -fx-pink; -fx-border-width: 1;
+  -fx-padding: 12 16; -fx-letter-spacing: 0.05em;
+}
+.side-bar > .sell-all-button:hover { -fx-background-color: rgba(233, 30, 99, 0.15); }
+
+/* Filter tabs */
+.filter-tab {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink; -fx-border-width: 1 1 1 0;
+  -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 11px; -fx-font-weight: bold;
+  -fx-padding: 8 18; -fx-background-radius: 0; -fx-border-radius: 0;
+  -fx-cursor: hand; -fx-letter-spacing: 0.06em;
+}
+.filter-tab-first { -fx-border-width: 1; }
+.filter-tab:hover { -fx-background-color: rgba(0, 0, 0, 0.04); }
+.filter-tab:selected { -fx-background-color: -fx-ink; -fx-text-fill: #FFFFFF; }
+.filter-tab-text {
+  -fx-font-size: 11px; -fx-font-weight: bold;
+  -fx-text-fill: -fx-text-muted; -fx-letter-spacing: 0.06em;
+}
+.filter-tab:selected .filter-tab-text { -fx-text-fill: #FFFFFF; }
+.filter-count-badge {
+  -fx-background-color: -fx-ink; -fx-text-fill: #FFFFFF;
+  -fx-font-size: 10px; -fx-font-weight: bold;
+  -fx-padding: 2 7; -fx-background-radius: 10;
+  -fx-min-width: 20; -fx-alignment: CENTER;
+}
+.filter-tab:selected .filter-count-badge { -fx-background-color: #FFFFFF; -fx-text-fill: -fx-ink; }
+
+/* Side separator (between table and gainers/losers) */
+.side-separator { -fx-background-color: -fx-ink; -fx-pref-width: 2; -fx-min-width: 2; }
+
+/* Top gainers / losers */
+.top-panel {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink; -fx-border-width: 1; -fx-pref-width: 240;
+}
+.top-panel > .label:first-child {
+  -fx-background-color: -fx-ink; -fx-text-fill: #FFFFFF;
+  -fx-font-weight: bold; -fx-font-size: 13px;
+  -fx-letter-spacing: 0.15em; -fx-padding: 12 16; -fx-min-width: 240;
+}
+.top-panel-body { -fx-padding: 0; -fx-spacing: 0; }
+.top-panel-row {
+  -fx-padding: 6 18;
+  -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-cursor: hand;
+}
+.top-panel-row:hover { -fx-background-color: rgba(0, 0, 0, 0.04); }
+.top-panel-symbol { -fx-font-weight: bold; -fx-min-width: 56; -fx-letter-spacing: 0.04em; }
+.top-panel-change { -fx-font-weight: bold; }
+
+/* Meta / header rows */
+.market-meta-row { -fx-padding: 4 0 8 0; -fx-alignment: CENTER_LEFT; }
+.top-panel-header { -fx-padding: 8 18 4 18; -fx-alignment: CENTER_LEFT; }
+.market-meta-row > .label, .top-panel-header > .label {
+  -fx-font-size: 10px; -fx-text-fill: -fx-text-muted;
+  -fx-font-weight: bold; -fx-letter-spacing: 0.15em;
+}
+
+/* Scroll bars */
+.scroll-bar, .scroll-bar .track { -fx-background-color: -fx-surface; }
+.scroll-bar .thumb { -fx-background-color: -fx-border-subtle; -fx-background-radius: 0; }
+.scroll-bar .thumb:hover { -fx-background-color: -fx-text-muted; }
+.scroll-bar .increment-button, .scroll-bar .decrement-button,
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+  -fx-background-color: transparent; -fx-padding: 0; -fx-shape: null;
+}

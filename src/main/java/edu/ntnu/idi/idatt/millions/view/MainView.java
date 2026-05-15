@@ -4,13 +4,9 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.view.components.SideBar;
 import edu.ntnu.idi.idatt.millions.view.components.StatusBar;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 /**
  * Main application shell. Keeps the status bar on top and the sidebar on the left,
@@ -41,16 +37,8 @@ public class MainView extends BorderPane implements Observer {
   }
 
   private void buildLayout() {
-    setTop(buildHeader());
-    setLeft(buildLeftPane());
-  }
-
-  private Node buildHeader() {
-    return new VBox(statusBar, new Separator());
-  }
-
-  private Node buildLeftPane() {
-    return new HBox(sideBar, new Separator(Orientation.VERTICAL));
+    setTop(statusBar);
+    setLeft(sideBar);
   }
 
   @Override
@@ -89,7 +77,10 @@ public class MainView extends BorderPane implements Observer {
         sideBar.getMarketButton(),
         sideBar.getPortfolioButton(),
         sideBar.getTransactionButton()}) {
-      b.setStyle(b == active ? "-fx-font-weight: bold;" : "");
+      b.getStyleClass().remove("active");
+      if (b == active) {
+        b.getStyleClass().add("active");
+      }
     }
   }
 }
