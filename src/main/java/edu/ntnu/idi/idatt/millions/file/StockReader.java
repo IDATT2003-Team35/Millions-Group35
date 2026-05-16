@@ -29,12 +29,12 @@ public class StockReader {
       throw new IllegalArgumentException("filepath cannot be null");
     }
 
-    try(BufferedReader reader = Files.newBufferedReader(filepath)) {
+    try (BufferedReader reader = Files.newBufferedReader(filepath)) {
       return readStockData(reader);
     }
   }
 
-  private List<Stock> readStockData(BufferedReader reader) throws IOException {
+  List<Stock> readStockData(BufferedReader reader) throws IOException {
     List<Stock> stocks = new ArrayList<>();
     String line;
     int lineNumber = 0;
@@ -48,14 +48,14 @@ public class StockReader {
 
   private Optional<Stock> parseLine(String line, int lineNumber) {
     String trimmedLine = line.trim();
-    String[] values = line.split(",");
+    String[] values = line.split(",", -1);
 
     if (trimmedLine.isBlank() || trimmedLine.startsWith("#")) {
       return Optional.empty();
     }
 
     if (values.length != 3) {
-      throw new IllegalArgumentException("Invalid stock data on line: " + lineNumber);
+      throw new IllegalArgumentException("Invalid stock data on line " + lineNumber);
     }
 
     String symbol = values[0].trim();
@@ -66,7 +66,7 @@ public class StockReader {
     try {
       return Optional.of(new Stock(symbol, company, price));
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Invalid stock data on line: " + lineNumber, e);
+      throw new IllegalArgumentException("Invalid stock data on line " + lineNumber, e);
     }
   }
 
@@ -74,7 +74,7 @@ public class StockReader {
     try {
       return new BigDecimal(stringPrice);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("Invalid stock price on line: " + lineNumber, e);
+      throw new IllegalArgumentException("Invalid stock price on line " + lineNumber, e);
     }
   }
 }

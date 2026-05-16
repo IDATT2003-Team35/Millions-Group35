@@ -3,6 +3,8 @@ package edu.ntnu.idi.idatt.millions.file;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
@@ -35,12 +37,62 @@ class StockReaderTest {
   }
 
   @Test
-  void skipsLineWithFourValues() throws Exception {
+  void lineWithFourValuesThrowsException() {
     StockReader reader = new StockReader();
 
-    List<Stock> stocks = reader.readStockData(extraColumnPath);
+    IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> reader.readStockData(extraColumnPath)
+    );
+
+    assertTrue(exception.getMessage().contains("line 2"));
+  }
+
+  @Test
+  void nullFilePathThrowsException() {
+    StockReader reader = new StockReader();
+
+    assertThrows(IllegalArgumentException.class,
+            () -> reader.readStockData((Path) null));
+  }
+
+  @Test
+  void valuesAreTrimmedBeforeStockIsCreated() throws Exception {
+    List<Stock> stocks = readFromText("""
+       AAPL , Apple Inc. , 276.43
+      """);
+
+    assertEquals("AAPL", stocks.getFirst().getSymbol());
+    assertEquals("Apple Inc.", stocks.getFirst().getCompany());
+    assertEquals(new BigDecimal("276.43"), stocks.getFirst().getSalesPrice());
+  }
+
+  @Test
+  void invalidPriceThrowsExceptionWithLineNumber() {
+    IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> readFromText("""
+          AAPL,Apple Inc.,abc
+          """)
+    );
+
+    assertTrue(exception.getMessage().contains("line 1"));
+  }
+
+  @Test
+  void blankAndCommentLinesAreIgnored() throws Exception {
+    List<Stock> stocks = readFromText("""
+         # Ticker,Name,Price
+
+      AAPL,Apple Inc.,276.43
+      """);
 
     assertEquals(1, stocks.size());
-    assertEquals("OK", stocks.getFirst().getSymbol());
+    assertEquals("AAPL", stocks.getFirst().getSymbol());
+  }
+
+  private List<Stock> readFromText(String text) throws Exception {
+    StockReader reader = new StockReader();
+    return reader.readStockData(new BufferedReader(new StringReader(text)));
   }
 }
