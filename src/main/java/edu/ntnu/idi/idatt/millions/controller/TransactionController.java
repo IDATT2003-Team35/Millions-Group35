@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import edu.ntnu.idi.idatt.millions.view.TransactionView;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -62,9 +64,37 @@ public class TransactionController {
   private void applyFilter() {
     String query = view.getSearchField().getText();
     List<Transaction> all = session.getPlayer().getTransactionArchive().getAll();
-    List<Transaction> shown = (query == null || query.isBlank())
+
+    BigDecimal totalBought = BigDecimal.ZERO;
+    BigDecimal totalSold = BigDecimal.ZERO;
+    int buyCount = 0;
+    int sellCount = 0;
+    for (Transaction t : all) {
+      BigDecimal gross = t.getCalculator().calculateGross();
+      if (t instanceof Purchase) {
+        totalBought = totalBought.add(gross);
+        buyCount++;
+      } else {
+        totalSold = totalSold.add(gross);
+        sellCount++;
+      }
+    }
+    view.setTotalBought(Money.format(totalBought), buyCount);
+    view.setTotalSold(Money.format(totalSold), sellCount);
+    view.setNetActivity(Money.format(totalBought.subtract(totalSold)));
+    view.setRecordsCount(all.size());
+    view.setFilterCounts(all.size(), buyCount, sellCount);
+
+    List<Transaction> searched = (query == null || query.isBlank())
         ? all
         : filter(all, query);
+
+    String tab = view.getSelectedFilter();
+    List<Transaction> shown = switch (tab) {
+      case "BUYS" -> searched.stream().filter(t -> t instanceof Purchase).toList();
+      case "SELLS" -> searched.stream().filter(t -> !(t instanceof Purchase)).toList();
+      default -> searched;
+    };
     view.setTransactions(shown);
   }
 

@@ -27,6 +27,8 @@ public class App extends Application {
     this.primaryStage = stage;
 
     Scene scene = new Scene(new StackPane());
+    scene.getStylesheets().add(
+        getClass().getResource("/styles.css").toExternalForm());
     stage.setTitle("Millions");
     stage.setScene(scene);
     stage.setMaximized(true);

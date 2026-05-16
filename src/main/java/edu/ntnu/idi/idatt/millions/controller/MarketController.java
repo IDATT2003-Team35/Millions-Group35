@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.MarketView;
 import javafx.scene.control.TableRow;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class MarketController {
 
-  private static final int TOP_LIST_LIMIT = 5;
+  private static final int TOP_LIST_LIMIT = 10;
 
   private final GameSession session;
   private final MainController mainController;
@@ -38,6 +39,7 @@ public class MarketController {
     this.view = new MarketView(session);
 
     view.setOnUpdate(this::applyFilter);
+    view.setOnStockClick(mainController::showStockDetail);
     wireSearch();
     wireRowClick();
     applyFilter();
@@ -55,11 +57,27 @@ public class MarketController {
   private void applyFilter() {
     String query = view.getSearchField().getText();
     List<Stock> all = session.getExchange().getStocks();
-    List<Stock> shown = (query == null || query.isBlank())
+    List<Stock> searched = (query == null || query.isBlank())
         ? all
         : session.getExchange().findStocks(query);
+
+    int gainerCount = (int) all.stream()
+        .filter(s -> s.getLatestPercentChange().compareTo(BigDecimal.ZERO) > 0).count();
+    int loserCount = (int) all.stream()
+        .filter(s -> s.getLatestPercentChange().compareTo(BigDecimal.ZERO) < 0).count();
+    view.setFilterCounts(all.size(), gainerCount, loserCount);
+
+    String filter = view.getSelectedFilter();
+    List<Stock> shown = switch (filter) {
+      case "GAINERS" -> searched.stream()
+          .filter(s -> s.getLatestPercentChange().compareTo(BigDecimal.ZERO) > 0).toList();
+      case "LOSERS" -> searched.stream()
+          .filter(s -> s.getLatestPercentChange().compareTo(BigDecimal.ZERO) < 0).toList();
+      default -> searched;
+    };
+
     view.setStocks(shown);
-    view.setCount("Showing " + shown.size() + " of " + all.size() + " stocks");
+    view.setInstrumentCount(all.size());
     view.setGainers(session.getExchange().getGainers(TOP_LIST_LIMIT));
     view.setLosers(session.getExchange().getLosers(TOP_LIST_LIMIT));
   }

@@ -23,4 +23,21 @@ public final class Percentages {
     String sign = rounded.signum() >= 0 ? "+" : "";
     return sign + rounded.toPlainString() + "%";
   }
+
+  /**
+   * Formats a percentage with a directional arrow instead of a sign character.
+   * Positive values get ▲, negative values get ▼, zero gets no arrow.
+   *
+   * @param pct the percentage value
+   * @return the formatted string, e.g. "▲ 12.30%" or "▼ 3.50%" or "0.00%"
+   */
+  public static String formatWithArrow(BigDecimal pct) {
+    if (pct == null) return "";
+    BigDecimal rounded = pct.setScale(2, RoundingMode.HALF_UP);
+    if (rounded.signum() == 0) {
+      return "0.00%";
+    }
+    String arrow = rounded.signum() > 0 ? "▲ " : "▼ ";
+    return arrow + rounded.abs().toPlainString() + "%";
+  }
 }

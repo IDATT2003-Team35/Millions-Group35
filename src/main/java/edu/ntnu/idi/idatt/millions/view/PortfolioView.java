@@ -3,18 +3,18 @@ package edu.ntnu.idi.idatt.millions.view;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
-import edu.ntnu.idi.idatt.millions.util.Percentages;
+import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.TableColumns;
+import edu.ntnu.idi.idatt.millions.view.components.ViewHelpers;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,8 +39,8 @@ public class PortfolioView extends BorderPane implements Observer {
 
   private final CategoryAxis weekAxis = new CategoryAxis();
   private final NumberAxis netWorthAxis = new NumberAxis();
-  private final LineChart<String, Number> netWorthChart =
-      new LineChart<>(weekAxis, netWorthAxis);
+  private final AreaChart<String, Number> netWorthChart =
+      new AreaChart<>(weekAxis, netWorthAxis);
 
   private final Label holdingsValue = new Label();
   private final Label stockValueValue = new Label();
@@ -73,87 +73,83 @@ public class PortfolioView extends BorderPane implements Observer {
 
   private void buildLayout() {
     setPadding(new Insets(10));
-    setTop(buildHeader());
-    setCenter(buildContent());
-  }
+    titleLabel.getStyleClass().add("section-title");
+    ViewHelpers.autoSizeTable(holdingsTable);
 
-  private Node buildHeader() {
-    Separator separator = new Separator();
-    VBox header = new VBox(titleLabel, separator);
-    header.setSpacing(8);
-    header.setPadding(new Insets(0, 0, 10, 0));
-    return header;
-  }
+    Node chartPanel = buildNetWorthChart();
+    VBox content = new VBox(
+        titleLabel, chartPanel, buildSummaryBar(), ViewHelpers.tableWrapper(holdingsTable));
+    content.setSpacing(14);
 
-  private Node buildContent() {
-    VBox content = new VBox(buildNetWorthChart(), buildSummaryBar(), holdingsTable);
-    content.setSpacing(10);
-    VBox.setVgrow(holdingsTable, Priority.ALWAYS);
-    return content;
+    setCenter(ViewHelpers.pageScrollPane(content));
   }
 
   private Node buildNetWorthChart() {
     Label chartTitle = new Label("NET WORTH OVER TIME");
+    chartTitle.getStyleClass().add("portfolio-panel-header");
 
     VBox chartBox = new VBox(chartTitle, netWorthChart);
-    chartBox.setSpacing(8);
+    chartBox.getStyleClass().add("portfolio-panel");
     return chartBox;
   }
 
   private void setupNetWorthChart() {
     netWorthAxis.setForceZeroInRange(false);
+    netWorthAxis.setMinorTickVisible(false);
     netWorthChart.setAnimated(false);
-    netWorthChart.setCreateSymbols(true);
+    netWorthChart.setCreateSymbols(false);
     netWorthChart.setLegendVisible(false);
-    netWorthChart.setPrefHeight(320);
+    netWorthChart.setHorizontalGridLinesVisible(false);
+    netWorthChart.setVerticalGridLinesVisible(false);
+    netWorthChart.setPrefHeight(420);
   }
 
   private Node buildSummaryBar() {
     HBox bar = new HBox(
-        buildSummaryBox("Holdings", holdingsValue),
-        buildSummaryBox("Stock Value ($)", stockValueValue),
-        buildSummaryBox("Total Gain/Loss ($)", totalGainLossValue),
-        buildSummaryBox("Total Gain/Loss (%)", totalGainLossPercentValue)
+        buildSummaryBox("HOLDINGS", holdingsValue),
+        buildSummaryBox("STOCK VALUE", stockValueValue),
+        buildSummaryBox("TOTAL GAIN / LOSS", totalGainLossValue),
+        buildSummaryBox("RETURN", totalGainLossPercentValue)
     );
-    bar.setSpacing(10);
+    bar.getStyleClass().add("summary-bar");
     return bar;
   }
 
   private Node buildSummaryBox(String title, Label valueLabel) {
     Label titleLabel = new Label(title);
-    Separator underline = new Separator();
-    VBox box = new VBox(titleLabel, underline, valueLabel);
-    box.setSpacing(4);
-    box.setPadding(new Insets(8));
+    titleLabel.getStyleClass().add("summary-title");
+    valueLabel.getStyleClass().add("summary-value");
+    VBox box = new VBox(titleLabel, valueLabel);
+    box.getStyleClass().add("summary-box");
     HBox.setHgrow(box, Priority.ALWAYS);
     return box;
   }
 
   private void setupColumns() {
-    TableColumn<Share, String> symbolCol = new TableColumn<>("Symbol");
+    TableColumn<Share, String> symbolCol = new TableColumn<>("SYMBOL");
     symbolCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getStock().getSymbol()));
+    symbolCol.setCellFactory(ViewHelpers.symbolCellFactory());
 
-    TableColumn<Share, String> companyCol = new TableColumn<>("Company");
+    TableColumn<Share, String> companyCol = new TableColumn<>("COMPANY");
     companyCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getStock().getCompany()));
 
     TableColumn<Share, BigDecimal> qtyCol = TableColumns.numericColumn(
-        "Qty", Share::getQuantity, BigDecimal::toPlainString);
+        "QTY", Share::getQuantity, BigDecimal::toPlainString);
     TableColumn<Share, BigDecimal> buyPriceCol = TableColumns.numericColumn(
-        "Buy Price ($)", Share::getPurchasePrice, BigDecimal::toPlainString);
+        "PURCHASE ($)", Share::getPurchasePrice, v -> Money.format(v).substring(1));
     TableColumn<Share, BigDecimal> currentPriceCol = TableColumns.numericColumn(
-        "Current Price ($)", s -> s.getStock().getSalesPrice(), BigDecimal::toPlainString);
-    TableColumn<Share, BigDecimal> gainLossCol = TableColumns.numericColumn(
-        "Gain / Loss ($)", Share::getNetGainLoss, PortfolioView::formatMovement);
-    TableColumn<Share, BigDecimal> gainLossPercentCol = TableColumns.numericColumn(
-        "Gain / Loss (%)", Share::getNetGainLossPercent, Percentages::format);
+        "CURRENT ($)", s -> s.getStock().getSalesPrice(), v -> Money.format(v).substring(1));
+    TableColumn<Share, BigDecimal> gainLossCol = TableColumns.coloredNumericColumn(
+        "GAIN / LOSS ($)", Share::getNetGainLoss, Money::formatWithArrow);
 
-    TableColumn<Share, Void> actionCol = new TableColumn<>("Action");
+    TableColumn<Share, Void> actionCol = new TableColumn<>("");
     actionCol.setCellFactory(col -> new TableCell<Share, Void>() {
-      private final Button sellButton = new Button("Sell");
+      private final Button sellButton = new Button("SELL");
 
       {
+        sellButton.getStyleClass().add("sell-button");
         sellButton.setOnAction(e -> {
           Share share = getTableView().getItems().get(getIndex());
           sellHandler.accept(share);
@@ -169,7 +165,8 @@ public class PortfolioView extends BorderPane implements Observer {
 
     holdingsTable.getColumns().addAll(
         symbolCol, companyCol, qtyCol, buyPriceCol,
-        currentPriceCol, gainLossCol, gainLossPercentCol, actionCol);
+        currentPriceCol, gainLossCol, actionCol);
+    holdingsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
   }
 
   @Override
@@ -264,8 +261,4 @@ public class PortfolioView extends BorderPane implements Observer {
     this.sellHandler = handler;
   }
 
-  private static String formatMovement(BigDecimal value) {
-    String sign = value.signum() >= 0 ? "+" : "";
-    return sign + value.toPlainString();
-  }
 }

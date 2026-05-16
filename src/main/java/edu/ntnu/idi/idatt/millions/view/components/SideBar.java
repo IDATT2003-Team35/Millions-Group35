@@ -20,6 +20,13 @@ public class SideBar extends VBox {
   private final Button sellAllButton = new Button("Sell All and Quit");
 
   public SideBar() {
+    getStyleClass().add("side-bar");
+    sellAllButton.getStyleClass().add("sell-all-button");
+
+    for (Button b : new Button[] {marketButton, portfolioButton, transactionButton, sellAllButton}) {
+      b.setMaxWidth(Double.MAX_VALUE);
+    }
+
     setSpacing(8);
     setPadding(new Insets(10));
 

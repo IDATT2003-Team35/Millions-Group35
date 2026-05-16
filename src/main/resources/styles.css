@@ -1,0 +1,652 @@
+/* Millions — global styles
+ *
+ * Order:
+ *   1. Design tokens
+ *   2. Typography
+ *   3. Shared patterns
+ *   4. Buttons
+ *   5. Form fields
+ *   6. Status bar
+ *   7. Side bar
+ *   8. Filter tabs
+ *   9. Tables
+ *  10. Top gainers / losers panels
+ *  11. Portfolio
+ *  12. Stock detail
+ *  13. Charts
+ *  14. Scroll bars
+ */
+
+
+/* ---------- 1. Design tokens ---------- */
+
+.root {
+  -fx-bg: #F4ECD6;
+  -fx-surface: #FFFFFF;
+  -fx-ink: #0E0E12;
+  -fx-pink: #C9303F;
+  -fx-gain: #2940C5;
+  -fx-loss: #C9303F;
+  -fx-text: #0E0E12;
+  -fx-text-muted: #6B6660;
+  -fx-border-subtle: #D8CDB2;
+  -fx-navy: #14142B;
+
+  -fx-font-family: "Helvetica Neue", "Arial", sans-serif;
+  -fx-font-size: 13px;
+  -fx-background-color: -fx-bg;
+}
+
+
+/* ---------- 2. Typography ---------- */
+
+.label {
+  -fx-text-fill: -fx-text;
+}
+
+.label.section-title {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-weight: 900;
+  -fx-font-size: 72px;
+  -fx-letter-spacing: -0.02em;
+}
+
+.field-value.gain,
+.label.gain,
+.table-view .table-cell.gain {
+  -fx-text-fill: -fx-gain;
+}
+
+.field-value.loss,
+.label.loss,
+.table-view .table-cell.loss {
+  -fx-text-fill: -fx-loss;
+}
+
+
+/* ---------- 3. Shared patterns ---------- */
+/* Visual styles reused across multiple views to keep the look
+   consistent and avoid duplication. */
+
+/* Small uppercase caption — status bar field titles, summary
+   box titles, info row labels, section headers, etc. */
+.status-stats .field-title,
+.summary-title,
+.info-row-label,
+.detail-section-header,
+.market-meta-row > .label,
+.top-panel-header > .label {
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -fx-text-muted;
+  -fx-letter-spacing: 0.18em;
+}
+
+/* Big monospace value — status stats, summary boxes,
+   info rows on the stock detail page. */
+.status-stats .field-value,
+.summary-value,
+.info-row-value {
+  -fx-font-family: "Menlo", "Consolas", monospace;
+  -fx-font-weight: bold;
+  -fx-font-size: 22px;
+}
+
+.info-row-value {
+  -fx-font-size: 24px;
+}
+
+/* White card with an ink border — used by the top gainers/losers
+   panel, the portfolio chart panel, and each summary box. */
+.top-panel,
+.portfolio-panel,
+.summary-box {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1;
+}
+
+/* Dark filled bar — table column headers, the heading of each
+   side panel, and the portfolio chart panel header. */
+.table-view .column-header-background,
+.table-view .column-header-background .filler,
+.table-view .corner,
+.top-panel > .label:first-child,
+.portfolio-panel-header {
+  -fx-background-color: -fx-ink;
+}
+
+.top-panel > .label:first-child,
+.portfolio-panel-header {
+  -fx-text-fill: #FFFFFF;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-letter-spacing: 0.15em;
+  -fx-padding: 12 16;
+}
+
+.portfolio-panel-header {
+  -fx-max-width: infinity;
+}
+
+
+/* ---------- 4. Buttons ---------- */
+
+/* Outline button — used by sell buttons inside tables and the
+   "← Back to market" navigation button. */
+.table-view .table-cell .button,
+.sell-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -fx-ink;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1;
+  -fx-background-radius: 0;
+  -fx-font-size: 11px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.08em;
+  -fx-padding: 6 14;
+  -fx-cursor: hand;
+}
+
+.table-view .table-cell .button:hover,
+.sell-button:hover {
+  -fx-background-color: -fx-ink;
+  -fx-text-fill: -fx-surface;
+}
+
+/* Primary dark button — advance-week in the status bar. */
+.advance-button {
+  -fx-background-color: -fx-ink;
+  -fx-text-fill: #FFFFFF;
+  -fx-background-radius: 0;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.1em;
+  -fx-padding: 16 32;
+  -fx-cursor: hand;
+}
+
+.advance-button:hover {
+  -fx-background-color: #2A2A30;
+}
+
+/* Primary pink button — main "BUY" CTA on the stock detail page. */
+.buy-button-large {
+  -fx-background-color: -fx-pink;
+  -fx-text-fill: #FFFFFF;
+  -fx-background-radius: 0;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.12em;
+  -fx-padding: 18 24;
+  -fx-cursor: hand;
+}
+
+.buy-button-large:hover {
+  -fx-background-color: derive(-fx-pink, -10%);
+}
+
+/* Text link — "← Back to market" pseudo-link in the header. */
+.text-link {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-text-fill: -fx-pink;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.08em;
+  -fx-padding: 4 0;
+  -fx-cursor: hand;
+}
+
+.text-link:hover {
+  -fx-text-fill: -fx-ink;
+}
+
+
+/* ---------- 5. Form fields ---------- */
+
+.text-field {
+  -fx-background-color: -fx-surface;
+  -fx-text-fill: -fx-text;
+  -fx-prompt-text-fill: -fx-text-muted;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1;
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-padding: 10 14;
+  -fx-font-size: 13px;
+}
+
+.text-field:focused {
+  -fx-border-color: -fx-pink;
+}
+
+
+/* ---------- 6. Status bar ---------- */
+
+.status-bar {
+  -fx-background-color: -fx-surface;
+  -fx-alignment: CENTER_LEFT;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 0 0 1 0;
+}
+
+.logo-block {
+  -fx-background-color: -fx-pink;
+  -fx-pref-width: 220;
+  -fx-min-width: 220;
+}
+
+.logo-title {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-weight: 900;
+  -fx-font-size: 42px;
+  -fx-text-fill: -fx-navy;
+  -fx-letter-spacing: 0.02em;
+}
+
+.logo-subtitle {
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-text-fill: rgba(20, 20, 43, 0.7);
+  -fx-letter-spacing: 0.2em;
+}
+
+.logo-stripe {
+  -fx-background-color: -fx-gain;
+}
+
+.status-stats {
+  -fx-padding: 0 16 0 24;
+  -fx-alignment: CENTER_LEFT;
+}
+
+.status-stats > .status-field {
+  -fx-padding: 0 24;
+  -fx-spacing: 4;
+  -fx-alignment: CENTER_LEFT;
+  -fx-border-color: transparent -fx-ink transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+
+.status-stats > .status-field:last-child {
+  -fx-border-color: transparent;
+}
+
+
+/* ---------- 7. Side bar ---------- */
+
+.side-bar {
+  -fx-background-color: -fx-surface;
+  -fx-padding: 28 12 18 12;
+  -fx-spacing: 4;
+  -fx-pref-width: 220;
+  -fx-border-color: transparent -fx-ink transparent transparent;
+  -fx-border-width: 0 1 0 0;
+}
+
+.side-bar > .label {
+  -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.2em;
+  -fx-padding: 0 16 16 16;
+}
+
+.side-bar > .button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-alignment: CENTER_LEFT;
+  -fx-padding: 14 16;
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0 0 0 3;
+  -fx-cursor: hand;
+}
+
+.side-bar > .button:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.04);
+  -fx-text-fill: -fx-text;
+}
+
+.side-bar > .button.active {
+  -fx-background-color: rgba(0, 0, 0, 0.06);
+  -fx-text-fill: -fx-text;
+  -fx-border-color: -fx-pink;
+  -fx-border-width: 0 0 0 4;
+}
+
+.side-bar > .sell-all-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -fx-pink;
+  -fx-border-color: -fx-pink;
+  -fx-border-width: 1;
+  -fx-font-weight: bold;
+  -fx-padding: 12 16;
+  -fx-letter-spacing: 0.05em;
+}
+
+.side-bar > .sell-all-button:hover {
+  -fx-background-color: rgba(201, 48, 63, 0.12);
+}
+
+
+/* ---------- 8. Filter tabs ---------- */
+
+.filter-tab {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1 1 1 0;
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 11px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.06em;
+  -fx-padding: 8 18;
+  -fx-cursor: hand;
+}
+
+.filter-tab-first {
+  -fx-border-width: 1;
+}
+
+.filter-tab:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.04);
+}
+
+.filter-tab:selected {
+  -fx-background-color: -fx-ink;
+  -fx-text-fill: #FFFFFF;
+}
+
+.filter-tab-text {
+  -fx-text-fill: -fx-text-muted;
+  -fx-font-size: 11px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.06em;
+}
+
+.filter-tab:selected .filter-tab-text {
+  -fx-text-fill: #FFFFFF;
+}
+
+.filter-count-badge {
+  -fx-background-color: -fx-ink;
+  -fx-background-radius: 10;
+  -fx-text-fill: #FFFFFF;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-min-width: 20;
+  -fx-alignment: CENTER;
+  -fx-padding: 2 7;
+}
+
+.filter-tab:selected .filter-count-badge {
+  -fx-background-color: #FFFFFF;
+  -fx-text-fill: -fx-ink;
+}
+
+
+/* ---------- 9. Tables ---------- */
+/* The wrapper renders the outer ink border; the table itself
+   sits on top of it so the border shows on all four sides. */
+
+.table-wrapper {
+  -fx-background-color: -fx-ink;
+  -fx-padding: 2;
+}
+
+.table-view {
+  -fx-background-color: -fx-surface;
+  -fx-padding: 0;
+  -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header {
+  -fx-background-color: transparent;
+  -fx-padding: 16 14;
+}
+
+.table-view .column-header .label {
+  -fx-text-fill: #FFFFFF;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.2em;
+  -fx-alignment: CENTER_LEFT;
+}
+
+.table-view .table-row-cell,
+.table-view .table-row-cell:odd {
+  -fx-background-color: -fx-surface;
+}
+
+.table-view .table-row-cell {
+  -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-cell-size: 52;
+}
+
+.table-view .table-row-cell:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.03);
+}
+
+.table-view .table-row-cell:selected {
+  -fx-background-color: rgba(0, 0, 0, 0.06);
+}
+
+.table-view .table-cell {
+  -fx-text-fill: -fx-text;
+  -fx-padding: 18 14;
+  -fx-font-size: 14px;
+}
+
+.table-view .table-cell.symbol-cell {
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.02em;
+}
+
+.table-view .table-cell.week-cell {
+  -fx-text-fill: -fx-pink;
+  -fx-font-weight: bold;
+}
+
+.table-view .table-cell.numeric-cell {
+  -fx-font-weight: bold;
+}
+
+.table-view .placeholder .label {
+  -fx-text-fill: -fx-text-muted;
+}
+
+
+/* ---------- 10. Top gainers / losers panels ---------- */
+
+.top-panel {
+  -fx-pref-width: 240;
+}
+
+.top-panel > .label:first-child {
+  -fx-min-width: 240;
+}
+
+.top-panel-body {
+  -fx-padding: 0;
+  -fx-spacing: 0;
+}
+
+.top-panel-row {
+  -fx-padding: 6 18;
+  -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-cursor: hand;
+}
+
+.top-panel-row:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.04);
+}
+
+.top-panel-symbol {
+  -fx-font-weight: bold;
+  -fx-min-width: 56;
+  -fx-letter-spacing: 0.04em;
+}
+
+.top-panel-change {
+  -fx-font-weight: bold;
+}
+
+/* Vertical separator between the table and the side panels. */
+.side-separator {
+  -fx-background-color: -fx-ink;
+  -fx-pref-width: 2;
+  -fx-min-width: 2;
+}
+
+/* Small "503 INSTRUMENTS" meta row above the filter tabs. */
+.market-meta-row {
+  -fx-padding: 4 0 8 0;
+  -fx-alignment: CENTER_LEFT;
+}
+
+/* SYM / CHG header row inside top gainers and top losers. */
+.top-panel-header {
+  -fx-padding: 8 18 4 18;
+  -fx-alignment: CENTER_LEFT;
+}
+
+
+/* ---------- 11. Portfolio ---------- */
+
+.summary-bar {
+  -fx-spacing: -1;
+}
+
+.summary-box {
+  -fx-padding: 16 20;
+  -fx-spacing: 6;
+}
+
+.summary-subtitle {
+  -fx-font-size: 10px;
+  -fx-text-fill: -fx-text-muted;
+}
+
+/* Page-level scroll pane wrapping the portfolio and transactions
+   content so the whole page scrolls (not individual tables). */
+.portfolio-scroll,
+.portfolio-scroll > .viewport {
+  -fx-background-color: transparent;
+}
+
+.portfolio-scroll {
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+
+/* ---------- 12. Stock detail ---------- */
+
+.detail-header {
+  -fx-padding: 0 0 8 0;
+  -fx-border-color: transparent transparent -fx-ink transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.detail-kicker {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-weight: 900;
+  -fx-font-size: 24px;
+  -fx-letter-spacing: 0.02em;
+}
+
+.detail-viewing {
+  -fx-font-size: 13px;
+  -fx-font-style: italic;
+  -fx-text-fill: -fx-text-muted;
+}
+
+.detail-section-header {
+  -fx-padding: 0 0 4 0;
+}
+
+.info-row {
+  -fx-padding: 10 0;
+  -fx-spacing: 4;
+  -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+
+/* ---------- 13. Charts ---------- */
+
+.chart {
+  -fx-padding: 14;
+  -fx-background-color: -fx-surface;
+}
+
+.chart-plot-background {
+  -fx-background-color: -fx-surface;
+}
+
+.chart-content {
+  -fx-padding: 4;
+}
+
+.chart-alternative-row-fill,
+.chart-alternative-column-fill {
+  -fx-fill: transparent;
+  -fx-stroke: transparent;
+}
+
+.axis {
+  -fx-tick-label-fill: -fx-text-muted;
+  -fx-tick-label-font-size: 10px;
+  -fx-tick-label-font-weight: bold;
+}
+
+.axis .axis-tick-mark {
+  -fx-stroke: rgba(0, 0, 0, 0.2);
+}
+
+.axis-label {
+  -fx-text-fill: -fx-text-muted;
+}
+
+.default-color0.chart-series-line {
+  -fx-stroke: -fx-gain;
+  -fx-stroke-width: 2;
+}
+
+.default-color0.chart-series-area-fill {
+  -fx-fill: rgba(41, 64, 197, 0.08);
+  -fx-stroke: transparent;
+}
+
+
+/* ---------- 14. Scroll bars ---------- */
+
+.scroll-bar,
+.scroll-bar .track {
+  -fx-background-color: -fx-surface;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: -fx-border-subtle;
+  -fx-background-radius: 0;
+}
+
+.scroll-bar .thumb:hover {
+  -fx-background-color: -fx-text-muted;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button,
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+  -fx-shape: null;
+}

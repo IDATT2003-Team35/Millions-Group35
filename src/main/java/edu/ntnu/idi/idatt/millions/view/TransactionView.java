@@ -4,12 +4,16 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
+import edu.ntnu.idi.idatt.millions.util.Money;
+import edu.ntnu.idi.idatt.millions.view.components.FilterTabBar;
+import edu.ntnu.idi.idatt.millions.view.components.ViewHelpers;
+import java.util.Map;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -17,8 +21,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -30,9 +36,23 @@ public class TransactionView extends BorderPane implements Observer {
 
   private final GameSession session;
 
-  private final Label titleLabel = new Label("TRANSACTION HISTORY");
+  private final Label titleLabel = ViewHelpers.sectionTitle("TRANSACTIONS");
 
   private final TextField searchField = new TextField();
+
+  private final Label totalBoughtValue = new Label();
+  private final Label totalBoughtSubtitle = new Label();
+  private final Label totalSoldValue = new Label();
+  private final Label totalSoldSubtitle = new Label();
+  private final Label netActivityValue = new Label();
+  private final Label recordsValue = new Label();
+
+  private final FilterTabBar filterTabs = new FilterTabBar();
+  {
+    filterTabs.addTab("ALL", "ALL");
+    filterTabs.addTab("BUYS", "BUYS");
+    filterTabs.addTab("SELLS", "SELLS");
+  }
 
   private final TableView<Transaction> transactionTable = new TableView<>();
 
@@ -58,52 +78,102 @@ public class TransactionView extends BorderPane implements Observer {
 
   private void buildLayout() {
     setPadding(new Insets(10));
-    setTop(buildHeader());
-    setCenter(buildContent());
+    searchField.setPromptText("Filter by symbol, type, or week");
+    searchField.setPrefWidth(280);
+
+    filterTabs.setOnSelectionChange(() -> onUpdate.run());
+
+    Region filterSpacer = new Region();
+    HBox.setHgrow(filterSpacer, Priority.ALWAYS);
+    HBox filterRow = new HBox(filterTabs, filterSpacer, searchField);
+    filterRow.setAlignment(Pos.CENTER_LEFT);
+
+    ViewHelpers.autoSizeTable(transactionTable);
+
+    VBox content = new VBox(
+        titleLabel, buildSummaryBar(), filterRow, ViewHelpers.tableWrapper(transactionTable));
+    content.setSpacing(14);
+
+    setCenter(ViewHelpers.pageScrollPane(content));
   }
 
-  private Node buildHeader() {
-    HBox searchRow = new HBox(new Label("Search:"), searchField);
-    searchRow.setSpacing(8);
-    Separator separator = new Separator();
-    VBox header = new VBox(titleLabel, separator, searchRow);
-    header.setSpacing(8);
-    header.setPadding(new Insets(0, 0, 10, 0));
-    return header;
+  private Node buildSummaryBar() {
+    HBox bar = new HBox(
+        buildSummaryBox("TOTAL BOUGHT", totalBoughtValue, totalBoughtSubtitle),
+        buildSummaryBox("TOTAL SOLD", totalSoldValue, totalSoldSubtitle),
+        buildSummaryBox("NET ACTIVITY", netActivityValue, new Label("Capital deployed")),
+        buildSummaryBox("RECORDS", recordsValue, new Label("All time"))
+    );
+    bar.getStyleClass().add("summary-bar");
+    return bar;
   }
 
-  private Node buildContent() {
-    VBox content = new VBox(transactionTable);
-    content.setSpacing(10);
-    VBox.setVgrow(transactionTable, Priority.ALWAYS);
-    return content;
+  private Node buildSummaryBox(String title, Label valueLabel, Label subtitleLabel) {
+    Label titleLabelLocal = new Label(title);
+    titleLabelLocal.getStyleClass().add("summary-title");
+    valueLabel.getStyleClass().add("summary-value");
+    subtitleLabel.getStyleClass().add("summary-subtitle");
+    VBox box = new VBox(titleLabelLocal, valueLabel, subtitleLabel);
+    box.getStyleClass().add("summary-box");
+    HBox.setHgrow(box, Priority.ALWAYS);
+    return box;
   }
 
 
   private void setupColumns() {
-    TableColumn<Transaction, String> typeCol = new TableColumn<>("Type");
+    TableColumn<Transaction, String> typeCol = new TableColumn<>("TYPE");
     typeCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue() instanceof Purchase ? "BUY" : "SELL"));
+    typeCol.setCellFactory(c -> new TableCell<>() {
+      @Override
+      protected void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        getStyleClass().removeAll("gain", "loss");
+        if (empty || item == null) {
+          setText("");
+        } else if ("BUY".equals(item)) {
+          setText("▲ BUY");
+          getStyleClass().add("gain");
+        } else {
+          setText("▼ SELL");
+          getStyleClass().add("loss");
+        }
+      }
+    });
 
-    TableColumn<Transaction, String> symbolCol = new TableColumn<>("Symbol");
+    TableColumn<Transaction, String> symbolCol = new TableColumn<>("SYMBOL");
     symbolCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getShare().getStock().getSymbol()));
+    symbolCol.setCellFactory(ViewHelpers.symbolCellFactory());
 
-    TableColumn<Transaction, String> qtyCol = new TableColumn<>("Qty");
+    TableColumn<Transaction, String> qtyCol = new TableColumn<>("QTY");
     qtyCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getShare().getQuantity().toPlainString()));
 
-    TableColumn<Transaction, String> totalCol = new TableColumn<>("Total ($)");
-    totalCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getCalculator().calculateGross().toPlainString()));
+    TableColumn<Transaction, String> totalCol = new TableColumn<>("TOTAL ($)");
+    totalCol.setCellValueFactory(c -> {
+      BigDecimal gross = c.getValue().getCalculator().calculateGross();
+      return new SimpleStringProperty(Money.format(gross).substring(1));
+    });
 
-    TableColumn<Transaction, String> weekCol = new TableColumn<>("Week");
+    TableColumn<Transaction, String> weekCol = new TableColumn<>("WEEK");
     weekCol.setCellValueFactory(c ->
-        new SimpleStringProperty(String.valueOf(c.getValue().getWeek())));
+        new SimpleStringProperty("W" + c.getValue().getWeek()));
+    weekCol.setCellFactory(c -> {
+      TableCell<Transaction, String> cell = new TableCell<>() {
+        @Override
+        protected void updateItem(String item, boolean empty) {
+          super.updateItem(item, empty);
+          setText(empty || item == null ? "" : item);
+        }
+      };
+      cell.getStyleClass().add("week-cell");
+      return cell;
+    });
 
-    TableColumn<Transaction, Void> actionCol = new TableColumn<>("Action");
+    TableColumn<Transaction, Void> actionCol = new TableColumn<>("");
     actionCol.setCellFactory(col -> new TableCell<Transaction, Void>() {
-      private final Button viewTransactionButton = new Button("Show Receipt");
+      private final Button viewTransactionButton = new Button("RECEIPT");
       {
         viewTransactionButton.setOnAction(e -> {
           Transaction t = getTableView().getItems().get(getIndex());
@@ -120,6 +190,7 @@ public class TransactionView extends BorderPane implements Observer {
 
     transactionTable.getColumns().addAll(
         typeCol, symbolCol, qtyCol, totalCol, weekCol, actionCol);
+    transactionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
   }
 
   @Override
@@ -171,5 +242,31 @@ public class TransactionView extends BorderPane implements Observer {
 
   public TableView<Transaction> getTransactionTable() {
     return transactionTable;
+  }
+
+  public String getSelectedFilter() {
+    return filterTabs.getSelectedCode();
+  }
+
+  public void setFilterCounts(int all, int buys, int sells) {
+    filterTabs.setCounts(Map.of("ALL", all, "BUYS", buys, "SELLS", sells));
+  }
+
+  public void setTotalBought(String value, int orderCount) {
+    totalBoughtValue.setText(value);
+    totalBoughtSubtitle.setText(orderCount + " buy orders");
+  }
+
+  public void setTotalSold(String value, int orderCount) {
+    totalSoldValue.setText(value);
+    totalSoldSubtitle.setText(orderCount + " sell orders");
+  }
+
+  public void setNetActivity(String value) {
+    netActivityValue.setText(value);
+  }
+
+  public void setRecordsCount(int count) {
+    recordsValue.setText(String.valueOf(count));
   }
 }
