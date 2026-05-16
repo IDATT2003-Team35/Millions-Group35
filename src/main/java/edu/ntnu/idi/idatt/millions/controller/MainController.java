@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
+import edu.ntnu.idi.idatt.millions.file.save.GameSaveException;
+import edu.ntnu.idi.idatt.millions.file.save.GameSaveService;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
@@ -13,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class MainController {
 
   private final GameSession session;
   private final MainView view;
+  private final GameSaveService saveService;
 
   private final Node marketContent;
   private final Node portfolioContent;
@@ -42,6 +46,7 @@ public class MainController {
     }
     this.session = session;
     this.view = new MainView(session);
+    this.saveService = createSaveService();
 
     this.marketContent = new MarketController(session, this).getView();
     this.portfolioContent = new PortfolioController(session, this).getView();
@@ -49,6 +54,7 @@ public class MainController {
     this.transactionContent = new TransactionController(session, this).getView();
     wireStatusBar();
     wireNavigation();
+    wireSave();
     wireSellAll();
     showMarket();
   }
@@ -68,8 +74,35 @@ public class MainController {
     view.getSideBar().getTransactionButton().setOnAction(e -> showTransaction());
   }
 
+  private void wireSave() {
+    view.getSideBar().getSaveButton().setOnAction(e -> handleSaveGame());
+  }
+
   private void wireSellAll() {
     view.getSideBar().getSellAllButton().setOnAction(e -> handleSellAllAndQuit());
+  }
+
+  private GameSaveService createSaveService() {
+    try {
+      return new GameSaveService();
+    } catch (GameSaveException e) {
+      throw new IllegalStateException("Could not initialize save service", e);
+    }
+  }
+
+  private void handleSaveGame() {
+    try {
+      Path savePath = saveService.save(session);
+      Alert success = new Alert(Alert.AlertType.INFORMATION);
+      success.setHeaderText("Game saved");
+      success.setContentText("Saved to: " + savePath.getFileName());
+      success.showAndWait();
+    } catch (GameSaveException e) {
+      Alert error = new Alert(Alert.AlertType.ERROR);
+      error.setHeaderText("Could not save game");
+      error.setContentText(e.getMessage());
+      error.showAndWait();
+    }
   }
 
   /**
