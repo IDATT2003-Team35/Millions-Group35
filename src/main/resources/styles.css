@@ -4,6 +4,7 @@
   -fx-bg: #F4ECD6; -fx-surface: #FFFFFF; -fx-ink: #0E0E12;
   -fx-pink: #C9303F; -fx-gain: #2940C5; -fx-loss: #C9303F;
   -fx-text: #0E0E12; -fx-text-muted: #6B6660; -fx-border-subtle: #D8CDB2;
+  -fx-navy: #14142B;
   -fx-font-family: "Helvetica Neue", "Arial", sans-serif;
   -fx-font-size: 13px;
   -fx-background-color: -fx-bg;
@@ -36,7 +37,9 @@
 }
 .table-view .column-header-background,
 .table-view .column-header-background .filler,
-.table-view .corner { -fx-background-color: -fx-ink; }
+.table-view .corner,
+.top-panel > .label:first-child,
+.portfolio-panel-header { -fx-background-color: -fx-ink; }
 .table-view .column-header { -fx-background-color: transparent; -fx-padding: 16 14; }
 .table-view .column-header .label {
   -fx-text-fill: #FFFFFF; -fx-font-size: 10px; -fx-font-weight: bold;
@@ -52,16 +55,19 @@
 .table-view .table-row-cell:selected { -fx-background-color: rgba(0, 0, 0, 0.06); }
 .table-view .table-cell { -fx-text-fill: -fx-text; -fx-padding: 18 14; -fx-font-size: 14px; }
 .table-view .table-cell.symbol-cell { -fx-font-weight: bold; -fx-letter-spacing: 0.02em; }
+.table-view .table-cell.week-cell { -fx-text-fill: -fx-pink; -fx-font-weight: bold; }
 .table-view .table-cell.numeric-cell { -fx-font-weight: bold; }
 .table-view .placeholder .label { -fx-text-fill: -fx-text-muted; }
-.table-view .table-cell .button {
-  -fx-background-color: transparent; -fx-text-fill: -fx-pink;
-  -fx-border-color: -fx-pink; -fx-border-width: 1;
+.table-view .table-cell .button, .sell-button {
+  -fx-background-color: transparent; -fx-text-fill: -fx-ink;
+  -fx-border-color: -fx-ink; -fx-border-width: 1;
   -fx-font-size: 11px; -fx-font-weight: bold;
   -fx-padding: 6 14; -fx-letter-spacing: 0.08em;
   -fx-background-radius: 0; -fx-cursor: hand;
 }
-.table-view .table-cell .button:hover { -fx-background-color: -fx-pink; -fx-text-fill: -fx-surface; }
+.table-view .table-cell .button:hover, .sell-button:hover {
+  -fx-background-color: -fx-ink; -fx-text-fill: -fx-surface;
+}
 
 /* Status bar */
 .status-bar {
@@ -72,12 +78,13 @@
 .logo-title {
   -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
   -fx-font-weight: 900; -fx-font-size: 42px;
-  -fx-text-fill: #14142B; -fx-letter-spacing: 0.02em;
+  -fx-text-fill: -fx-navy; -fx-letter-spacing: 0.02em;
 }
 .logo-subtitle {
   -fx-font-size: 10px; -fx-font-weight: bold;
   -fx-text-fill: rgba(20, 20, 43, 0.7); -fx-letter-spacing: 0.2em;
 }
+.logo-stripe { -fx-background-color: -fx-gain; }
 .status-stats { -fx-padding: 0 16 0 24; -fx-alignment: CENTER_LEFT; }
 .status-stats > .status-field {
   -fx-padding: 0 24; -fx-spacing: 4; -fx-alignment: CENTER_LEFT;
@@ -85,11 +92,12 @@
   -fx-border-width: 0 1 0 0;
 }
 .status-stats > .status-field:last-child { -fx-border-color: transparent; }
-.status-stats .field-title {
+/* Caption + value pairs — shared by status bar and summary boxes */
+.status-stats .field-title, .summary-title {
   -fx-font-size: 10px; -fx-font-weight: bold;
   -fx-text-fill: -fx-text-muted; -fx-letter-spacing: 0.18em;
 }
-.status-stats .field-value {
+.status-stats .field-value, .summary-value {
   -fx-font-family: "Menlo", "Consolas", monospace;
   -fx-font-size: 22px; -fx-font-weight: bold;
 }
@@ -105,7 +113,7 @@
 .side-bar {
   -fx-background-color: -fx-surface; -fx-padding: 28 12 18 12;
   -fx-spacing: 4; -fx-pref-width: 220;
-  -fx-border-color: transparent -fx-border-subtle transparent transparent;
+  -fx-border-color: transparent -fx-ink transparent transparent;
   -fx-border-width: 0 1 0 0;
 }
 .side-bar > .label {
@@ -129,7 +137,7 @@
   -fx-font-weight: bold; -fx-border-color: -fx-pink; -fx-border-width: 1;
   -fx-padding: 12 16; -fx-letter-spacing: 0.05em;
 }
-.side-bar > .sell-all-button:hover { -fx-background-color: rgba(233, 30, 99, 0.15); }
+.side-bar > .sell-all-button:hover { -fx-background-color: rgba(201, 48, 63, 0.12); }
 
 /* Filter tabs */
 .filter-tab {
@@ -156,19 +164,58 @@
 }
 .filter-tab:selected .filter-count-badge { -fx-background-color: #FFFFFF; -fx-text-fill: -fx-ink; }
 
+/* Portfolio (shared "white card with ink border" — see also .top-panel, .summary-box) */
+.top-panel, .portfolio-panel, .summary-box {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink; -fx-border-width: 1;
+}
+/* Shared "dark header bar with white text" — used inside .top-panel and .portfolio-panel */
+.top-panel > .label:first-child, .portfolio-panel-header {
+  -fx-text-fill: #FFFFFF;
+  -fx-font-weight: bold; -fx-font-size: 13px;
+  -fx-letter-spacing: 0.15em; -fx-padding: 12 16;
+}
+.portfolio-panel-header { -fx-max-width: infinity; }
+
+.portfolio-scroll, .portfolio-scroll > .viewport { -fx-background-color: transparent; }
+.portfolio-scroll { -fx-background-insets: 0; -fx-padding: 0; }
+
+/* Chart styling */
+.chart { -fx-padding: 14; -fx-background-color: -fx-surface; }
+.chart-plot-background { -fx-background-color: -fx-surface; }
+.chart-content { -fx-padding: 4; }
+.chart-alternative-row-fill { -fx-fill: transparent; -fx-stroke: transparent; }
+.chart-alternative-column-fill { -fx-fill: transparent; -fx-stroke: transparent; }
+.axis .axis-tick-mark { -fx-stroke: rgba(0, 0, 0, 0.2); }
+.axis {
+  -fx-tick-label-fill: -fx-text-muted;
+  -fx-tick-label-font-size: 10px;
+  -fx-tick-label-font-weight: bold;
+}
+.axis-label { -fx-text-fill: -fx-text-muted; }
+.default-color0.chart-series-line {
+  -fx-stroke: -fx-gain; -fx-stroke-width: 2;
+}
+.default-color0.chart-series-area-fill {
+  -fx-fill: rgba(41, 64, 197, 0.08);
+  -fx-stroke: transparent;
+}
+.default-color0.chart-area-symbol {
+  -fx-background-color: -fx-gain, -fx-surface;
+  -fx-background-insets: 0, 2;
+  -fx-background-radius: 5;
+  -fx-padding: 4;
+}
+.summary-bar { -fx-spacing: -1; }
+.summary-box { -fx-padding: 16 20; -fx-spacing: 6; }
+.summary-subtitle { -fx-font-size: 10px; -fx-text-fill: -fx-text-muted; }
+
 /* Side separator (between table and gainers/losers) */
 .side-separator { -fx-background-color: -fx-ink; -fx-pref-width: 2; -fx-min-width: 2; }
 
-/* Top gainers / losers */
-.top-panel {
-  -fx-background-color: -fx-surface;
-  -fx-border-color: -fx-ink; -fx-border-width: 1; -fx-pref-width: 240;
-}
-.top-panel > .label:first-child {
-  -fx-background-color: -fx-ink; -fx-text-fill: #FFFFFF;
-  -fx-font-weight: bold; -fx-font-size: 13px;
-  -fx-letter-spacing: 0.15em; -fx-padding: 12 16; -fx-min-width: 240;
-}
+/* Top gainers / losers (panel styling shared via .top-panel/.portfolio-panel/.summary-box rule) */
+.top-panel { -fx-pref-width: 240; }
+.top-panel > .label:first-child { -fx-min-width: 240; }
 .top-panel-body { -fx-padding: 0; -fx-spacing: 0; }
 .top-panel-row {
   -fx-padding: 6 18;

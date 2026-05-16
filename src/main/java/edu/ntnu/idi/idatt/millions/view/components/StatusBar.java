@@ -85,7 +85,7 @@ public class StatusBar extends HBox {
     textContent.setPadding(new Insets(16, 24, 8, 24));
 
     Region blueBlock = new Region();
-    blueBlock.setStyle("-fx-background-color: #2940C5;");
+    blueBlock.getStyleClass().add("logo-stripe");
     blueBlock.setPrefHeight(16);
 
     VBox box = new VBox(textContent, blueBlock);
