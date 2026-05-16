@@ -6,6 +6,9 @@ import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.util.TableColumns;
+import edu.ntnu.idi.idatt.millions.view.components.FilterTabBar;
+import edu.ntnu.idi.idatt.millions.view.components.ViewHelpers;
+import java.util.Map;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,9 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -34,21 +34,15 @@ import java.util.function.Consumer;
  */
 public class MarketView extends BorderPane implements Observer {
 
-  private final Label titleLabel = new Label("MARKET");
+  private final Label titleLabel = ViewHelpers.sectionTitle("MARKET");
   private final TextField searchField = new TextField();
   private final Label instrumentCountLabel = new Label();
-  private final ToggleGroup filterGroup = new ToggleGroup();
-  private final Label allCount = new Label();
-  private final Label gainersCount = new Label();
-  private final Label losersCount = new Label();
-  private final ToggleButton allTab = createFilterTab("ALL", allCount);
-  private final ToggleButton gainersTab = createFilterTab("GAINERS", gainersCount);
-  private final ToggleButton losersTab = createFilterTab("LOSERS", losersCount);
+  private final FilterTabBar filterTabs = new FilterTabBar();
   {
-    titleLabel.getStyleClass().add("section-title");
     searchField.setPromptText("Search symbol or company");
-    allTab.getStyleClass().add("filter-tab-first");
-    allTab.setSelected(true);
+    filterTabs.addTab("ALL", "ALL");
+    filterTabs.addTab("GAINERS", "GAINERS");
+    filterTabs.addTab("LOSERS", "LOSERS");
   }
 
   private final TableView<Stock> stockTable = new TableView<>();
@@ -58,7 +52,7 @@ public class MarketView extends BorderPane implements Observer {
   private final VBox gainersPanel;
   private final VBox losersPanel;
   {
-    gainersPanel = buildTopPanel("TOP GAINERS", gainersBox, null);
+    gainersPanel = buildTopPanel("TOP GAINERS", gainersBox, "▲");
     losersPanel = buildTopPanel("TOP LOSERS", losersBox, "▼");
     gainersBox.getStyleClass().add("top-panel-body");
     losersBox.getStyleClass().add("top-panel-body");
@@ -86,8 +80,7 @@ public class MarketView extends BorderPane implements Observer {
   private void buildLayout() {
     setPadding(new Insets(10));
 
-    StackPane tableWrapper = new StackPane(stockTable);
-    tableWrapper.getStyleClass().add("table-wrapper");
+    StackPane tableWrapper = ViewHelpers.tableWrapper(stockTable);
     tableWrapper.setMaxWidth(Double.MAX_VALUE);
     tableWrapper.setMaxHeight(Double.MAX_VALUE);
 
@@ -107,17 +100,10 @@ public class MarketView extends BorderPane implements Observer {
 
     Region filterGap = new Region();
     filterGap.setMinWidth(16);
-    HBox filterRow = new HBox(allTab, gainersTab, losersTab, filterGap, searchField);
+    HBox filterRow = new HBox(filterTabs, filterGap, searchField);
     filterRow.setAlignment(Pos.CENTER_LEFT);
-    filterRow.setSpacing(0);
     searchField.setPrefWidth(240);
-
-    filterGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> {
-      if (newT == null) {
-        allTab.setSelected(true);
-      }
-      onUpdate.run();
-    });
+    filterTabs.setOnSelectionChange(() -> onUpdate.run());
 
     VBox header = new VBox(masthead, metaRow, filterRow);
     header.setSpacing(10);
@@ -143,17 +129,7 @@ public class MarketView extends BorderPane implements Observer {
     TableColumn<Stock, String> symbolCol = new TableColumn<>("SYMBOL");
     symbolCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getSymbol()));
-    symbolCol.setCellFactory(c -> {
-      javafx.scene.control.TableCell<Stock, String> cell = new javafx.scene.control.TableCell<>() {
-        @Override
-        protected void updateItem(String item, boolean empty) {
-          super.updateItem(item, empty);
-          setText(empty || item == null ? "" : item);
-        }
-      };
-      cell.getStyleClass().add("symbol-cell");
-      return cell;
-    });
+    symbolCol.setCellFactory(ViewHelpers.symbolCellFactory());
 
     TableColumn<Stock, String> companyCol = new TableColumn<>("COMPANY");
     companyCol.setCellValueFactory(c ->
@@ -163,7 +139,7 @@ public class MarketView extends BorderPane implements Observer {
         "PRICE", Stock::getSalesPrice, v -> Money.format(v).substring(1));
 
     TableColumn<Stock, BigDecimal> changeCol = TableColumns.coloredNumericColumn(
-        "CHANGE ($)", Stock::getLatestPriceChange, MarketView::formatChange);
+        "CHANGE ($)", Stock::getLatestPriceChange, Money::formatWithArrow);
     TableColumn<Stock, BigDecimal> percentChangeCol = TableColumns.coloredNumericColumn(
         "CHANGE (%)", Stock::getLatestPercentChange, Percentages::formatWithArrow);
     TableColumn<Stock, BigDecimal> allTimeChangeCol = TableColumns.coloredNumericColumn(
@@ -252,15 +228,6 @@ public class MarketView extends BorderPane implements Observer {
     }
   }
 
-  private static String formatChange(BigDecimal change) {
-    BigDecimal rounded = change.setScale(2, java.math.RoundingMode.HALF_UP);
-    if (rounded.signum() == 0) {
-      return "0.00";
-    }
-    String arrow = rounded.signum() > 0 ? "▲ " : "▼ ";
-    return arrow + rounded.abs().toPlainString();
-  }
-
   public TextField getSearchField() {
     return searchField;
   }
@@ -270,37 +237,15 @@ public class MarketView extends BorderPane implements Observer {
   }
 
   public String getSelectedFilter() {
-    Toggle selected = filterGroup.getSelectedToggle();
-    if (selected == gainersTab) {
-      return "GAINERS";
-    }
-    if (selected == losersTab) {
-      return "LOSERS";
-    }
-    return "ALL";
+    return filterTabs.getSelectedCode();
   }
 
   public void setFilterCounts(int all, int gainers, int losers) {
-    allCount.setText(String.valueOf(all));
-    gainersCount.setText(String.valueOf(gainers));
-    losersCount.setText(String.valueOf(losers));
+    filterTabs.setCounts(Map.of("ALL", all, "GAINERS", gainers, "LOSERS", losers));
   }
 
   public void setInstrumentCount(int count) {
     instrumentCountLabel.setText(count + " INSTRUMENTS");
-  }
-
-  private ToggleButton createFilterTab(String text, Label countBadge) {
-    countBadge.getStyleClass().add("filter-count-badge");
-    Label textLabel = new Label(text);
-    textLabel.getStyleClass().add("filter-tab-text");
-    HBox content = new HBox(6, textLabel, countBadge);
-    content.setAlignment(Pos.CENTER);
-    ToggleButton tb = new ToggleButton();
-    tb.setGraphic(content);
-    tb.setToggleGroup(filterGroup);
-    tb.getStyleClass().add("filter-tab");
-    return tb;
   }
 
   private VBox buildTopPanel(String title, VBox body, String indicator) {
