@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Portfolio;
 import edu.ntnu.idi.idatt.millions.model.Share;
+import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.PortfolioView;
 import edu.ntnu.idi.idatt.millions.view.SellView;
@@ -59,17 +60,12 @@ public class PortfolioController {
     Portfolio portfolio = player.getPortfolio();
 
     view.setHoldingsCount(portfolio.getShares().size());
-    view.setStockValue(portfolio.getNetWorth().toPlainString());
+    view.setStockValue(Money.format(portfolio.getNetWorth()));
     BigDecimal totalGainLoss = player.getNetWorth().subtract(player.getStartingMoney());
-    view.setTotalGainLoss(formatMovement(totalGainLoss));
+    view.setTotalGainLoss(Money.formatWithSign(totalGainLoss));
     view.setTotalGainLossPercent(Percentages.format(player.getTotalGainLossPercent()));
     view.setNetWorthHistory(session.getNetWorthHistory());
     view.setShares(portfolio.getShares());
-  }
-
-  private static String formatMovement(BigDecimal value) {
-    String sign = value.signum() >= 0 ? "+" : "";
-    return sign + value.toPlainString();
   }
 
   private void showSellPopup(Share share) {
