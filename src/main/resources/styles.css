@@ -96,6 +96,10 @@
   -fx-font-size: 24px;
 }
 
+.status-stats .status-change-value {
+  -fx-font-size: 16px;
+}
+
 /* White card with an ink border — used by the top gainers/losers
    panel, the portfolio chart panel, and each summary box. */
 .top-panel,
@@ -229,18 +233,20 @@
   -fx-alignment: CENTER_LEFT;
   -fx-border-color: -fx-ink;
   -fx-border-width: 0 0 1 0;
+  -fx-padding: 0 16 0 0;
 }
 
 .logo-block {
   -fx-background-color: -fx-pink;
-  -fx-pref-width: 220;
-  -fx-min-width: 220;
+  -fx-pref-width: 188;
+  -fx-min-width: 188;
+  -fx-max-width: 188;
 }
 
 .logo-title {
   -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
   -fx-font-weight: 900;
-  -fx-font-size: 42px;
+  -fx-font-size: 34px;
   -fx-text-fill: -fx-navy;
   -fx-letter-spacing: 0.02em;
 }
@@ -257,12 +263,12 @@
 }
 
 .status-stats {
-  -fx-padding: 0 16 0 24;
+  -fx-padding: 0 12 0 18;
   -fx-alignment: CENTER_LEFT;
 }
 
 .status-stats > .status-field {
-  -fx-padding: 0 24;
+  -fx-padding: 0 18;
   -fx-spacing: 4;
   -fx-alignment: CENTER_LEFT;
   -fx-border-color: transparent -fx-ink transparent transparent;
@@ -278,9 +284,11 @@
 
 .side-bar {
   -fx-background-color: -fx-surface;
-  -fx-padding: 28 12 18 12;
+  -fx-padding: 18 10 16 10;
   -fx-spacing: 4;
-  -fx-pref-width: 220;
+  -fx-pref-width: 188;
+  -fx-min-width: 188;
+  -fx-max-width: 188;
   -fx-border-color: transparent -fx-ink transparent transparent;
   -fx-border-width: 0 1 0 0;
 }
@@ -299,7 +307,7 @@
   -fx-font-size: 16px;
   -fx-font-weight: bold;
   -fx-alignment: CENTER_LEFT;
-  -fx-padding: 14 16;
+  -fx-padding: 12 14;
   -fx-background-radius: 0;
   -fx-border-color: transparent;
   -fx-border-width: 0 0 0 3;
@@ -330,6 +338,40 @@
 
 .side-bar > .sell-all-button:hover {
   -fx-background-color: rgba(201, 48, 63, 0.12);
+}
+
+.profile-card {
+  -fx-background-color: rgba(0, 0, 0, 0.035);
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1;
+  -fx-padding: 12 12;
+  -fx-spacing: 10;
+}
+
+.profile-title,
+.profile-metric-title {
+  -fx-font-size: 9px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -fx-text-muted;
+  -fx-letter-spacing: 0.16em;
+}
+
+.profile-name {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-size: 22px;
+  -fx-text-fill: -fx-ink;
+}
+
+.profile-metric {
+  -fx-spacing: 2;
+  -fx-padding: 2 0 0 0;
+}
+
+.profile-metric-value {
+  -fx-font-family: "Menlo", "Consolas", monospace;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -fx-ink;
 }
 
 
@@ -418,19 +460,23 @@
   -fx-alignment: CENTER_LEFT;
 }
 
-.table-view .table-row-cell,
-.table-view .table-row-cell:odd {
+.table-view .table-row-cell {
   -fx-background-color: -fx-surface;
+}
+
+.table-view .table-row-cell:odd {
+  -fx-background-color: rgba(244, 236, 214, 0.45);
 }
 
 .table-view .table-row-cell {
   -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
   -fx-border-width: 0 0 1 0;
-  -fx-cell-size: 52;
+  -fx-cell-size: 44;
 }
 
 .table-view .table-row-cell:hover {
   -fx-background-color: rgba(0, 0, 0, 0.03);
+  -fx-border-color: transparent;
 }
 
 .table-view .table-row-cell:selected {
@@ -439,7 +485,7 @@
 
 .table-view .table-cell {
   -fx-text-fill: -fx-text;
-  -fx-padding: 18 14;
+  -fx-padding: 12 14;
   -fx-font-size: 14px;
 }
 

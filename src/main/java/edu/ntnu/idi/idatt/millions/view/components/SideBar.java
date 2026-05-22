@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.millions.view.components;
 
-import javafx.geometry.Insets;
+import edu.ntnu.idi.idatt.millions.model.Player;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Priority;
@@ -14,6 +14,9 @@ import javafx.scene.layout.VBox;
  */
 public class SideBar extends VBox {
 
+  private final Label playerName = new Label();
+  private final Label playerRank = new Label();
+  private final Label weeksTraded = new Label();
   private final Button marketButton = new Button("Market");
   private final Button portfolioButton = new Button("Portfolio");
   private final Button transactionButton = new Button("Transactions");
@@ -24,17 +27,16 @@ public class SideBar extends VBox {
     getStyleClass().add("side-bar");
     sellAllButton.getStyleClass().add("sell-all-button");
 
-    for (Button b : new Button[] {marketButton, portfolioButton, transactionButton, sellAllButton}) {
+    for (Button b : new Button[] {
+        marketButton, portfolioButton, transactionButton, saveButton, sellAllButton}) {
       b.setMaxWidth(Double.MAX_VALUE);
     }
-
-    setSpacing(8);
-    setPadding(new Insets(10));
 
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
 
     getChildren().addAll(
+        buildProfileCard(),
         new Label("NAVIGATION"),
         marketButton,
         portfolioButton,
@@ -43,6 +45,17 @@ public class SideBar extends VBox {
         saveButton,
         sellAllButton
     );
+  }
+
+  /**
+   * Refreshes the compact profile card from the active player.
+   *
+   * @param player the active player
+   */
+  public void refreshProfile(Player player) {
+    playerName.setText(player.getName());
+    playerRank.setText(player.getStatus().toString());
+    weeksTraded.setText(String.valueOf(player.getTransactionArchive().countDistinctWeeks()));
   }
 
   public Button getMarketButton() {
@@ -63,5 +76,27 @@ public class SideBar extends VBox {
 
   public Button getSellAllButton() {
     return sellAllButton;
+  }
+
+  private VBox buildProfileCard() {
+    Label nameTitle = new Label("PLAYER");
+    nameTitle.getStyleClass().add("profile-title");
+    playerName.getStyleClass().add("profile-name");
+
+    VBox rankBox = profileMetric("RANK", playerRank);
+    VBox weeksBox = profileMetric("WEEKS TRADED", weeksTraded);
+
+    VBox card = new VBox(nameTitle, playerName, rankBox, weeksBox);
+    card.getStyleClass().add("profile-card");
+    return card;
+  }
+
+  private VBox profileMetric(String title, Label value) {
+    Label titleLabel = new Label(title);
+    titleLabel.getStyleClass().add("profile-metric-title");
+    value.getStyleClass().add("profile-metric-value");
+    VBox box = new VBox(titleLabel, value);
+    box.getStyleClass().add("profile-metric");
+    return box;
   }
 }
