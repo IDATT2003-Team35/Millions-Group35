@@ -92,7 +92,7 @@ public class Exchange {
    */
   public boolean hasStock(String symbol) {
     if (symbol == null || symbol.isBlank()) {
-      throw new IllegalArgumentException("Symbol cannot be blank or empty");
+      throw new IllegalArgumentException("Symbol cannot be null or blank");
     }
     return stockMap.containsKey(symbol);
   }
@@ -157,7 +157,7 @@ public class Exchange {
       throw new IllegalArgumentException("Player cannot be null");
     }
     if (!hasStock(symbol)){
-      throw new IllegalArgumentException("Stock does not exist with symbol" + symbol);
+      throw new IllegalArgumentException("Stock does not exist with symbol: " + symbol);
     }
     Stock stock = getStock(symbol);
     Share share = new Share(stock, quantity, stock.getSalesPrice());
