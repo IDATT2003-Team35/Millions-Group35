@@ -20,6 +20,21 @@ import java.util.stream.Collectors;
  */
 public class Exchange {
 
+  /**
+   * Expected weekly drift (μ) in the GBM price model.
+   * 0.005 = 0.5% expected weekly return (~28% annualized).
+   */
+  private static final double DRIFT = 0.005;
+
+  /**
+   * Weekly volatility (σ) in the GBM price model.
+   * 0.10 = 10% weekly standard deviation of log returns.
+   */
+  private static final double VOLATILITY = 0.10;
+
+  /** Lower floor on stock prices to prevent rounding artifacts. */
+  private static final BigDecimal PRICE_FLOOR = BigDecimal.valueOf(0.01);
+
   private final String name;
   private int week;
   private final Map<String, Stock> stockMap;
@@ -190,19 +205,33 @@ public class Exchange {
   }
 
   /**
-   * Advances to the next trading week and randomly updates each stock's price.
-   * Each stocks price changes by +- 0-10% each week.
-   * Also checks that stock price cant go below 0.01
+   * Advances to the next trading week and updates each stock's price using
+   * Geometric Brownian Motion (GBM).
+   *
+   * <p>The price evolves according to the discrete GBM step formula:
+   * <pre>
+   *   S_{t+1} = S_t * exp[(μ − σ²/2) + σ·Z],   Z ~ N(0,1)
+   * </pre>
+   * derived from the GBM stochastic differential equation
+   * {@code dS_t = μS_t dt + σS_t dW_t} with Δt = 1 week. The {@code −σ²/2}
+   * correction term in the exponent compensates for volatility drag
+   * (a consequence of Jensen's inequality on multiplicative noise) — without
+   * it, symmetric random returns would cause all prices to drift toward zero
+   * over time. A floor of {@link #PRICE_FLOOR} prevents rounding artifacts
+   * from producing non-positive prices.</p>
    */
   public void advance() {
     week++;
+    final double driftAdjusted = DRIFT - 0.5 * VOLATILITY * VOLATILITY;
     for (Stock stock : stockMap.values()) {
       BigDecimal currentPrice = stock.getSalesPrice();
-      double changePercent = (random.nextDouble() * 0.2) - 0.1;
-      BigDecimal change = currentPrice.multiply(BigDecimal.valueOf(changePercent));
-      BigDecimal newPrice = currentPrice.add(change)
+      double z = random.nextGaussian();
+      double exponent = driftAdjusted + VOLATILITY * z;
+      double multiplier = Math.exp(exponent);
+      BigDecimal newPrice = currentPrice
+          .multiply(BigDecimal.valueOf(multiplier))
           .setScale(2, RoundingMode.HALF_UP);
-      newPrice = newPrice.max(BigDecimal.valueOf(0.01));
+      newPrice = newPrice.max(PRICE_FLOOR);
       stock.addNewSalesPrice(newPrice);
     }
   }
