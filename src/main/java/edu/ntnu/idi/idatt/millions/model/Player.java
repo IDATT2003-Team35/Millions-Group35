@@ -10,6 +10,19 @@ import java.math.BigDecimal;
  * The player starts with a fixed initial balance and can add or withdraw money later.
  */
 public class Player {
+
+  /** Minimum net worth multiplier (vs starting money) to qualify as SPECULATOR. */
+  private static final BigDecimal SPECULATOR_MULTIPLIER = new BigDecimal("2");
+
+  /** Minimum net worth multiplier (vs starting money) to qualify as INVESTOR. */
+  private static final BigDecimal INVESTOR_MULTIPLIER = new BigDecimal("1.2");
+
+  /** Minimum number of distinct trading weeks required for SPECULATOR rank. */
+  private static final int SPECULATOR_MIN_WEEKS = 20;
+
+  /** Minimum number of distinct trading weeks required for INVESTOR rank. */
+  private static final int INVESTOR_MIN_WEEKS = 10;
+
   private String name;
   private BigDecimal startingMoney;
   private BigDecimal money;
@@ -43,7 +56,7 @@ public class Player {
       throw new IllegalArgumentException("Name cannot be empty or longer than 50 characters");
     }
     if (startingMoney == null || startingMoney.compareTo(BigDecimal.ZERO) <= 0){
-      throw new IllegalArgumentException("Starting money cant null or less than 0");
+      throw new IllegalArgumentException("Starting money cannot be null or less than 0");
     }
     if (money == null || money.compareTo(BigDecimal.ZERO) < 0) {
       throw new IllegalArgumentException("Money cannot be null or negative");
@@ -129,20 +142,28 @@ public class Player {
   public PlayerRank getStatus() {
     int weekAmount = transactionArchive.countDistinctWeeks();
     BigDecimal currentNetWorth = getNetWorth();
-    BigDecimal speculatorInc = startingMoney.multiply(new BigDecimal("2"));
-    BigDecimal investorInc = startingMoney.multiply(new BigDecimal("1.2"));
+    BigDecimal speculatorThreshold = startingMoney.multiply(SPECULATOR_MULTIPLIER);
+    BigDecimal investorThreshold = startingMoney.multiply(INVESTOR_MULTIPLIER);
 
-    if (currentNetWorth.compareTo(speculatorInc) >= 0 && weekAmount >= 20) {
+    if (currentNetWorth.compareTo(speculatorThreshold) >= 0
+        && weekAmount >= SPECULATOR_MIN_WEEKS) {
       return PlayerRank.SPECULATOR;
     }
 
-    if (currentNetWorth.compareTo(investorInc) >= 0 && weekAmount >= 10) {
+    if (currentNetWorth.compareTo(investorThreshold) >= 0
+        && weekAmount >= INVESTOR_MIN_WEEKS) {
       return PlayerRank.INVESTOR;
     }
 
     return PlayerRank.NOVICE;
   }
 
+  /**
+   * Returns the player's total gain/loss as a percentage change from the
+   * starting balance to the current net worth.
+   *
+   * @return the percentage change (positive for gain, negative for loss)
+   */
   public BigDecimal getTotalGainLossPercent() {
     return Percentages.change(startingMoney, getNetWorth());
   }
