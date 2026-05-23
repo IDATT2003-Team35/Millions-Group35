@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.file.StockReader;
+import edu.ntnu.idi.idatt.millions.file.StockParseException;
 import edu.ntnu.idi.idatt.millions.model.Exchange;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
@@ -126,7 +127,7 @@ public class StartController {
     List<Stock> stocks;
     try {
       stocks = stockReader.readStockData(selectedFile);
-    } catch (IOException | IllegalArgumentException e) {
+    } catch (IOException | StockParseException e) {
       view.setErrorMessage("Could not read file: " + e.getMessage());
       return;
     }
