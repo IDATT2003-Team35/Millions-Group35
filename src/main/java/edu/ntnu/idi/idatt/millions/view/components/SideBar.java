@@ -25,6 +25,7 @@ public class SideBar extends VBox {
 
   public SideBar() {
     getStyleClass().add("side-bar");
+    saveButton.getStyleClass().add("save-game-button");
     sellAllButton.getStyleClass().add("sell-all-button");
 
     for (Button b : new Button[] {
