@@ -65,7 +65,22 @@ public class MainController {
 
   private void wireStatusBar() {
     view.getStatusBar().getAdvanceButton()
-        .setOnAction(e -> session.advanceWeek());
+        .setOnAction(e -> handleAdvance());
+  }
+
+  /**
+   * Advances one week and shows the game-over screen if the session has
+   * reached its end condition (Challenge mode hitting the week limit).
+   */
+  private void handleAdvance() {
+    if (session.isGameOver()) {
+      showEndGame();
+      return;
+    }
+    session.advanceWeek();
+    if (session.isGameOver()) {
+      showEndGame();
+    }
   }
 
   private void wireNavigation() {
