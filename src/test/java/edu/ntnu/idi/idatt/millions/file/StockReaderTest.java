@@ -40,12 +40,13 @@ class StockReaderTest {
   void lineWithFourValuesThrowsException() {
     StockReader reader = new StockReader();
 
-    IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
+    StockParseException exception = assertThrows(
+            StockParseException.class,
             () -> reader.readStockData(extraColumnPath)
     );
 
     assertTrue(exception.getMessage().contains("line 2"));
+    assertTrue(exception.getMessage().contains("expected 3 values but found 4"));
   }
 
   @Test
@@ -69,10 +70,23 @@ class StockReaderTest {
 
   @Test
   void invalidPriceThrowsExceptionWithLineNumber() {
-    IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
+    StockParseException exception = assertThrows(
+            StockParseException.class,
             () -> readFromText("""
           AAPL,Apple Inc.,abc
+          """)
+    );
+
+    assertTrue(exception.getMessage().contains("line 1"));
+    assertTrue(exception.getMessage().contains("abc"));
+  }
+
+  @Test
+  void trailingEmptyColumnThrowsExceptionWithLineNumber() {
+    StockParseException exception = assertThrows(
+            StockParseException.class,
+            () -> readFromText("""
+          AAPL,Apple Inc.,
           """)
     );
 
