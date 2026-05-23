@@ -23,25 +23,28 @@ public class Exchange {
   /**
    * Expected weekly drift (μ) in the GBM price model.
    * 0.005 = 0.5% expected weekly return (~28% annualized).
+   * Shared across all difficulty levels; only volatility varies.
    */
   private static final double DRIFT = 0.005;
 
   /**
-   * Weekly volatility (σ) in the GBM price model.
-   * 0.10 = 10% weekly standard deviation of log returns.
+   * Default weekly volatility (σ) in the GBM price model, used when no
+   * difficulty is supplied. 0.10 = 10% weekly standard deviation of log
+   * returns, matching {@link Difficulty#NORMAL}.
    */
-  private static final double VOLATILITY = 0.10;
+  private static final double DEFAULT_VOLATILITY = 0.10;
 
   /** Lower floor on stock prices to prevent rounding artifacts. */
   private static final BigDecimal PRICE_FLOOR = BigDecimal.valueOf(0.01);
 
   private final String name;
   private int week;
+  private final double volatility;
   private final Map<String, Stock> stockMap;
   private final Random random;
 
   /**
-   * Creates a new Exchange.
+   * Creates a new Exchange with default volatility ({@link #DEFAULT_VOLATILITY}).
    * Week starts at 1.
    *
    * @param name the name of the exchange, must not be null or blank
@@ -49,11 +52,24 @@ public class Exchange {
    * @throws IllegalArgumentException if name is null/blank or stocks is null
    */
   public Exchange(String name, List<Stock> stocks) {
-    this(name, stocks, 1);
+    this(name, stocks, 1, DEFAULT_VOLATILITY);
   }
 
   /**
-   * Creates an exchange with a restored week number.
+   * Creates a new Exchange with the given volatility. Week starts at 1.
+   *
+   * @param name the name of the exchange, must not be null or blank
+   * @param stocks the list of stocks available, must not be null
+   * @param volatility the weekly volatility (σ) for the GBM price model;
+   *                   must be positive (typically 0.05–0.20)
+   * @throws IllegalArgumentException if any argument is invalid
+   */
+  public Exchange(String name, List<Stock> stocks, double volatility) {
+    this(name, stocks, 1, volatility);
+  }
+
+  /**
+   * Creates an exchange with a restored week number and default volatility.
    *
    * <p>This constructor is used when loading a saved game where the exchange
    * should continue from a previously saved week.</p>
@@ -64,6 +80,24 @@ public class Exchange {
    * @throws IllegalArgumentException if name, stocks, or week is invalid
    */
   public Exchange(String name, List<Stock> stocks, int week) {
+    this(name, stocks, week, DEFAULT_VOLATILITY);
+  }
+
+  /**
+   * Creates an exchange with a restored week number and custom volatility.
+   *
+   * <p>This is the canonical constructor used by the {@link Difficulty}-aware
+   * game setup: callers should pass {@code difficulty.getVolatility()} as
+   * the volatility argument.</p>
+   *
+   * @param name the name of the exchange, must not be null or blank
+   * @param stocks the list of stocks available, must not be null
+   * @param week the current trading week, must be positive
+   * @param volatility the weekly volatility (σ) for the GBM price model;
+   *                   must be positive (typically 0.05–0.20)
+   * @throws IllegalArgumentException if any argument is invalid
+   */
+  public Exchange(String name, List<Stock> stocks, int week, double volatility) {
     if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be empty");
     }
@@ -73,8 +107,12 @@ public class Exchange {
     if (week <= 0) {
       throw new IllegalArgumentException("Week must be positive");
     }
+    if (volatility <= 0) {
+      throw new IllegalArgumentException("Volatility must be positive");
+    }
     this.name = name;
     this.week = week;
+    this.volatility = volatility;
     this.random = new Random();
     this.stockMap = stocks.stream()
         .collect(Collectors.toMap(Stock::getSymbol, stock -> stock));
@@ -222,11 +260,11 @@ public class Exchange {
    */
   public void advance() {
     week++;
-    final double driftAdjusted = DRIFT - 0.5 * VOLATILITY * VOLATILITY;
+    final double driftAdjusted = DRIFT - 0.5 * volatility * volatility;
     for (Stock stock : stockMap.values()) {
       BigDecimal currentPrice = stock.getSalesPrice();
       double z = random.nextGaussian();
-      double exponent = driftAdjusted + VOLATILITY * z;
+      double exponent = driftAdjusted + volatility * z;
       double multiplier = Math.exp(exponent);
       BigDecimal newPrice = currentPrice
           .multiply(BigDecimal.valueOf(multiplier))
@@ -234,6 +272,17 @@ public class Exchange {
       newPrice = newPrice.max(PRICE_FLOOR);
       stock.addNewSalesPrice(newPrice);
     }
+  }
+
+  /**
+   * Returns the weekly volatility (σ) used by the GBM price model for this
+   * exchange. Set at construction time (typically from
+   * {@link Difficulty#getVolatility()}).
+   *
+   * @return the weekly volatility
+   */
+  public double getVolatility() {
+      return volatility;
   }
 
   /**
