@@ -9,6 +9,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -32,38 +33,49 @@ public class StartView {
    */
   public StartView() {
     Label titleLabel = new Label("MILLIONS");
+    titleLabel.getStyleClass().add("start-title");
     Label subtitleLabel = new Label("Stock Trading Simulator");
+    subtitleLabel.getStyleClass().add("start-subtitle");
 
     VBox titleBox = new VBox(10, titleLabel, subtitleLabel);
+    titleBox.getStyleClass().add("start-card-header");
     titleBox.setAlignment(Pos.CENTER);
-    titleBox.setPadding(new Insets(30, 20, 30, 20));
+    titleBox.setMaxWidth(Double.MAX_VALUE);
 
     Label nameLabel = new Label("Player Name");
+    nameLabel.getStyleClass().add("start-form-label");
     nameField = new TextField();
     nameField.setPromptText("Enter player name");
 
     Label capitalLabel = new Label("Starting Capital ($)");
+    capitalLabel.getStyleClass().add("start-form-label");
     capitalField = new TextField();
     capitalField.setPromptText("Enter starting capital");
 
     Label fileLabel = new Label("Stock Data File (.csv)");
+    fileLabel.getStyleClass().add("start-form-label");
     fileField = new TextField();
     fileField.setPromptText("Choose a CSV file");
     fileField.setEditable(false);
     fileField.setFocusTraversable(false);
 
     browseButton = new Button("Browse");
+    browseButton.getStyleClass().add("start-secondary-button");
     defaultStockDataButton = new Button("Default stock data");
+    defaultStockDataButton.getStyleClass().add("start-secondary-button");
 
     HBox fileBox = new HBox(10, fileField, browseButton, defaultStockDataButton);
     fileBox.setAlignment(Pos.CENTER_LEFT);
     HBox.setHgrow(fileField, Priority.ALWAYS);
 
     errorLabel = new Label();
+    errorLabel.getStyleClass().add("start-error");
     errorLabel.setWrapText(true);
 
     backButton = new Button("BACK");
+    backButton.getStyleClass().add("start-secondary-button");
     startButton = new Button("START");
+    startButton.getStyleClass().add("start-primary-button");
     startButton.setDefaultButton(true);
 
     HBox startBox = new HBox(10, backButton, startButton);
@@ -81,11 +93,16 @@ public class StartView {
             errorLabel,
             startBox
     );
+    inputBox.getStyleClass().add("start-card-body");
 
     VBox card = new VBox(titleBox, inputBox);
+    card.getStyleClass().add("start-card");
+    card.setPrefWidth(720);
     card.setMaxWidth(720);
+    card.setMaxHeight(Region.USE_PREF_SIZE);
 
     root = new StackPane(card);
+    root.getStyleClass().add("start-root");
     root.setAlignment(Pos.CENTER);
     root.setPadding(new Insets(40));
   }

@@ -6,15 +6,16 @@
  *   3. Shared patterns
  *   4. Buttons
  *   5. Form fields
- *   6. Status bar
- *   7. Side bar
- *   8. Filter tabs
- *   9. Tables
- *  10. Top gainers / losers panels
- *  11. Portfolio
- *  12. Stock detail
- *  13. Charts
- *  14. Scroll bars
+ *   6. Start screens
+ *   7. Status bar
+ *   8. Side bar
+ *   9. Filter tabs
+ *  10. Tables
+ *  11. Top gainers / losers panels
+ *  12. Portfolio
+ *  13. Stock detail
+ *  14. Charts
+ *  15. Scroll bars
  */
 
 
@@ -226,7 +227,142 @@
 }
 
 
-/* ---------- 6. Status bar ---------- */
+/* ---------- 6. Start screens ---------- */
+
+.start-root {
+  -fx-background-color: -fx-bg;
+}
+
+.start-card {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 2;
+  -fx-spacing: 0;
+}
+
+.start-card-header {
+  -fx-background-color: -fx-pink;
+  -fx-border-color: transparent transparent -fx-gain transparent;
+  -fx-border-width: 0 0 8 0;
+  -fx-padding: 24 28 20 28;
+  -fx-alignment: CENTER;
+}
+
+.start-title {
+  -fx-font-family: "Impact", "Arial Black", "Helvetica Neue", sans-serif;
+  -fx-font-weight: 900;
+  -fx-font-size: 36px;
+  -fx-letter-spacing: 0.12em;
+  -fx-text-fill: -fx-navy;
+}
+
+.start-subtitle {
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.04em;
+  -fx-text-fill: rgba(20, 20, 43, 0.72);
+}
+
+.start-card-body {
+  -fx-padding: 32 36 36 36;
+  -fx-spacing: 12;
+}
+
+.start-menu-body {
+  -fx-padding: 36 36 42 36;
+}
+
+.start-menu-body .start-primary-button {
+  -fx-min-width: 240;
+  -fx-pref-width: 240;
+  -fx-min-height: 54;
+}
+
+.start-form-label {
+  -fx-font-size: 11px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.1em;
+  -fx-text-fill: -fx-text-muted;
+}
+
+.start-primary-button,
+.start-secondary-button {
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.12em;
+  -fx-padding: 12 22;
+  -fx-cursor: hand;
+}
+
+.start-primary-button {
+  -fx-background-color: -fx-pink;
+  -fx-text-fill: #FFFFFF;
+  -fx-border-color: -fx-pink;
+  -fx-border-width: 1;
+  -fx-min-width: 150;
+}
+
+.start-primary-button:hover {
+  -fx-background-color: derive(-fx-pink, -10%);
+  -fx-border-color: derive(-fx-pink, -10%);
+}
+
+.start-secondary-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -fx-ink;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1;
+}
+
+.start-secondary-button:hover {
+  -fx-background-color: -fx-ink;
+  -fx-text-fill: -fx-surface;
+}
+
+.start-error {
+  -fx-text-fill: -fx-pink;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+}
+
+.start-card .separator .line {
+  -fx-border-color: -fx-border-subtle;
+  -fx-border-width: 1 0 0 0;
+}
+
+.start-card .list-view {
+  -fx-background-color: -fx-surface;
+  -fx-border-color: -fx-ink;
+  -fx-border-width: 1;
+  -fx-background-insets: 0;
+  -fx-padding: 1;
+}
+
+.start-card .list-cell {
+  -fx-background-color: -fx-surface;
+  -fx-text-fill: -fx-text;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-padding: 10 14;
+  -fx-border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.start-card .list-view .virtual-flow,
+.start-card .list-view .clipped-container,
+.start-card .list-view .sheet {
+  -fx-background-color: -fx-surface;
+}
+
+.start-card .list-cell:filled:selected {
+  -fx-background-color: -fx-ink;
+  -fx-text-fill: -fx-surface;
+}
+
+
+/* ---------- 7. Status bar ---------- */
 
 .status-bar {
   -fx-background-color: -fx-surface;
@@ -280,7 +416,7 @@
 }
 
 
-/* ---------- 7. Side bar ---------- */
+/* ---------- 8. Side bar ---------- */
 
 .side-bar {
   -fx-background-color: -fx-surface;
@@ -390,7 +526,7 @@
 }
 
 
-/* ---------- 8. Filter tabs ---------- */
+/* ---------- 9. Filter tabs ---------- */
 
 .filter-tab {
   -fx-background-color: -fx-surface;
@@ -447,7 +583,7 @@
 }
 
 
-/* ---------- 9. Tables ---------- */
+/* ---------- 10. Tables ---------- */
 /* The wrapper renders the outer ink border; the table itself
    sits on top of it so the border shows on all four sides. */
 
@@ -556,7 +692,7 @@
 }
 
 
-/* ---------- 10. Top gainers / losers panels ---------- */
+/* ---------- 11. Top gainers / losers panels ---------- */
 
 .top-panel {
   -fx-pref-width: 240;
@@ -612,7 +748,7 @@
 }
 
 
-/* ---------- 11. Portfolio ---------- */
+/* ---------- 12. Portfolio ---------- */
 
 .summary-bar {
   -fx-spacing: -1;
@@ -641,7 +777,7 @@
 }
 
 
-/* ---------- 12. Stock detail ---------- */
+/* ---------- 13. Stock detail ---------- */
 
 .detail-header {
   -fx-padding: 0 0 8 0;
@@ -674,7 +810,7 @@
 }
 
 
-/* ---------- 13. Charts ---------- */
+/* ---------- 14. Charts ---------- */
 
 .chart {
   -fx-padding: 14;
@@ -720,7 +856,7 @@
 }
 
 
-/* ---------- 14. Scroll bars ---------- */
+/* ---------- 15. Scroll bars ---------- */
 
 .scroll-bar,
 .scroll-bar .track {
