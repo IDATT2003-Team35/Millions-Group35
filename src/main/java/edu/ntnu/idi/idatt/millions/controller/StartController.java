@@ -1,7 +1,9 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.file.StockReader;
+import edu.ntnu.idi.idatt.millions.model.Difficulty;
 import edu.ntnu.idi.idatt.millions.model.Exchange;
+import edu.ntnu.idi.idatt.millions.model.GameMode;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Stock;
@@ -70,6 +72,27 @@ public class StartController {
     view.getStartButton().setOnAction(e -> handleStart());
     view.getDefaultStockDataButton().setOnAction(e -> handleDefaultStockData());
     view.getBackButton().setOnAction(e -> onBack.run());
+
+    view.getDifficultyGroup().selectedToggleProperty()
+        .addListener((obs, oldToggle, newToggle) -> applyDifficultyDefault());
+    view.getModeGroup().selectedToggleProperty()
+        .addListener((obs, oldToggle, newToggle) -> applyModeLock());
+
+    applyDifficultyDefault();
+    applyModeLock();
+  }
+
+    private void applyDifficultyDefault() {
+    Difficulty difficulty = view.getSelectedDifficulty();
+    view.getCapitalField().setText(difficulty.getDefaultStartingCapital().toPlainString());
+  }
+
+  private void applyModeLock() {
+    boolean locked = view.getSelectedMode() == GameMode.CHALLENGE;
+    view.getCapitalField().setDisable(locked);
+    if (locked) {
+      applyDifficultyDefault();
+    }
   }
 
   private void handleBrowse() {
@@ -137,9 +160,11 @@ public class StartController {
     }
 
     try {
+      Difficulty difficulty = view.getSelectedDifficulty();
+      GameMode mode = view.getSelectedMode();
       Player player = new Player(name, capital);
-      Exchange exchange = new Exchange("Stock Exchange", stocks);
-      GameSession session = new GameSession(player, exchange);
+      Exchange exchange = new Exchange("Stock Exchange", stocks, difficulty.getVolatility());
+      GameSession session = new GameSession(player, exchange, difficulty, mode);
       onGameStart.accept(session);
     } catch (IllegalArgumentException e) {
       view.setErrorMessage(e.getMessage());
