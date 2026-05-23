@@ -16,7 +16,7 @@ import javafx.util.Callback;
  */
 public final class ViewHelpers {
 
-  private static final int ROW_HEIGHT = 52;
+  private static final int ROW_HEIGHT = 44;
   private static final int HEADER_HEIGHT = 46;
 
   private ViewHelpers() {}

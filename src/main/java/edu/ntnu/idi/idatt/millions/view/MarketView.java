@@ -73,6 +73,7 @@ public class MarketView extends BorderPane implements Observer {
     }
 
     setupColumns();
+    stockTable.getStyleClass().add("market-table");
     buildLayout();
     session.addObserver(this);
   }
@@ -98,11 +99,12 @@ public class MarketView extends BorderPane implements Observer {
     HBox metaRow = new HBox(instrumentCountLabel);
     metaRow.getStyleClass().add("market-meta-row");
 
-    Region filterGap = new Region();
-    filterGap.setMinWidth(16);
-    HBox filterRow = new HBox(filterTabs, filterGap, searchField);
+    Region filterSpacer = new Region();
+    HBox.setHgrow(filterSpacer, Priority.ALWAYS);
+    HBox filterRow = new HBox(filterTabs, filterSpacer, searchField);
     filterRow.setAlignment(Pos.CENTER_LEFT);
-    searchField.setPrefWidth(240);
+    filterRow.setSpacing(16);
+    searchField.setPrefWidth(280);
     filterTabs.setOnSelectionChange(() -> onUpdate.run());
 
     VBox header = new VBox(masthead, metaRow, filterRow);
@@ -117,11 +119,11 @@ public class MarketView extends BorderPane implements Observer {
     separator.setMaxHeight(Double.MAX_VALUE);
 
     VBox panels = new VBox(gainersPanel, losersPanel);
-    panels.setSpacing(12);
+    panels.setSpacing(10);
 
     HBox container = new HBox(separator, panels);
-    container.setSpacing(16);
-    container.setPadding(new Insets(0, 0, 0, 16));
+    container.setSpacing(14);
+    container.setPadding(new Insets(0, 0, 0, 14));
     return container;
   }
 
@@ -138,15 +140,26 @@ public class MarketView extends BorderPane implements Observer {
     TableColumn<Stock, BigDecimal> priceCol = TableColumns.numericColumn(
         "PRICE", Stock::getSalesPrice, v -> Money.format(v).substring(1));
 
-    TableColumn<Stock, BigDecimal> changeCol = TableColumns.coloredNumericColumn(
-        "CHANGE ($)", Stock::getLatestPriceChange, Money::formatWithArrow);
     TableColumn<Stock, BigDecimal> percentChangeCol = TableColumns.coloredNumericColumn(
         "CHANGE (%)", Stock::getLatestPercentChange, Percentages::formatWithArrow);
     TableColumn<Stock, BigDecimal> allTimeChangeCol = TableColumns.coloredNumericColumn(
         "ALL-TIME (%)", Stock::getTotalPercentChange, Percentages::formatWithArrow);
+    TableColumn<Stock, String> openCol = new TableColumn<>("");
+    openCol.setCellValueFactory(c -> new SimpleStringProperty("→"));
+    openCol.setSortable(false);
+    openCol.setResizable(false);
+    openCol.getStyleClass().add("open-column");
 
     stockTable.getColumns().addAll(
-        symbolCol, companyCol, priceCol, changeCol, percentChangeCol, allTimeChangeCol);
+        symbolCol, companyCol, priceCol, percentChangeCol, allTimeChangeCol, openCol);
+    symbolCol.setPrefWidth(90);
+    companyCol.setPrefWidth(360);
+    priceCol.setPrefWidth(140);
+    percentChangeCol.setPrefWidth(150);
+    allTimeChangeCol.setPrefWidth(150);
+    openCol.setPrefWidth(42);
+    openCol.setMinWidth(42);
+    openCol.setMaxWidth(42);
     stockTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
   }
 

@@ -70,6 +70,7 @@ public class MainView extends BorderPane implements Observer {
 
   private void refresh() {
     statusBar.refresh(session.getPlayer(), session.getExchange());
+    sideBar.refreshProfile(session.getPlayer());
   }
 
   private void markActive(Button active) {

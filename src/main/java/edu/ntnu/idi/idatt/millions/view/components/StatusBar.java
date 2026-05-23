@@ -6,6 +6,7 @@ import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import java.math.BigDecimal;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,16 +16,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
- * Top status bar showing player info, net worth, level, week
- * and the advance-week button. Values are updated via {@link #refresh}.
+ * Top status bar showing compact game state and the advance-week button.
+ * Values are updated via {@link #refresh}.
  */
 public class StatusBar extends HBox {
 
-  private final Label nameValue = new Label();
   private final Label cashValue = new Label();
   private final Label netWorthValue = new Label();
   private final Label changeValue = new Label();
-  private final Label levelValue = new Label();
   private final Label weekValue = new Label();
   private final Button advanceButton = new Button("ADVANCE WEEK  →");
 
@@ -33,10 +32,8 @@ public class StatusBar extends HBox {
     advanceButton.getStyleClass().add("advance-button");
 
     HBox stats = new HBox(
-        field("PLAYER", nameValue),
         field("CASH", cashValue),
         field("NET WORTH", compact(netWorthValue, changeValue)),
-        field("RANK", levelValue),
         field("WEEK", weekValue)
     );
     stats.getStyleClass().add("status-stats");
@@ -54,7 +51,6 @@ public class StatusBar extends HBox {
    * @param exchange the active exchange
    */
   public void refresh(Player player, Exchange exchange) {
-    nameValue.setText(player.getName());
     cashValue.setText(Money.format(player.getMoney()));
     netWorthValue.setText(Money.format(player.getNetWorth()));
 
@@ -67,7 +63,6 @@ public class StatusBar extends HBox {
       changeValue.getStyleClass().add("loss");
     }
 
-    levelValue.setText(player.getStatus().toString());
     weekValue.setText(String.format("%02d", exchange.getWeek()));
   }
 
@@ -82,11 +77,11 @@ public class StatusBar extends HBox {
     subtitle.getStyleClass().add("logo-subtitle");
 
     VBox textContent = new VBox(title, subtitle);
-    textContent.setPadding(new Insets(16, 24, 8, 24));
+    textContent.setPadding(new Insets(10, 18, 6, 18));
 
     Region blueBlock = new Region();
     blueBlock.getStyleClass().add("logo-stripe");
-    blueBlock.setPrefHeight(16);
+    blueBlock.setPrefHeight(10);
 
     VBox box = new VBox(textContent, blueBlock);
     box.getStyleClass().add("logo-block");
@@ -106,9 +101,10 @@ public class StatusBar extends HBox {
 
   private HBox compact(Label leftLabel, Label rightLabel) {
     leftLabel.getStyleClass().add("field-value");
-    rightLabel.getStyleClass().add("field-value");
+    rightLabel.getStyleClass().addAll("field-value", "status-change-value");
     HBox box = new HBox(leftLabel, rightLabel);
     box.setSpacing(8);
+    box.setAlignment(Pos.BOTTOM_LEFT);
     return box;
   }
 }
