@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -21,24 +22,41 @@ public class StartMenuView {
    */
   public StartMenuView() {
     Label titleLabel = new Label("MILLIONS");
+    titleLabel.getStyleClass().add("start-title");
     Label subtitleLabel = new Label("Stock Trading Simulator");
+    subtitleLabel.getStyleClass().add("start-subtitle");
+
+    VBox titleBox = new VBox(10, titleLabel, subtitleLabel);
+    titleBox.getStyleClass().add("start-card-header");
+    titleBox.setAlignment(Pos.CENTER);
+    titleBox.setMaxWidth(Double.MAX_VALUE);
 
     newGameButton = new Button("NEW GAME");
+    newGameButton.getStyleClass().add("start-primary-button");
     newGameButton.setDefaultButton(true);
     loadGameButton = new Button("LOAD GAME");
+    loadGameButton.getStyleClass().add("start-primary-button");
 
-    VBox menuBox = new VBox(
-        18,
-        titleLabel,
-        subtitleLabel,
+    VBox buttonBox = new VBox(
+        12,
         newGameButton,
         loadGameButton
     );
+    buttonBox.getStyleClass().addAll("start-card-body", "start-menu-body");
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.setMaxHeight(Double.MAX_VALUE);
+
+    VBox menuBox = new VBox(titleBox, buttonBox);
+    menuBox.getStyleClass().add("start-card");
     menuBox.setAlignment(Pos.CENTER);
-    menuBox.setMaxWidth(420);
-    menuBox.setPadding(new Insets(40));
+    menuBox.setPrefWidth(720);
+    menuBox.setPrefHeight(520);
+    menuBox.setMaxWidth(720);
+    menuBox.setMaxHeight(520);
+    VBox.setVgrow(buttonBox, Priority.ALWAYS);
 
     root = new StackPane(menuBox);
+    root.getStyleClass().add("start-root");
     root.setAlignment(Pos.CENTER);
     root.setPadding(new Insets(40));
   }

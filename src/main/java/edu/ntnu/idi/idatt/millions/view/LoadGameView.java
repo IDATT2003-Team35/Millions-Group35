@@ -30,7 +30,14 @@ public class LoadGameView {
    */
   public LoadGameView() {
     Label titleLabel = new Label("LOAD GAME");
+    titleLabel.getStyleClass().add("start-title");
     Label subtitleLabel = new Label("Choose a saved game");
+    subtitleLabel.getStyleClass().add("start-subtitle");
+
+    VBox titleBox = new VBox(10, titleLabel, subtitleLabel);
+    titleBox.getStyleClass().add("start-card-header");
+    titleBox.setAlignment(Pos.CENTER);
+    titleBox.setMaxWidth(Double.MAX_VALUE);
 
     saveListView = new ListView<>();
     saveListView.setCellFactory(listView -> new ListCell<>() {
@@ -43,29 +50,36 @@ public class LoadGameView {
     VBox.setVgrow(saveListView, Priority.ALWAYS);
 
     errorLabel = new Label();
+    errorLabel.getStyleClass().add("start-error");
     errorLabel.setWrapText(true);
 
     backButton = new Button("BACK");
+    backButton.getStyleClass().add("start-secondary-button");
     loadButton = new Button("LOAD");
+    loadButton.getStyleClass().add("start-primary-button");
     loadButton.setDefaultButton(true);
 
     HBox buttonBox = new HBox(12, backButton, loadButton);
     buttonBox.setAlignment(Pos.CENTER);
 
-    VBox card = new VBox(
+    VBox contentBox = new VBox(
         14,
-        titleLabel,
-        subtitleLabel,
         saveListView,
         errorLabel,
         buttonBox
     );
+    contentBox.getStyleClass().add("start-card-body");
+    contentBox.setAlignment(Pos.CENTER);
+
+    VBox card = new VBox(titleBox, contentBox);
+    card.getStyleClass().add("start-card");
     card.setAlignment(Pos.CENTER);
-    card.setMaxWidth(640);
+    card.setPrefWidth(720);
+    card.setMaxWidth(720);
     card.setMaxHeight(520);
-    card.setPadding(new Insets(36));
 
     root = new StackPane(card);
+    root.getStyleClass().add("start-root");
     root.setAlignment(Pos.CENTER);
     root.setPadding(new Insets(40));
   }
