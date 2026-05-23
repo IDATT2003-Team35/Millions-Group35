@@ -1,12 +1,17 @@
 package edu.ntnu.idi.idatt.millions.view;
 
+import edu.ntnu.idi.idatt.millions.model.Difficulty;
+import edu.ntnu.idi.idatt.millions.model.GameMode;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -27,6 +32,13 @@ public class StartView {
   private final Button startButton;
   private final Button backButton;
   private final Label errorLabel;
+  private final ToggleGroup modeGroup;
+  private final ToggleGroup difficultyGroup;
+  private final RadioButton sandboxRadio;
+  private final RadioButton challengeRadio;
+  private final RadioButton easyRadio;
+  private final RadioButton normalRadio;
+  private final RadioButton hardRadio;
 
   /**
    * Creates the start screen layout and initializes its controls.
@@ -46,6 +58,38 @@ public class StartView {
     nameLabel.getStyleClass().add("start-form-label");
     nameField = new TextField();
     nameField.setPromptText("Enter player name");
+
+    Label modeLabel = new Label("Game Mode");
+    modeLabel.getStyleClass().add("start-form-label");
+    modeGroup = new ToggleGroup();
+    sandboxRadio = new RadioButton("Sandbox (no time limit)");
+    sandboxRadio.setUserData(GameMode.SANDBOX);
+    sandboxRadio.setToggleGroup(modeGroup);
+    sandboxRadio.setSelected(true);
+    challengeRadio = new RadioButton("Challenge (52 weeks)");
+    challengeRadio.setUserData(GameMode.CHALLENGE);
+    challengeRadio.setToggleGroup(modeGroup);
+    HBox modeBox = new HBox(20, sandboxRadio, challengeRadio);
+    modeBox.setAlignment(Pos.CENTER_LEFT);
+
+    Label difficultyLabel = new Label("Difficulty");
+    difficultyLabel.getStyleClass().add("start-form-label");
+    difficultyGroup = new ToggleGroup();
+    easyRadio = new RadioButton("Easy");
+    easyRadio.setUserData(Difficulty.EASY);
+    easyRadio.getStyleClass().add("difficulty-easy");
+    easyRadio.setToggleGroup(difficultyGroup);
+    normalRadio = new RadioButton("Normal");
+    normalRadio.setUserData(Difficulty.NORMAL);
+    normalRadio.getStyleClass().add("difficulty-normal");
+    normalRadio.setToggleGroup(difficultyGroup);
+    normalRadio.setSelected(true);
+    hardRadio = new RadioButton("Hard");
+    hardRadio.setUserData(Difficulty.HARD);
+    hardRadio.getStyleClass().add("difficulty-hard");
+    hardRadio.setToggleGroup(difficultyGroup);
+    HBox difficultyBox = new HBox(20, easyRadio, normalRadio, hardRadio);
+    difficultyBox.setAlignment(Pos.CENTER_LEFT);
 
     Label capitalLabel = new Label("Starting Capital ($)");
     capitalLabel.getStyleClass().add("start-form-label");
@@ -85,6 +129,10 @@ public class StartView {
             10,
             nameLabel,
             nameField,
+            modeLabel,
+            modeBox,
+            difficultyLabel,
+            difficultyBox,
             capitalLabel,
             capitalField,
             fileLabel,
@@ -211,5 +259,43 @@ public class StartView {
    */
   public void clearErrorMessage() {
     errorLabel.setText("");
+  }
+
+  /**
+   * Returns the toggle group controlling the game mode radio buttons.
+   *
+   * @return the mode toggle group
+   */
+  public ToggleGroup getModeGroup() {
+    return modeGroup;
+  }
+
+  /**
+   * Returns the toggle group controlling the difficulty radio buttons.
+   *
+   * @return the difficulty toggle group
+   */
+  public ToggleGroup getDifficultyGroup() {
+    return difficultyGroup;
+  }
+
+  /**
+   * Returns the currently selected game mode.
+   *
+   * @return the selected mode, or {@link GameMode#SANDBOX} as fallback
+   */
+  public GameMode getSelectedMode() {
+    Toggle selected = modeGroup.getSelectedToggle();
+    return selected != null ? (GameMode) selected.getUserData() : GameMode.SANDBOX;
+  }
+
+  /**
+   * Returns the currently selected difficulty.
+   *
+   * @return the selected difficulty, or {@link Difficulty#NORMAL} as fallback
+   */
+  public Difficulty getSelectedDifficulty() {
+    Toggle selected = difficultyGroup.getSelectedToggle();
+    return selected != null ? (Difficulty) selected.getUserData() : Difficulty.NORMAL;
   }
 }

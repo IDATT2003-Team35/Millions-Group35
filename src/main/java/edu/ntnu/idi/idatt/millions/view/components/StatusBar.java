@@ -1,6 +1,9 @@
 package edu.ntnu.idi.idatt.millions.view.components;
 
+import edu.ntnu.idi.idatt.millions.model.Difficulty;
 import edu.ntnu.idi.idatt.millions.model.Exchange;
+import edu.ntnu.idi.idatt.millions.model.GameMode;
+import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
@@ -10,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -25,16 +29,24 @@ public class StatusBar extends HBox {
   private final Label netWorthValue = new Label();
   private final Label changeValue = new Label();
   private final Label weekValue = new Label();
+  private final ProgressBar weekProgress = new ProgressBar(0);
+  private final Label difficultyValue = new Label();
   private final Button advanceButton = new Button("ADVANCE WEEK  →");
 
   public StatusBar() {
     getStyleClass().add("status-bar");
     advanceButton.getStyleClass().add("advance-button");
 
+    weekProgress.getStyleClass().add("week-progress");
+    weekProgress.setPrefWidth(120);
+    weekProgress.setVisible(false);
+    weekProgress.setManaged(false);
+
     HBox stats = new HBox(
         field("CASH", cashValue),
         field("NET WORTH", compact(netWorthValue, changeValue)),
-        field("WEEK", weekValue)
+        field("WEEK", compactVertical(weekValue, weekProgress)),
+        field("DIFFICULTY", difficultyValue)
     );
     stats.getStyleClass().add("status-stats");
 
@@ -45,12 +57,14 @@ public class StatusBar extends HBox {
   }
 
   /**
-   * Updates all value labels from the given player and exchange.
+   * Updates all value labels from the given session.
    *
-   * @param player the active player
-   * @param exchange the active exchange
+   * @param session the active game session
    */
-  public void refresh(Player player, Exchange exchange) {
+  public void refresh(GameSession session) {
+    Player player = session.getPlayer();
+    Exchange exchange = session.getExchange();
+
     cashValue.setText(Money.format(player.getMoney()));
     netWorthValue.setText(Money.format(player.getNetWorth()));
 
@@ -63,7 +77,41 @@ public class StatusBar extends HBox {
       changeValue.getStyleClass().add("loss");
     }
 
-    weekValue.setText(String.format("%02d", exchange.getWeek()));
+    refreshWeek(exchange, session.getMode());
+    refreshDifficulty(session.getDifficulty());
+  }
+
+  /** Updates the week label and progress bar based on the active mode. */
+  private void refreshWeek(Exchange exchange, GameMode mode) {
+    int week = exchange.getWeek();
+    if (mode.hasWeekLimit()) {
+      int limit = mode.getWeekLimit();
+      weekValue.setText(String.format("%02d / %d", week, limit));
+      weekProgress.setProgress(Math.min(1.0, (double) week / limit));
+      weekProgress.setVisible(true);
+      weekProgress.setManaged(true);
+    } else {
+      weekValue.setText(String.format("%02d", week));
+      weekProgress.setVisible(false);
+      weekProgress.setManaged(false);
+    }
+  }
+
+  /** Updates the difficulty label with text and color class. */
+  private void refreshDifficulty(Difficulty difficulty) {
+    difficultyValue.setText(formatDifficulty(difficulty));
+    difficultyValue.getStyleClass().removeAll(
+        "difficulty-easy", "difficulty-normal", "difficulty-hard");
+    switch (difficulty) {
+      case EASY -> difficultyValue.getStyleClass().add("difficulty-easy");
+      case NORMAL -> difficultyValue.getStyleClass().add("difficulty-normal");
+      case HARD -> difficultyValue.getStyleClass().add("difficulty-hard");
+    }
+  }
+
+  private String formatDifficulty(Difficulty difficulty) {
+    String name = difficulty.name();
+    return name.charAt(0) + name.substring(1).toLowerCase();
   }
 
   public Button getAdvanceButton() {
@@ -104,6 +152,14 @@ public class StatusBar extends HBox {
     rightLabel.getStyleClass().addAll("field-value", "status-change-value");
     HBox box = new HBox(leftLabel, rightLabel);
     box.setSpacing(8);
+    box.setAlignment(Pos.BOTTOM_LEFT);
+    return box;
+  }
+
+  private VBox compactVertical(Label label, ProgressBar bar) {
+    label.getStyleClass().add("field-value");
+    VBox box = new VBox(label, bar);
+    box.setSpacing(4);
     box.setAlignment(Pos.BOTTOM_LEFT);
     return box;
   }
