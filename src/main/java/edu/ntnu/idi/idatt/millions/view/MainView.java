@@ -69,7 +69,7 @@ public class MainView extends BorderPane implements Observer {
   }
 
   private void refresh() {
-    statusBar.refresh(session.getPlayer(), session.getExchange());
+    statusBar.refresh(session);
     sideBar.refreshProfile(session.getPlayer());
   }
 

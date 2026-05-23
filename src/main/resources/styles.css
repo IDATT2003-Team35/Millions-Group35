@@ -291,7 +291,7 @@
   -fx-font-weight: bold;
 }
 .difficulty-normal {
-  -fx-text-fill: #f57c00;
+  -fx-text-fill: #c87000;
   -fx-font-weight: bold;
 }
 .difficulty-hard {
@@ -332,6 +332,14 @@
 
 .start-card .radio-button:hover {
   -fx-border-color: #888888;
+}
+
+/* Visible focus indicator for keyboard navigation (custom styling
+   hides the default JavaFX focus ring on the radio dot). */
+.start-card .radio-button:focused {
+  -fx-border-color: #333333;
+  -fx-border-width: 2;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 4, 0, 0, 0);
 }
 
 /* Selected state: dark fill, white text — consistent across mode and difficulty pills */

@@ -8,6 +8,7 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.StartView;
+import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -91,7 +92,11 @@ public class StartController {
     boolean locked = view.getSelectedMode() == GameMode.CHALLENGE;
     view.getCapitalField().setDisable(locked);
     if (locked) {
+      view.getCapitalField().setTooltip(
+          new Tooltip("Locked in Challenge mode for fair highscore comparison"));
       applyDifficultyDefault();
+    } else {
+      view.getCapitalField().setTooltip(null);
     }
   }
 
