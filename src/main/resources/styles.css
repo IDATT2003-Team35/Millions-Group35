@@ -285,6 +285,80 @@
   -fx-text-fill: -fx-text-muted;
 }
 
+/* Difficulty colors used by StatusBar label and by radio button text */
+.difficulty-easy {
+  -fx-text-fill: #2e7d32;
+  -fx-font-weight: bold;
+}
+.difficulty-normal {
+  -fx-text-fill: #f57c00;
+  -fx-font-weight: bold;
+}
+.difficulty-hard {
+  -fx-text-fill: #c62828;
+  -fx-font-weight: bold;
+}
+
+/* Pill-style radio buttons inside the start card */
+.start-card .radio-button {
+  -fx-background-color: white;
+  -fx-border-color: #cccccc;
+  -fx-border-width: 1;
+  -fx-border-radius: 4;
+  -fx-background-radius: 4;
+  -fx-padding: 8 18;
+  -fx-cursor: hand;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-alignment: CENTER;
+  -fx-content-display: TEXT_ONLY;
+  -fx-graphic-text-gap: 0;
+}
+
+/* Hide the default radio circle so the whole pill is the indicator */
+.start-card .radio-button > .radio {
+  -fx-padding: 0;
+  -fx-pref-width: 0;
+  -fx-min-width: 0;
+  -fx-max-width: 0;
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+  -fx-border-color: transparent;
+}
+.start-card .radio-button > .radio > .dot {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+}
+
+.start-card .radio-button:hover {
+  -fx-border-color: #888888;
+}
+
+/* Selected state: dark fill, white text — consistent across mode and difficulty pills */
+.start-card .radio-button:selected {
+  -fx-background-color: #1a1a1a;
+  -fx-text-fill: white;
+  -fx-border-color: #1a1a1a;
+}
+
+/* Challenge mode week progress bar in the status bar */
+.week-progress {
+  -fx-pref-height: 8;
+  -fx-max-height: 8;
+}
+.week-progress > .bar {
+  -fx-background-color: #c62828;
+  -fx-background-insets: 0;
+  -fx-background-radius: 3;
+}
+.week-progress > .track {
+  -fx-background-color: #e8e8e8;
+  -fx-background-radius: 3;
+  -fx-border-color: #999999;
+  -fx-border-width: 1;
+  -fx-border-radius: 3;
+}
+
 .start-primary-button,
 .start-secondary-button {
   -fx-background-radius: 0;
