@@ -165,7 +165,9 @@ public class GameSaveService {
             stockData,
             shareData,
             transactionData,
-            netWorthHistoryData
+            netWorthHistoryData,
+            session.getDifficulty().name(),
+            session.getMode().name()
     );
   }
 
@@ -219,14 +221,39 @@ public class GameSaveService {
       throw new GameSaveException("Save file does not contain game data.");
     }
 
+    Difficulty difficulty = parseDifficulty(gameData.difficulty());
+    GameMode mode = parseMode(gameData.mode());
+
     Player player = createPlayer(gameData.player());
     List<Stock> stocks = createStocks(gameData.stocks());
-    Exchange exchange = createExchange(gameData.exchange(), stocks);
+    Exchange exchange = createExchange(gameData.exchange(), stocks, difficulty);
     restoreShares(gameData.shares(), player, exchange);
     restoreTransactions(gameData.transactions(), player, exchange);
     List<BigDecimal> netWorthHistory = createNetWorthHistory(gameData.netWorthHistory());
 
-    return new GameSession(player, exchange, netWorthHistory);
+    return new GameSession(player, exchange, difficulty, mode, netWorthHistory);
+  }
+
+  private Difficulty parseDifficulty(String name) throws GameSaveException {
+    if (name == null || name.isBlank()) {
+      return Difficulty.NORMAL;
+    }
+    try {
+      return Difficulty.valueOf(name);
+    } catch (IllegalArgumentException e) {
+      throw new GameSaveException("Unknown difficulty in save file: " + name, e);
+    }
+  }
+
+  private GameMode parseMode(String name) throws GameSaveException {
+    if (name == null || name.isBlank()) {
+      return GameMode.SANDBOX;
+    }
+    try {
+      return GameMode.valueOf(name);
+    } catch (IllegalArgumentException e) {
+      throw new GameSaveException("Unknown game mode in save file: " + name, e);
+    }
   }
 
   private Player createPlayer(PlayerSaveData playerData) throws GameSaveException {
@@ -258,7 +285,8 @@ public class GameSaveService {
     return stocks;
   }
 
-  private Exchange createExchange(ExchangeSaveData exchangeData, List<Stock> stocks) throws GameSaveException {
+  private Exchange createExchange(ExchangeSaveData exchangeData, List<Stock> stocks,
+                                  Difficulty difficulty) throws GameSaveException {
     if (exchangeData == null) {
       throw new GameSaveException("Save file does not contain game data.");
     }
@@ -267,7 +295,8 @@ public class GameSaveService {
       return new Exchange(
               exchangeData.name(),
               stocks,
-              exchangeData.week()
+              exchangeData.week(),
+              difficulty.getVolatility()
       );
     } catch (IllegalArgumentException e) {
       throw new GameSaveException("Could not restore exchange data", e);

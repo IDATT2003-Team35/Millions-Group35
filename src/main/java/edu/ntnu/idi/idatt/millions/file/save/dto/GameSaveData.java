@@ -11,6 +11,8 @@ import java.util.List;
  * @param shares the saved portfolio shares
  * @param transactions the saved transaction history
  * @param netWorthHistory the saved net worth history values
+ * @param difficulty the difficulty level name (EASY/NORMAL/HARD), may be null
+ * @param mode the game mode name (SANDBOX/CHALLENGE), may be null
  */
 public record GameSaveData(
         PlayerSaveData player,
@@ -18,6 +20,8 @@ public record GameSaveData(
         List<StockSaveData> stocks,
         List<ShareSaveData> shares,
         List<TransactionSaveData> transactions,
-        List<String> netWorthHistory
+        List<String> netWorthHistory,
+        String difficulty,
+        String mode
 ) {
 }
