@@ -9,8 +9,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameSessionTest {
   private Exchange exchange;
@@ -131,6 +133,72 @@ class GameSessionTest {
 
     assertEquals(2, exchange.getWeek());
     assertEquals(1, observer.updateCount);
+  }
+
+  @Test
+  void defaultConstructorUsesNormalDifficultyAndSandboxMode() {
+    assertSame(Difficulty.NORMAL, session.getDifficulty());
+    assertSame(GameMode.SANDBOX, session.getMode());
+  }
+
+  @Test
+  void constructorWithDifficultyAndModeStoresValues() {
+    GameSession challengeSession = new GameSession(
+        player, exchange, Difficulty.HARD, GameMode.CHALLENGE);
+    assertSame(Difficulty.HARD, challengeSession.getDifficulty());
+    assertSame(GameMode.CHALLENGE, challengeSession.getMode());
+  }
+
+  @Test
+  void constructorWithNullDifficultyThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+        () -> new GameSession(player, exchange, null, GameMode.SANDBOX));
+  }
+
+  @Test
+  void constructorWithNullModeThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+        () -> new GameSession(player, exchange, Difficulty.NORMAL, null));
+  }
+
+  @Test
+  void isGameOverIsFalseForSandboxRegardlessOfWeek() {
+    for (int i = 0; i < 60; i++) {
+      exchange.advance();
+    }
+    assertFalse(session.isGameOver());
+  }
+
+  @Test
+  void isGameOverIsFalseForChallengeBeforeWeekLimit() {
+    Exchange challengeExchange = new Exchange("OSEBX",
+        List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))));
+    GameSession challengeSession = new GameSession(
+        player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
+    for (int i = 0; i < 50; i++) {
+      challengeSession.advanceWeek();
+    }
+    assertFalse(challengeSession.isGameOver());
+  }
+
+  @Test
+  void isGameOverIsTrueForChallengeAtWeekLimit() {
+    Exchange challengeExchange = new Exchange("OSEBX",
+        List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))),
+        52);
+    GameSession challengeSession = new GameSession(
+        player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
+    assertTrue(challengeSession.isGameOver());
+  }
+
+  @Test
+  void advanceWeekThrowsWhenGameIsOver() {
+    Exchange challengeExchange = new Exchange("OSEBX",
+        List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))),
+        52);
+    GameSession challengeSession = new GameSession(
+        player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
+    assertThrows(IllegalStateException.class, challengeSession::advanceWeek);
   }
 
   private static class CountingObserver implements Observer {

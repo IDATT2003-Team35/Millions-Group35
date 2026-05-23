@@ -204,4 +204,43 @@ class ExchangeTest {
     assertThrows(IllegalArgumentException.class, () -> exchange.getLosers(0));
     assertThrows(IllegalArgumentException.class, () -> exchange.getLosers(-5));
   }
+
+  @Test
+  void defaultConstructorUsesDefaultVolatility() {
+    Exchange ex = new Exchange("OSEBX", List.of(equinor));
+    assertEquals(0.10, ex.getVolatility());
+  }
+
+  @Test
+  void constructorWithVolatilityStoresCustomValue() {
+    Exchange ex = new Exchange("OSEBX", List.of(equinor), 0.05);
+    assertEquals(0.05, ex.getVolatility());
+    assertEquals(1, ex.getWeek());
+  }
+
+  @Test
+  void canonicalConstructorStoresWeekAndVolatility() {
+    Exchange ex = new Exchange("OSEBX", List.of(equinor), 42, 0.20);
+    assertEquals(42, ex.getWeek());
+    assertEquals(0.20, ex.getVolatility());
+  }
+
+  @Test
+  void constructorWithZeroVolatilityThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+        () -> new Exchange("OSEBX", List.of(equinor), 0.0));
+  }
+
+  @Test
+  void constructorWithNegativeVolatilityThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+        () -> new Exchange("OSEBX", List.of(equinor), -0.1));
+  }
+
+  @Test
+  void constructorWithDifficultyVolatilityWorks() {
+    Exchange ex = new Exchange("OSEBX", List.of(equinor),
+        Difficulty.HARD.getVolatility());
+    assertEquals(0.20, ex.getVolatility());
+  }
 }
