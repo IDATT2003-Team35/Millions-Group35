@@ -4,6 +4,8 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.MarketView;
 import javafx.scene.control.TableRow;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,8 +87,11 @@ public class MarketController {
   private void wireRowClick() {
     view.getStockTable().setRowFactory(tv -> {
       TableRow<Stock> row = new TableRow<>();
-      row.setOnMouseClicked(e -> {
-        if (e.getClickCount() == 2 && !row.isEmpty()) {
+      row.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+        if (e.getButton() == MouseButton.PRIMARY && !row.isEmpty()) {
+          e.consume();
+          view.getStockTable().getSelectionModel().clearSelection();
+          view.getStockTable().getFocusModel().focus(-1);
           mainController.showStockDetail(row.getItem());
         }
       });

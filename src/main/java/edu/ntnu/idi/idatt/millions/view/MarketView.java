@@ -73,6 +73,7 @@ public class MarketView extends BorderPane implements Observer {
     }
 
     setupColumns();
+    stockTable.getStyleClass().add("market-table");
     buildLayout();
     session.addObserver(this);
   }
@@ -143,14 +144,22 @@ public class MarketView extends BorderPane implements Observer {
         "CHANGE (%)", Stock::getLatestPercentChange, Percentages::formatWithArrow);
     TableColumn<Stock, BigDecimal> allTimeChangeCol = TableColumns.coloredNumericColumn(
         "ALL-TIME (%)", Stock::getTotalPercentChange, Percentages::formatWithArrow);
+    TableColumn<Stock, String> openCol = new TableColumn<>("");
+    openCol.setCellValueFactory(c -> new SimpleStringProperty("→"));
+    openCol.setSortable(false);
+    openCol.setResizable(false);
+    openCol.getStyleClass().add("open-column");
 
     stockTable.getColumns().addAll(
-        symbolCol, companyCol, priceCol, percentChangeCol, allTimeChangeCol);
+        symbolCol, companyCol, priceCol, percentChangeCol, allTimeChangeCol, openCol);
     symbolCol.setPrefWidth(90);
     companyCol.setPrefWidth(360);
     priceCol.setPrefWidth(140);
     percentChangeCol.setPrefWidth(150);
     allTimeChangeCol.setPrefWidth(150);
+    openCol.setPrefWidth(42);
+    openCol.setMinWidth(42);
+    openCol.setMaxWidth(42);
     stockTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
   }
 

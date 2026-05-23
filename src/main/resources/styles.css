@@ -483,10 +483,43 @@
   -fx-background-color: rgba(0, 0, 0, 0.06);
 }
 
+.market-table .table-row-cell:hover,
+.market-table .table-row-cell:selected:hover,
+.market-table .table-row-cell:odd:selected:hover {
+  -fx-background-color: rgba(0, 0, 0, 0.055);
+  -fx-border-color: transparent;
+}
+
+.market-table .table-row-cell:selected {
+  -fx-background-color: -fx-surface;
+}
+
+.market-table .table-row-cell:odd:selected {
+  -fx-background-color: rgba(244, 236, 214, 0.45);
+}
+
 .table-view .table-cell {
   -fx-text-fill: -fx-text;
   -fx-padding: 12 14;
   -fx-font-size: 14px;
+}
+
+.market-table .open-column,
+.market-table .open-column .label {
+  -fx-alignment: CENTER;
+}
+
+.market-table .table-cell.open-column {
+  -fx-alignment: CENTER;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: rgba(0, 0, 0, 0.32);
+  -fx-padding: 12 0;
+  -fx-text-overrun: clip;
+}
+
+.market-table .table-row-cell:hover .table-cell.open-column {
+  -fx-text-fill: -fx-ink;
 }
 
 .table-view .table-cell.symbol-cell {
