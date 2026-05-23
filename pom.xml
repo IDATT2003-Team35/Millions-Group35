@@ -45,18 +45,21 @@
 
     <build>
         <plugins>
+            <!-- Compiles the project using the Java version configured above. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
             </plugin>
 
+            <!-- Runs the JUnit test suite during Maven's test phase. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
             </plugin>
 
+            <!-- Starts the JavaFX application with the correct main class. -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -66,12 +69,14 @@
                 </configuration>
             </plugin>
 
+            <!-- Generates JavaDoc documentation for the codebase. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven.javadoc.plugin.version}</version>
             </plugin>
 
+            <!-- Collects test coverage and creates an HTML report during mvn verify. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
