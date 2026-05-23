@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class MarketController {
 
-  private static final int TOP_LIST_LIMIT = 10;
+  private static final int TOP_LIST_LIMIT = 5;
 
   private final GameSession session;
   private final MainController mainController;
@@ -94,4 +94,3 @@ public class MarketController {
     });
   }
 }
-

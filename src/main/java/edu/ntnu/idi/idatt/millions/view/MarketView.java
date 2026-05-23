@@ -118,11 +118,11 @@ public class MarketView extends BorderPane implements Observer {
     separator.setMaxHeight(Double.MAX_VALUE);
 
     VBox panels = new VBox(gainersPanel, losersPanel);
-    panels.setSpacing(12);
+    panels.setSpacing(10);
 
     HBox container = new HBox(separator, panels);
-    container.setSpacing(16);
-    container.setPadding(new Insets(0, 0, 0, 16));
+    container.setSpacing(14);
+    container.setPadding(new Insets(0, 0, 0, 14));
     return container;
   }
 
