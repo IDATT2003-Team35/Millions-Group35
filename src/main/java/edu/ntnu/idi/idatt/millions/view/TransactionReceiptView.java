@@ -43,7 +43,7 @@ public class TransactionReceiptView {
    */
   public TransactionReceiptView() {
     titleLabel = new Label("TRANSACTION RECEIPT");
-    titleLabel.getStyleClass().add("receipt-title");
+    titleLabel.getStyleClass().add("popup-title");
 
     gainAmountValue = new Label();
     gainAmountValue.getStyleClass().add("receipt-gain-amount");
@@ -65,9 +65,9 @@ public class TransactionReceiptView {
     costBasisValue = new Label();
     costBasisRow = row("Cost Basis ($):", costBasisValue);
     totalLabel = new Label("Total:");
-    totalLabel.getStyleClass().add("receipt-total-label");
+    totalLabel.getStyleClass().add("popup-total-value");
     totalValue = new Label();
-    totalValue.getStyleClass().add("receipt-total-value");
+    totalValue.getStyleClass().add("popup-total-value");
 
     weekValue = new Label();
 
@@ -76,7 +76,7 @@ public class TransactionReceiptView {
     closeButton.setDefaultButton(true);
 
     Label detailsHeader = new Label("DETAILS");
-    detailsHeader.getStyleClass().add("receipt-section-header");
+    detailsHeader.getStyleClass().add("popup-section-header");
 
     VBox detailsBox = new VBox(
         10,
@@ -100,7 +100,7 @@ public class TransactionReceiptView {
     buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
     root = new VBox(16, titleLabel, gainHeader, detailsBox, buttonRow);
-    root.getStyleClass().add("transaction-receipt");
+    root.getStyleClass().add("transaction-popup");
     root.setPadding(new Insets(24));
     root.setPrefWidth(440);
   }
