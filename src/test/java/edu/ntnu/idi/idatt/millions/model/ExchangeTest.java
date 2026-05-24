@@ -123,6 +123,77 @@ class ExchangeTest {
     assertEquals(1, player.getTransactionArchive().getSales(1).size());
   }
 
+  @Test
+  void sellQuantityPartOfSingleLotLeavesRemainingQuantity() {
+    exchange.buy("EQNR", new BigDecimal("5"), player);
+
+    List<Transaction> result = exchange.sell("EQNR", new BigDecimal("2"), player);
+
+    List<Share> remainingShares = player.getPortfolio().getShares("EQNR");
+    assertEquals(1, result.size());
+    assertInstanceOf(Sale.class, result.getFirst());
+    assertEquals(new BigDecimal("2"), result.getFirst().getShare().getQuantity());
+    assertEquals(1, remainingShares.size());
+    assertEquals(new BigDecimal("3"), remainingShares.getFirst().getQuantity());
+    assertEquals(1, player.getTransactionArchive().getSales(1).size());
+  }
+
+    @Test
+  void sellQuantityAcrossMultipleLotsUsesFirstInFirstOutOrder() {
+    exchange.buy("EQNR", new BigDecimal("5"), player);
+    equinor.addNewSalesPrice(new BigDecimal("30.00"));
+    exchange.buy("EQNR", new BigDecimal("3"), player);
+    equinor.addNewSalesPrice(new BigDecimal("31.00"));
+    exchange.buy("EQNR", new BigDecimal("4"), player);
+
+    List<Transaction> result = exchange.sell("EQNR", new BigDecimal("7"), player);
+    List<Share> remainingShares = player.getPortfolio().getShares("EQNR");
+
+    assertEquals(2, result.size());
+    assertEquals(new BigDecimal("5"), result.getFirst().getShare().getQuantity());
+    assertEquals(new BigDecimal("29.2"), result.getFirst().getShare().getPurchasePrice());
+    assertEquals(new BigDecimal("2"), result.get(1).getShare().getQuantity());
+    assertEquals(new BigDecimal("30.00"), result.get(1).getShare().getPurchasePrice());
+
+    assertEquals(2, remainingShares.size());
+    assertEquals(new BigDecimal("1"), remainingShares.getFirst().getQuantity());
+    assertEquals(new BigDecimal("30.00"), remainingShares.getFirst().getPurchasePrice());
+    assertEquals(new BigDecimal("4"), remainingShares.get(1).getQuantity());
+    assertEquals(new BigDecimal("31.00"), remainingShares.get(1).getPurchasePrice());
+    assertEquals(2, player.getTransactionArchive().getSales(1).size());
+  }
+
+  @Test
+  void sellQuantityMoreThanOwnedThrowsIllegalArgumentException() {
+    exchange.buy("EQNR", new BigDecimal("5"), player);
+
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.sell("EQNR", new BigDecimal("6"), player));
+  }
+
+  @Test
+  void sellQuantityWithoutOwnedSharesThrowsIllegalStateException() {
+    assertThrows(IllegalStateException.class, () ->
+        exchange.sell("EQNR", BigDecimal.ONE, player));
+  }
+
+  @Test
+  void sellQuantityZeroThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.sell("EQNR", BigDecimal.ZERO, player));
+  }
+
+  @Test
+  void sellQuantityNullQuantityThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.sell("EQNR", null, player));
+  }
+
+  @Test
+  void sellQuantityNullPlayerThrowsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class, () ->
+        exchange.sell("EQNR", BigDecimal.ONE, null));
+  }
 
   @Test
   void sellNullShareThrowsIllegalArgumentException() {
