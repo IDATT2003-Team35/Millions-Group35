@@ -6,7 +6,10 @@ import edu.ntnu.idi.idatt.millions.model.calculator.TransactionCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.util.Money;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
@@ -50,8 +53,25 @@ public class TransactionReceiptController {
     this.dialogStage = dialogStage;
     this.transaction = transaction;
 
+    ensureStylesheetLoaded();
     populate();
     wireButtons();
+  }
+
+  /**
+   * The receipt popup is shown in its own {@link Scene}, which does not inherit
+   * stylesheets from the main scene. Load the project stylesheet here so the
+   * receipt picks up the same look as the rest of the application.
+   */
+  private void ensureStylesheetLoaded() {
+    Scene scene = dialogStage.getScene();
+    if (scene == null) {
+      return;
+    }
+    String css = getClass().getResource("/styles.css").toExternalForm();
+    if (!scene.getStylesheets().contains(css)) {
+      scene.getStylesheets().add(css);
+    }
   }
 
   private void populate() {
@@ -71,6 +91,33 @@ public class TransactionReceiptController {
     view.setTotalLabel(getTotalLabel());
     view.setTotal(calculator.calculateTotal().toPlainString());
     view.setWeek(String.valueOf(transaction.getWeek()));
+
+    populateSaleSummary(share, calculator);
+  }
+
+  /**
+   * Adds the cost basis row and the gain/loss header for Sale transactions.
+   * For Purchase transactions both are hidden, since no profit is realized yet.
+   */
+  private void populateSaleSummary(Share share, TransactionCalculator calculator) {
+    boolean isSale = transaction instanceof Sale;
+    view.setCostBasisVisible(isSale);
+    view.setGainHeaderVisible(isSale);
+    if (!isSale) {
+      return;
+    }
+
+    BigDecimal costBasis = share.getPurchasePrice().multiply(share.getQuantity());
+    BigDecimal cashReceived = calculator.calculateTotal();
+    BigDecimal gain = cashReceived.subtract(costBasis);
+    BigDecimal returnPercent = Percentages.change(costBasis, cashReceived);
+
+    view.setCostBasis(costBasis.toPlainString());
+    view.setGainHeader(
+        Money.formatWithSign(gain),
+        Percentages.format(returnPercent),
+        gain.signum()
+    );
   }
 
   private BigDecimal getTransactionPricePerShare(Share share) {
@@ -99,7 +146,7 @@ public class TransactionReceiptController {
       return "Total Cost ($):";
     }
     if (transaction instanceof Sale) {
-      return "Total Revenue ($):";
+      return "Cash Received ($):";
     }
     return "Total ($):";
   }

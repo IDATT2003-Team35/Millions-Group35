@@ -75,6 +75,7 @@
 .summary-title,
 .info-row-label,
 .detail-section-header,
+.receipt-section-header,
 .market-meta-row > .label,
 .top-panel-header > .label {
   -fx-font-size: 10px;
@@ -961,4 +962,54 @@
   -fx-background-color: transparent;
   -fx-padding: 0;
   -fx-shape: null;
+}
+
+/* ---------- Transaction receipt popup ---------- */
+.transaction-receipt {
+  -fx-background-color: white;
+}
+
+.receipt-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 900;
+  -fx-letter-spacing: 0.15em;
+  -fx-text-fill: -fx-text-strong;
+}
+
+.receipt-gain-header {
+  -fx-padding: 8 0 4 0;
+}
+
+.receipt-gain-amount {
+  -fx-font-size: 36px;
+  -fx-font-weight: 900;
+  -fx-letter-spacing: -0.01em;
+}
+
+.receipt-gain-percent {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+.receipt-details {
+  -fx-padding: 8 0 0 0;
+}
+
+.receipt-total-label,
+.receipt-total-value {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+.receipt-close-button {
+  -fx-background-color: #1a1a1a;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.12em;
+  -fx-padding: 10 22;
+  -fx-background-radius: 0;
+  -fx-cursor: hand;
+}
+.receipt-close-button:hover {
+  -fx-background-color: #c4233a;
 }

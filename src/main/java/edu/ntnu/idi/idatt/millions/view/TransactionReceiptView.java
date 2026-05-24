@@ -20,6 +20,9 @@ public class TransactionReceiptView {
   private final VBox root;
 
   private final Label titleLabel;
+  private final Label gainAmountValue;
+  private final Label gainPercentValue;
+  private final VBox gainHeader;
   private final Label stockSymbolValue;
   private final Label companyNameValue;
   private final Label quantityValue;
@@ -28,6 +31,8 @@ public class TransactionReceiptView {
   private final Label commissionValue;
   private final Label taxValue;
   private final HBox taxRow;
+  private final Label costBasisValue;
+  private final HBox costBasisRow;
   private final Label totalLabel;
   private final Label totalValue;
   private final Label weekValue;
@@ -38,6 +43,15 @@ public class TransactionReceiptView {
    */
   public TransactionReceiptView() {
     titleLabel = new Label("TRANSACTION RECEIPT");
+    titleLabel.getStyleClass().add("receipt-title");
+
+    gainAmountValue = new Label();
+    gainAmountValue.getStyleClass().add("receipt-gain-amount");
+    gainPercentValue = new Label();
+    gainPercentValue.getStyleClass().add("receipt-gain-percent");
+    gainHeader = new VBox(2, gainAmountValue, gainPercentValue);
+    gainHeader.getStyleClass().add("receipt-gain-header");
+    gainHeader.setAlignment(Pos.CENTER);
 
     stockSymbolValue = new Label();
     companyNameValue = new Label();
@@ -48,16 +62,25 @@ public class TransactionReceiptView {
     commissionValue = new Label();
     taxValue = new Label();
     taxRow = row("Tax ($):", taxValue);
+    costBasisValue = new Label();
+    costBasisRow = row("Cost Basis ($):", costBasisValue);
     totalLabel = new Label("Total:");
+    totalLabel.getStyleClass().add("receipt-total-label");
     totalValue = new Label();
+    totalValue.getStyleClass().add("receipt-total-value");
 
     weekValue = new Label();
 
     closeButton = new Button("CLOSE");
+    closeButton.getStyleClass().add("receipt-close-button");
     closeButton.setDefaultButton(true);
+
+    Label detailsHeader = new Label("DETAILS");
+    detailsHeader.getStyleClass().add("receipt-section-header");
 
     VBox detailsBox = new VBox(
         10,
+        detailsHeader,
         row("Stock:", stockSymbolValue),
         row("Company:", companyNameValue),
         row("Quantity:", quantityValue),
@@ -66,17 +89,20 @@ public class TransactionReceiptView {
         row("Gross ($):", grossValue),
         row("Commission ($):", commissionValue),
         taxRow,
+        costBasisRow,
         row(totalLabel, totalValue),
         new Separator(),
         row("Week:", weekValue)
     );
+    detailsBox.getStyleClass().add("receipt-details");
 
     HBox buttonRow = new HBox(closeButton);
     buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
-    root = new VBox(16, titleLabel, detailsBox, buttonRow);
-    root.setPadding(new Insets(20));
-    root.setPrefWidth(430);
+    root = new VBox(16, titleLabel, gainHeader, detailsBox, buttonRow);
+    root.getStyleClass().add("transaction-receipt");
+    root.setPadding(new Insets(24));
+    root.setPrefWidth(440);
   }
 
   private HBox row(String labelText, Node value) {
@@ -189,6 +215,56 @@ public class TransactionReceiptView {
   public void setTaxVisible(boolean visible) {
     taxRow.setVisible(visible);
     taxRow.setManaged(visible);
+  }
+
+  /**
+   * Sets the cost basis amount displayed in the receipt.
+   *
+   * @param costBasis cost basis (purchase price × quantity) to display
+   */
+  public void setCostBasis(String costBasis) {
+    costBasisValue.setText(costBasis);
+  }
+
+  /**
+   * Shows or hides the cost basis row.
+   *
+   * @param visible {@code true} to show the cost basis row, {@code false} to hide it
+   */
+  public void setCostBasisVisible(boolean visible) {
+    costBasisRow.setVisible(visible);
+    costBasisRow.setManaged(visible);
+  }
+
+  /**
+   * Sets the realized gain/loss header values shown above the details.
+   *
+   * @param amount the realized profit or loss (e.g. "+$339.50" or "-$50.00")
+   * @param percent the realized return as a percentage (e.g. "+33.95%")
+   * @param signum the sign of the realized return: 1 for gain, -1 for loss, 0 for neutral
+   */
+  public void setGainHeader(String amount, String percent, int signum) {
+    gainAmountValue.setText(amount);
+    gainPercentValue.setText(percent);
+    gainAmountValue.getStyleClass().removeAll("gain", "loss");
+    gainPercentValue.getStyleClass().removeAll("gain", "loss");
+    if (signum > 0) {
+      gainAmountValue.getStyleClass().add("gain");
+      gainPercentValue.getStyleClass().add("gain");
+    } else if (signum < 0) {
+      gainAmountValue.getStyleClass().add("loss");
+      gainPercentValue.getStyleClass().add("loss");
+    }
+  }
+
+  /**
+   * Shows or hides the gain header (used only for completed sales).
+   *
+   * @param visible {@code true} to show the gain header, {@code false} to hide it
+   */
+  public void setGainHeaderVisible(boolean visible) {
+    gainHeader.setVisible(visible);
+    gainHeader.setManaged(visible);
   }
 
   /**
