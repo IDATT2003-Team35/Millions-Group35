@@ -66,15 +66,13 @@ public class SellController {
   private void populate() {
     Stock stock = holding.getStock();
 
-    BigDecimal gainLoss = share.getNetGainLoss();
-
     view.setStockSymbol(stock.getSymbol());
     view.setCompanyName(stock.getCompany());
     view.setQuantity(holding.getQuantity().toPlainString());
     view.setPurchasePrice(holding.getAveragePurchasePrice().toPlainString());
     view.setCurrentPrice(holding.getCurrentPrice().toPlainString());
-    view.setGainLoss("0.00");
-    view.setEstimatedRevenue("0.00");
+    view.setGainLoss("0.00", 0);
+    view.setCashReceived("0.00");
   }
 
   private void wireButtons() {
@@ -92,18 +90,19 @@ public class SellController {
     String quantityText = view.getQuantityToSell().trim();
 
     if (quantityText.isEmpty()) {
-      view.setGainLoss("0.00");
-      view.setEstimatedRevenue("0.00");
+      view.setGainLoss("0.00", 0);
+      view.setCashReceived("0.00");
       return;
     }
 
     try {
       BigDecimal quantity = new BigDecimal(quantityText);
-      view.setGainLoss(holding.getEstimatedGainLoss(quantity).toPlainString());
-      view.setEstimatedRevenue(holding.getEstimatedSaleValue(quantity).toPlainString());
+      BigDecimal gainLoss = holding.getEstimatedGainLoss(quantity);
+      view.setGainLoss(Money.formatWithSign(gainLoss), gainLoss.signum());
+      view.setCashReceived(holding.getEstimatedSaleValue(quantity).toPlainString());
     } catch (IllegalArgumentException e) {
-      view.setGainLoss("0.00");
-      view.setEstimatedRevenue("0.00");
+      view.setGainLoss("0.00", 0);
+      view.setCashReceived("0.00");
     }
   }
 
