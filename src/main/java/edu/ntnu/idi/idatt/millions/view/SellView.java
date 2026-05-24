@@ -26,8 +26,11 @@ public class SellView {
   private final TextField quantityInput;
   private final Label purchasePriceValue;
   private final Label currentPriceValue;
+  private final Label grossValue;
+  private final Label commissionValue;
+  private final Label taxValue;
   private final Label gainLossValue;
-  private final Label estimatedRevenueValue;
+  private final Label cashReceivedValue;
   private final Label errorLabel;
 
   private final Button cancelButton;
@@ -38,6 +41,7 @@ public class SellView {
    */
   public SellView() {
     Label titleLabel = new Label("SELL ORDER");
+    titleLabel.getStyleClass().add("popup-title");
 
     stockSymbolValue = new Label();
     companyNameValue = new Label();
@@ -48,18 +52,30 @@ public class SellView {
 
     purchasePriceValue = new Label();
     currentPriceValue = new Label();
+    grossValue = new Label();
+    commissionValue = new Label();
+    taxValue = new Label();
     gainLossValue = new Label();
-    estimatedRevenueValue = new Label();
+    gainLossValue.getStyleClass().add("popup-gain-value");
+    cashReceivedValue = new Label();
+    cashReceivedValue.getStyleClass().add("popup-total-value");
 
     errorLabel = new Label();
+    errorLabel.getStyleClass().add("popup-error");
     errorLabel.setWrapText(true);
 
     cancelButton = new Button("CANCEL");
+    cancelButton.getStyleClass().add("popup-secondary-button");
     confirmButton = new Button("CONFIRM SELL");
+    confirmButton.getStyleClass().add("popup-primary-button");
     confirmButton.setDefaultButton(true);
 
+    Label detailsHeader = new Label("DETAILS");
+    detailsHeader.getStyleClass().add("popup-section-header");
+
     VBox infoBox = new VBox(
-            12,
+            10,
+            detailsHeader,
             row("Stock:", stockSymbolValue),
             row("Company:", companyNameValue),
             row("Quantity owned:", quantityValue),
@@ -68,14 +84,21 @@ public class SellView {
             row("Current Price per Share ($):", currentPriceValue)
     );
 
+    Label summaryHeader = new Label("SUMMARY");
+    summaryHeader.getStyleClass().add("popup-section-header");
+
     VBox summaryBox = new VBox(
-            12,
-            row("Gain / Loss ($):", gainLossValue),
-            row("Estimated Revenue ($):", estimatedRevenueValue)
+            10,
+            summaryHeader,
+            row("Gross ($):", grossValue),
+            row("Commission ($):", commissionValue),
+            row("Tax ($):", taxValue),
+            row("Cash Received ($):", cashReceivedValue),
+            row("Gain / Loss ($):", gainLossValue)
     );
 
     HBox buttonRow = new HBox(12, cancelButton, confirmButton);
-    buttonRow.setAlignment(Pos.CENTER);
+    buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
     root = new VBox(
             16,
@@ -86,9 +109,10 @@ public class SellView {
             errorLabel,
             buttonRow
     );
+    root.getStyleClass().add("transaction-popup");
     root.setSpacing(16);
-    root.setPadding(new Insets(20));
-    root.setPrefWidth(460);
+    root.setPadding(new Insets(24));
+    root.setPrefWidth(480);
   }
 
   private HBox row(String labelText, Node value) {
@@ -201,21 +225,58 @@ public class SellView {
   }
 
   /**
-   * Sets the estimated gain or loss displayed in the popup.
+   * Sets the estimated gain or loss displayed in the popup, with a green
+   * or red color class applied based on sign for consistency with the
+   * portfolio gain/loss column.
    *
-   * @param gainLoss gain or loss to display
+   * @param gainLoss formatted gain or loss text
+   * @param signum the sign of the realized return: 1 for gain, -1 for loss, 0 for neutral
    */
-  public void setGainLoss(String gainLoss) {
+  public void setGainLoss(String gainLoss, int signum) {
     gainLossValue.setText(gainLoss);
+    gainLossValue.getStyleClass().removeAll("gain", "loss");
+    if (signum > 0) {
+      gainLossValue.getStyleClass().add("gain");
+    } else if (signum < 0) {
+      gainLossValue.getStyleClass().add("loss");
+    }
   }
 
   /**
-   * Sets the estimated sale revenue displayed in the popup.
+   * Sets the estimated cash the player will receive (gross minus commission
+   * and tax) displayed in the popup.
    *
-   * @param estimatedRevenue estimated revenue to display
+   * @param cashReceived cash amount to display
    */
-  public void setEstimatedRevenue(String estimatedRevenue) {
-    estimatedRevenueValue.setText(estimatedRevenue);
+  public void setCashReceived(String cashReceived) {
+    cashReceivedValue.setText(cashReceived);
+  }
+
+  /**
+   * Sets the gross amount of the sale (current price × quantity).
+   *
+   * @param gross gross amount to display
+   */
+  public void setGross(String gross) {
+    grossValue.setText(gross);
+  }
+
+  /**
+   * Sets the commission portion of the sale.
+   *
+   * @param commission commission amount to display
+   */
+  public void setCommission(String commission) {
+    commissionValue.setText(commission);
+  }
+
+  /**
+   * Sets the tax portion of the sale (calculated on profit).
+   *
+   * @param tax tax amount to display
+   */
+  public void setTax(String tax) {
+    taxValue.setText(tax);
   }
 
   /**

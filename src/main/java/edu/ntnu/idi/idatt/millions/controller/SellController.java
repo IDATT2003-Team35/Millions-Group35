@@ -4,6 +4,8 @@ import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.PortfolioHolding;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.util.Money;
+import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.SellView;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.scene.Scene;
@@ -55,6 +57,7 @@ public class SellController {
     this.session = session;
     this.holding = holding;
 
+    Styles.applyTo(dialogStage.getScene());
     populate();
     wireButtons();
     wireQuantityListener();
@@ -62,6 +65,8 @@ public class SellController {
 
   private void populate() {
     Stock stock = holding.getStock();
+
+    BigDecimal gainLoss = share.getNetGainLoss();
 
     view.setStockSymbol(stock.getSymbol());
     view.setCompanyName(stock.getCompany());

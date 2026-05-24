@@ -16,6 +16,7 @@
  *  13. Stock detail
  *  14. Charts
  *  15. Scroll bars
+ *  16. Popups (orders, receipt, game over)
  */
 
 
@@ -75,6 +76,8 @@
 .summary-title,
 .info-row-label,
 .detail-section-header,
+.popup-section-header,
+.game-over-stat-label,
 .market-meta-row > .label,
 .top-panel-header > .label {
   -fx-font-size: 10px;
@@ -349,24 +352,6 @@
   -fx-border-color: #1a1a1a;
 }
 
-/* Challenge mode week progress bar in the status bar */
-.week-progress {
-  -fx-pref-height: 8;
-  -fx-max-height: 8;
-}
-.week-progress > .bar {
-  -fx-background-color: #c62828;
-  -fx-background-insets: 0;
-  -fx-background-radius: 3;
-}
-.week-progress > .track {
-  -fx-background-color: #e8e8e8;
-  -fx-background-radius: 3;
-  -fx-border-color: #999999;
-  -fx-border-width: 1;
-  -fx-border-radius: 3;
-}
-
 .start-primary-button,
 .start-secondary-button {
   -fx-background-radius: 0;
@@ -495,6 +480,24 @@
 
 .status-stats > .status-field:last-child {
   -fx-border-color: transparent;
+}
+
+/* Challenge mode week progress bar (under the WEEK field). */
+.week-progress {
+  -fx-pref-height: 8;
+  -fx-max-height: 8;
+}
+.week-progress > .bar {
+  -fx-background-color: #c62828;
+  -fx-background-insets: 0;
+  -fx-background-radius: 3;
+}
+.week-progress > .track {
+  -fx-background-color: #e8e8e8;
+  -fx-background-radius: 3;
+  -fx-border-color: #999999;
+  -fx-border-width: 1;
+  -fx-border-radius: 3;
 }
 
 
@@ -961,4 +964,158 @@
   -fx-background-color: transparent;
   -fx-padding: 0;
   -fx-shape: null;
+}
+
+/* ---------- 16. Popups (orders, receipt, game over) ---------- */
+/* Shared classes used by Buy/Sell order popups and the transaction
+ * receipt. Game over has its own headline/quit styling at the end. */
+
+/* Container — white card body. */
+.transaction-popup {
+  -fx-background-color: white;
+}
+
+/* Popup heading ("BUY ORDER", "SELL RECEIPT" etc.). */
+.popup-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: 900;
+  -fx-letter-spacing: 0.15em;
+  -fx-text-fill: -fx-text-strong;
+}
+
+/* Inline error message at the bottom of a popup. */
+.popup-error {
+  -fx-text-fill: #c62828;
+  -fx-font-size: 12px;
+}
+
+/* Emphasized values like Total Cost, Cash Received, or Gain/Loss row. */
+.popup-total-value,
+.popup-gain-value {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+/* Receipt-only: big gain/loss headline above the details section. */
+.receipt-gain-header {
+  -fx-padding: 8 0 4 0;
+}
+.receipt-gain-amount {
+  -fx-font-size: 36px;
+  -fx-font-weight: 900;
+  -fx-letter-spacing: -0.01em;
+}
+.receipt-gain-percent {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+.receipt-details {
+  -fx-padding: 8 0 0 0;
+}
+
+/* Primary action button — Confirm Buy, Confirm Sell, Quit. */
+.popup-primary-button {
+  -fx-background-color: #c4233a;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.12em;
+  -fx-padding: 10 22;
+  -fx-background-radius: 0;
+  -fx-cursor: hand;
+}
+.popup-primary-button:hover {
+  -fx-background-color: #a01b2f;
+}
+
+/* Secondary button — Cancel on the order popups. */
+.popup-secondary-button {
+  -fx-background-color: white;
+  -fx-text-fill: -fx-text-strong;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.12em;
+  -fx-padding: 10 22;
+  -fx-background-radius: 0;
+  -fx-border-color: -fx-text-strong;
+  -fx-border-width: 1.5;
+  -fx-cursor: hand;
+}
+.popup-secondary-button:hover {
+  -fx-background-color: #f5f5f5;
+}
+
+/* Receipt Close button — dark filled, hover brand red. Visually
+ * distinct from popup-secondary-button to signal "acknowledge and
+ * dismiss" rather than "cancel an action". */
+.receipt-close-button {
+  -fx-background-color: #1a1a1a;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.12em;
+  -fx-padding: 10 22;
+  -fx-background-radius: 0;
+  -fx-cursor: hand;
+}
+.receipt-close-button:hover {
+  -fx-background-color: #c4233a;
+}
+
+/* --- Game over screen --- */
+.game-over-root {
+  -fx-background-color: -fx-cream;
+}
+
+.game-over-card {
+  -fx-background-color: white;
+  -fx-border-color: -fx-text-strong;
+  -fx-border-width: 1.5;
+}
+
+.game-over-title {
+  -fx-font-size: 36px;
+  -fx-font-weight: 900;
+  -fx-letter-spacing: 0.15em;
+  -fx-text-fill: -fx-text-strong;
+}
+
+.game-over-subtitle {
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-letter-spacing: 0.2em;
+  -fx-text-fill: -fx-text-muted;
+}
+
+.game-over-headline {
+  -fx-padding: 12 0 12 0;
+}
+
+.game-over-headline-value {
+  -fx-font-size: 48px;
+  -fx-font-weight: 900;
+  -fx-letter-spacing: -0.01em;
+}
+
+.game-over-headline-percent {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+}
+
+.game-over-stat-value {
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -fx-text-strong;
+}
+
+/* Game over quit — primary button but larger for visual weight. */
+.game-over-quit-button {
+  -fx-background-color: #c4233a;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-letter-spacing: 0.15em;
+  -fx-padding: 14 36;
+  -fx-background-radius: 0;
+  -fx-cursor: hand;
+}
+.game-over-quit-button:hover {
+  -fx-background-color: #a01b2f;
 }

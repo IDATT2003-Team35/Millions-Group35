@@ -1,8 +1,11 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
+import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.BuyView;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.scene.Scene;
@@ -53,6 +56,7 @@ public class BuyController {
     this.session = session;
     this.stock = stock;
 
+    Styles.applyTo(dialogStage.getScene());
     populate();
     wireButtons();
     wireQuantityListener();
@@ -80,6 +84,7 @@ public class BuyController {
     String quantityText = view.getQuantityField().getText().trim();
 
     if (quantityText.isEmpty()) {
+      view.setCommission("0.00");
       view.setTotalCost("0.00");
       return;
     }
@@ -87,13 +92,19 @@ public class BuyController {
     try {
       BigDecimal quantity = new BigDecimal(quantityText);
       if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
+        view.setCommission("0.00");
         view.setTotalCost("0.00");
         return;
       }
 
-      BigDecimal totalCost = stock.getSalesPrice().multiply(quantity);
-      view.setTotalCost(totalCost.toPlainString());
+      // Reuse the same calculator the actual purchase will use so the
+      // preview includes commission and matches what gets withdrawn.
+      Share previewShare = new Share(stock, quantity, stock.getSalesPrice());
+      PurchaseCalculator calculator = new PurchaseCalculator(previewShare);
+      view.setCommission(calculator.calculateCommission().toPlainString());
+      view.setTotalCost(calculator.calculateTotal().toPlainString());
     } catch (NumberFormatException e) {
+      view.setCommission("0.00");
       view.setTotalCost("0.00");
     }
   }

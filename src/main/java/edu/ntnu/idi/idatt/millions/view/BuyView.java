@@ -23,6 +23,7 @@ public class BuyView {
   private final Label stockSymbolValue;
   private final Label stockPriceValue;
   private final TextField quantityField;
+  private final Label commissionValue;
   private final Label totalCostValue;
   private final Label availableCashValue;
   private final Label errorLabel;
@@ -35,39 +36,51 @@ public class BuyView {
    */
   public BuyView() {
     Label titleLabel = new Label("BUY ORDER");
+    titleLabel.getStyleClass().add("popup-title");
+
     stockSymbolValue = new Label();
     stockPriceValue = new Label();
     quantityField = new TextField();
     quantityField.setPromptText("Enter quantity");
+    commissionValue = new Label("0.00");
     totalCostValue = new Label("0.00");
+    totalCostValue.getStyleClass().add("popup-total-value");
     availableCashValue = new Label();
 
     errorLabel = new Label();
+    errorLabel.getStyleClass().add("popup-error");
     errorLabel.setWrapText(true);
 
     cancelButton = new Button("CANCEL");
+    cancelButton.getStyleClass().add("popup-secondary-button");
     confirmButton = new Button("CONFIRM BUY");
+    confirmButton.getStyleClass().add("popup-primary-button");
     confirmButton.setDefaultButton(true);
 
+    Label detailsHeader = new Label("DETAILS");
+    detailsHeader.getStyleClass().add("popup-section-header");
+
     VBox infoBox = new VBox(
-            12,
+            10,
+            detailsHeader,
             row("Stock:", stockSymbolValue),
             row("Price per Share ($):", stockPriceValue),
             row("Quantity:", quantityField)
     );
 
+    Label summaryHeader = new Label("SUMMARY");
+    summaryHeader.getStyleClass().add("popup-section-header");
+
     VBox summaryBox = new VBox(
-            12,
+            10,
+            summaryHeader,
+            row("Commission ($):", commissionValue),
             row("Total Cost ($):", totalCostValue),
             row("Available Cash ($):", availableCashValue)
     );
 
-    HBox buttonRow = new HBox(
-            12,
-            cancelButton,
-            confirmButton
-    );
-    buttonRow.setAlignment(Pos.CENTER);
+    HBox buttonRow = new HBox(12, cancelButton, confirmButton);
+    buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
     root = new VBox(
             16,
@@ -78,9 +91,10 @@ public class BuyView {
             errorLabel,
             buttonRow
     );
+    root.getStyleClass().add("transaction-popup");
     root.setSpacing(16);
-    root.setPadding(new Insets(20));
-    root.setPrefWidth(420);
+    root.setPadding(new Insets(24));
+    root.setPrefWidth(440);
   }
 
   private HBox row(String labelText, Node value) {
@@ -138,7 +152,7 @@ public class BuyView {
     stockSymbolValue.setText(symbol);
   }
 
-  /**
+  /**r
    * Sets the price per share displayed in the popup.
    *
    * @param price price per share to display
@@ -148,12 +162,21 @@ public class BuyView {
   }
 
   /**
-   * Sets the calculated total cost displayed in the popup.
+   * Sets the calculated total cost (gross + commission) displayed in the popup.
    *
    * @param totalCost total cost to display
    */
   public void setTotalCost(String totalCost) {
     totalCostValue.setText(totalCost);
+  }
+
+  /**
+   * Sets the commission portion of the purchase displayed in the popup.
+   *
+   * @param commission commission amount to display
+   */
+  public void setCommission(String commission) {
+    commissionValue.setText(commission);
   }
 
   /**
