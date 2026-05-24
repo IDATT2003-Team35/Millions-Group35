@@ -43,10 +43,14 @@ public class TransactionReceiptView {
    */
   public TransactionReceiptView() {
     titleLabel = new Label("TRANSACTION RECEIPT");
+    titleLabel.getStyleClass().add("receipt-title");
 
     gainAmountValue = new Label();
+    gainAmountValue.getStyleClass().add("receipt-gain-amount");
     gainPercentValue = new Label();
-    gainHeader = new VBox(4, gainAmountValue, gainPercentValue);
+    gainPercentValue.getStyleClass().add("receipt-gain-percent");
+    gainHeader = new VBox(2, gainAmountValue, gainPercentValue);
+    gainHeader.getStyleClass().add("receipt-gain-header");
     gainHeader.setAlignment(Pos.CENTER);
 
     stockSymbolValue = new Label();
@@ -61,15 +65,22 @@ public class TransactionReceiptView {
     costBasisValue = new Label();
     costBasisRow = row("Cost Basis ($):", costBasisValue);
     totalLabel = new Label("Total:");
+    totalLabel.getStyleClass().add("receipt-total-label");
     totalValue = new Label();
+    totalValue.getStyleClass().add("receipt-total-value");
 
     weekValue = new Label();
 
     closeButton = new Button("CLOSE");
+    closeButton.getStyleClass().add("receipt-close-button");
     closeButton.setDefaultButton(true);
+
+    Label detailsHeader = new Label("DETAILS");
+    detailsHeader.getStyleClass().add("receipt-section-header");
 
     VBox detailsBox = new VBox(
         10,
+        detailsHeader,
         row("Stock:", stockSymbolValue),
         row("Company:", companyNameValue),
         row("Quantity:", quantityValue),
@@ -83,13 +94,15 @@ public class TransactionReceiptView {
         new Separator(),
         row("Week:", weekValue)
     );
+    detailsBox.getStyleClass().add("receipt-details");
 
     HBox buttonRow = new HBox(closeButton);
     buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
     root = new VBox(16, titleLabel, gainHeader, detailsBox, buttonRow);
-    root.setPadding(new Insets(20));
-    root.setPrefWidth(430);
+    root.getStyleClass().add("transaction-receipt");
+    root.setPadding(new Insets(24));
+    root.setPrefWidth(440);
   }
 
   private HBox row(String labelText, Node value) {
@@ -228,10 +241,20 @@ public class TransactionReceiptView {
    *
    * @param amount the realized profit or loss (e.g. "+$339.50" or "-$50.00")
    * @param percent the realized return as a percentage (e.g. "+33.95%")
+   * @param signum the sign of the realized return: 1 for gain, -1 for loss, 0 for neutral
    */
-  public void setGainHeader(String amount, String percent) {
+  public void setGainHeader(String amount, String percent, int signum) {
     gainAmountValue.setText(amount);
     gainPercentValue.setText(percent);
+    gainAmountValue.getStyleClass().removeAll("gain", "loss");
+    gainPercentValue.getStyleClass().removeAll("gain", "loss");
+    if (signum > 0) {
+      gainAmountValue.getStyleClass().add("gain");
+      gainPercentValue.getStyleClass().add("gain");
+    } else if (signum < 0) {
+      gainAmountValue.getStyleClass().add("loss");
+      gainPercentValue.getStyleClass().add("loss");
+    }
   }
 
   /**
