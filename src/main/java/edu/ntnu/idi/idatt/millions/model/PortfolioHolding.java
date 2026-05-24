@@ -146,6 +146,23 @@ public class PortfolioHolding {
     return Percentages.change(getTotalPurchaseCost(), getTotalSaleValue());
   }
 
+  public BigDecimal getEstimatedSaleValue(BigDecimal quantity) {
+    return createPreviewShares(quantity).stream()
+        .map(share -> new SaleCalculator(share).calculateTotal())
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  public BigDecimal getEstimatedGainLoss(BigDecimal quantity) {
+    List<Share> previewShares = createPreviewShares(quantity);
+    BigDecimal saleValue = previewShares.stream()
+        .map(share -> new SaleCalculator(share).calculateTotal())
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal purchaseCost = previewShares.stream()
+        .map(share -> new PurchaseCalculator(share).calculateTotal())
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return saleValue.subtract(purchaseCost);
+  }
+
   private BigDecimal getTotalPurchaseCost() {
     return shares.stream()
         .map(share -> new PurchaseCalculator(share).calculateTotal())
@@ -156,5 +173,32 @@ public class PortfolioHolding {
     return shares.stream()
         .map(share -> new SaleCalculator(share).calculateTotal())
         .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  private List<Share> createPreviewShares(BigDecimal quantity) {
+    if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Quantity must be greater than zero");
+    }
+    if (quantity.compareTo(getQuantity()) > 0) {
+      throw new IllegalArgumentException("Quantity cannot exceed owned quantity");
+    }
+
+    List<Share> previewShares = new ArrayList<>();
+    BigDecimal remainingQuantity = quantity;
+    for (Share share : shares) {
+      if (remainingQuantity.compareTo(BigDecimal.ZERO) == 0) {
+        break;
+      }
+
+      BigDecimal shareQuantity = share.getQuantity();
+      if (remainingQuantity.compareTo(shareQuantity) >= 0) {
+        previewShares.add(share);
+        remainingQuantity = remainingQuantity.subtract(shareQuantity);
+      } else {
+        previewShares.add(new Share(share.getStock(), remainingQuantity, share.getPurchasePrice()));
+        remainingQuantity = BigDecimal.ZERO;
+      }
+    }
+    return previewShares;
   }
 }

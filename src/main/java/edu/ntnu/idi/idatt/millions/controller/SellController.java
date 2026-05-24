@@ -2,9 +2,7 @@ package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.PortfolioHolding;
-import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
-import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.view.SellView;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
@@ -35,7 +33,7 @@ public class SellController {
    * @param view view used by the popup
    * @param dialogStage stage containing the popup
    * @param session active game session used to perform the sale
-   * @param share share being sold
+   * @param holding holding being sold from
    * @throws IllegalArgumentException if any argument is {@code null}
    */
   public SellController(SellView view, Stage dialogStage, GameSession session, PortfolioHolding holding) {
@@ -49,7 +47,7 @@ public class SellController {
       throw new IllegalArgumentException("session cannot be null");
     }
     if (holding == null) {
-      throw new IllegalArgumentException("share cannot be null");
+      throw new IllegalArgumentException("holding cannot be null");
     }
 
     this.view = view;
@@ -59,6 +57,7 @@ public class SellController {
 
     populate();
     wireButtons();
+    wireQuantityListener();
   }
 
   private void populate() {
@@ -69,8 +68,8 @@ public class SellController {
     view.setQuantity(holding.getQuantity().toPlainString());
     view.setPurchasePrice(holding.getAveragePurchasePrice().toPlainString());
     view.setCurrentPrice(holding.getCurrentPrice().toPlainString());
-    view.setGainLoss(holding.getTotalGainLoss().toPlainString());
-    view.setEstimatedRevenue(holding.getCurrentValue().toPlainString());
+    view.setGainLoss("0.00");
+    view.setEstimatedRevenue("0.00");
   }
 
   private void wireButtons() {
@@ -78,14 +77,39 @@ public class SellController {
     view.getConfirmButton().setOnAction(e -> handleSell());
   }
 
+  private void wireQuantityListener() {
+    view.getQuantityField().textProperty().addListener(
+        (obs, oldValue, newValue) -> updateSaleEstimate()
+    );
+  }
+
+  private void updateSaleEstimate() {
+    String quantityText = view.getQuantityToSell().trim();
+
+    if (quantityText.isEmpty()) {
+      view.setGainLoss("0.00");
+      view.setEstimatedRevenue("0.00");
+      return;
+    }
+
+    try {
+      BigDecimal quantity = new BigDecimal(quantityText);
+      view.setGainLoss(holding.getEstimatedGainLoss(quantity).toPlainString());
+      view.setEstimatedRevenue(holding.getEstimatedSaleValue(quantity).toPlainString());
+    } catch (IllegalArgumentException e) {
+      view.setGainLoss("0.00");
+      view.setEstimatedRevenue("0.00");
+    }
+  }
+
   private void handleSell() {
     view.clearErrorMessage();
 
     try {
       BigDecimal quantity = new BigDecimal(view.getQuantityToSell().trim());
-      List<Transaction> transaction = session.sellStock(holding.getSymbol(), quantity);
+      List<Transaction> transactions = session.sellStock(holding.getSymbol(), quantity);
       dialogStage.close();
-      showReceipt(transaction);
+      showReceipt(transactions);
     } catch (NumberFormatException e) {
       view.setErrorMessage("Quantity must be a valid number");
     } catch (IllegalArgumentException | IllegalStateException e) {

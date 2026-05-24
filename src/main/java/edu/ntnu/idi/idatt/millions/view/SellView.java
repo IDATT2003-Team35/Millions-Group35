@@ -155,6 +155,10 @@ public class SellView {
     quantityValue.setText(quantity);
   }
 
+  public TextField getQuantityField() {
+    return quantityInput;
+  }
+
   public String getQuantityToSell() {
     return quantityInput.getText();
   }
