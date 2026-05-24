@@ -242,6 +242,79 @@ public class Exchange {
     return sale;
   }
 
+  public List<Transaction> sell(String symbol, BigDecimal quantity, Player player) {
+    validateQuantitySaleInput(symbol, quantity, player);
+    List<Share> ownedShares = player.getPortfolio().getShares(symbol);
+    if (ownedShares.isEmpty()) {
+      throw new IllegalStateException("Player does not own shares with symbol: " + symbol);
+    }
+
+    if (quantity.compareTo(getTotalQuantity(ownedShares)) > 0) {
+      throw new IllegalArgumentException("Quantity cannot exceed owned quantity");
+    }
+
+    List<Transaction> sales = new ArrayList<>();
+    BigDecimal remainingQuantity = quantity;
+    for (Share ownedShare : ownedShares) {
+      if (remainingQuantity.compareTo(BigDecimal.ZERO) == 0) {
+        break;
+      }
+
+      BigDecimal shareQuantity = ownedShare.getQuantity();
+      if (remainingQuantity.compareTo(shareQuantity) >= 0) {
+        sales.add(sellFullShare(ownedShare, player));
+        remainingQuantity = remainingQuantity.subtract(shareQuantity);
+      } else {
+        sales.add(sellPartialShare(ownedShare, remainingQuantity, player));
+        remainingQuantity = BigDecimal.ZERO;
+      }
+    }
+    return sales;
+  }
+
+  private void validateQuantitySaleInput(String symbol, BigDecimal quantity, Player player) {
+    if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new IllegalArgumentException("Quantity must be greater than zero");
+    }
+    if (player == null) {
+      throw new IllegalArgumentException("Player cannot be null");
+    }
+    if (!hasStock(symbol)) {
+      throw new IllegalArgumentException("Stock does not exist with symbol: " + symbol);
+    }
+  }
+
+  private BigDecimal getTotalQuantity(List<Share> shares) {
+    return shares.stream()
+        .map(Share::getQuantity)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  private Transaction sellFullShare(Share share, Player player) {
+    Sale sale = TransactionFactory.createSale(share, week);
+    sale.commit(player);
+    return sale;
+  }
+
+  private Transaction sellPartialShare(Share originalShare, BigDecimal quantity, Player player) {
+    Share soldShare = new Share(
+        originalShare.getStock(),
+        quantity,
+        originalShare.getPurchasePrice());
+    Share remainingShare = new Share(
+        originalShare.getStock(),
+        originalShare.getQuantity().subtract(quantity),
+        originalShare.getPurchasePrice());
+
+    boolean replaced = player.getPortfolio().replaceShare(originalShare, List.of(soldShare, remainingShare));
+    if (!replaced) {
+      throw new IllegalStateException("Player does not have this share");
+    }
+    Sale sale = TransactionFactory.createSale(soldShare, week);
+    sale.commit(player);
+    return sale;
+  }
+
   /**
    * Advances to the next trading week and updates each stock's price using
    * Geometric Brownian Motion (GBM).

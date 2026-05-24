@@ -179,6 +179,20 @@ public class GameSession implements Subject {
   }
 
   /**
+   * Sells a quantity of a stock for the active player and notifies observers if successful.
+   *
+   * @param symbol the stock symbol to sell
+   * @param quantity the quantity to sell
+   * @return the committed sale transactions created by the sale
+   */
+  public List<Transaction> sellStock(String symbol, BigDecimal quantity) {
+    List<Transaction> transactions = exchange.sell(symbol, quantity, player);
+    recordNewNetWorthPoint();
+    notifyObservers();
+    return transactions;
+  }
+
+  /**
    * Advances the game to the next week and notifies observers.
    *
    * @throws IllegalStateException if the game is already over

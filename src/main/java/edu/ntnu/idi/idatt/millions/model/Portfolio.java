@@ -52,6 +52,22 @@ public class Portfolio {
     return shares.remove(share);
   }
 
+  boolean replaceShare(Share share, List<Share> replacementShares) {
+    if (share == null) {
+      throw new IllegalArgumentException("Share cannot be null");
+    }
+    if (replacementShares == null || replacementShares.stream().anyMatch(replacementShare -> replacementShare == null)) {
+      throw new IllegalArgumentException("Replacement shares cannot be null");
+    }
+    int shareIndex = shares.indexOf(share);
+    if (shareIndex < 0) {
+      return false;
+    }
+    shares.remove(shareIndex);
+    shares.addAll(shareIndex, new ArrayList<>(replacementShares));
+    return true;
+  }
+
   /**
    * Returns a copy of all shares in this portfolio.
    *
