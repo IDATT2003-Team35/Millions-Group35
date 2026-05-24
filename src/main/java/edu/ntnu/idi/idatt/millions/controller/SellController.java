@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Controller for the sell order popup.
  *
- * <p>The controller fills the view with share and price data, performs the
+ * <p>The controller fills the view with holding and price data, performs the
  * sale through the game session, and opens a receipt when the transaction
  * succeeds.</p>
  */
@@ -33,7 +33,7 @@ public class SellController {
    * @param view view used by the popup
    * @param dialogStage stage containing the popup
    * @param session active game session used to perform the sale
-   * @param holding holding being sold from
+   * @param holding portfolio holding being sold from
    * @throws IllegalArgumentException if any argument is {@code null}
    */
   public SellController(SellView view, Stage dialogStage, GameSession session, PortfolioHolding holding) {

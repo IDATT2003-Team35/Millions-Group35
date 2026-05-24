@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 /**
  * View for the sell order popup.
  *
- * <p>The view displays the selected share, estimated sale result, and action
+ * <p>The view displays the selected holding, estimated sale result, and action
  * buttons. Selling logic and validation are handled by the controller.</p>
  */
 public class SellView {
@@ -147,22 +147,37 @@ public class SellView {
   }
 
   /**
-   * Sets the share quantity displayed in the popup.
+   * Sets the owned quantity displayed in the popup.
    *
-   * @param quantity share quantity to display
+   * @param quantity owned quantity to display
    */
   public void setQuantity(String quantity) {
     quantityValue.setText(quantity);
   }
 
+  /**
+   * Returns the text field where the user enters the quantity to sell.
+   *
+   * @return the quantity input field
+   */
   public TextField getQuantityField() {
     return quantityInput;
   }
 
+  /**
+   * Returns the quantity currently entered for the sell order.
+   *
+   * @return the entered quantity text
+   */
   public String getQuantityToSell() {
     return quantityInput.getText();
   }
 
+  /**
+   * Sets the quantity currently entered for the sell order.
+   *
+   * @param quantity quantity text to set
+   */
   public void setQuantityToSell(String quantity) {
     quantityInput.setText(quantity);
   }

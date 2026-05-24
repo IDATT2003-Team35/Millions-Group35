@@ -60,10 +60,20 @@ public class MainView extends BorderPane implements Observer {
     markActive(activeButton);
   }
 
+  /**
+   * Returns the top status bar.
+   *
+   * @return the status bar
+   */
   public StatusBar getStatusBar() {
     return statusBar;
   }
 
+  /**
+   * Returns the sidebar navigation.
+   *
+   * @return the sidebar
+   */
   public SideBar getSideBar() {
     return sideBar;
   }

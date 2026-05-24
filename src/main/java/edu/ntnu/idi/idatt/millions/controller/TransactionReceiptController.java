@@ -18,8 +18,9 @@ import java.util.function.Function;
 /**
  * Controller for the transaction receipt popup.
  *
- * <p>The controller reads a completed transaction, calculates the displayed
- * receipt values, and wires the close button.</p>
+ * <p>The controller reads one completed transaction, or a group of transactions
+ * from one user-facing sale, calculates the displayed receipt values, and wires
+ * the close button.</p>
  */
 public class TransactionReceiptController {
   private final TransactionReceiptView view;
@@ -57,6 +58,17 @@ public class TransactionReceiptController {
     wireButtons();
   }
 
+  /**
+   * Creates a controller for a receipt that summarizes several completed transactions.
+   *
+   * <p>This is used when one user-facing sale spans multiple purchase lots and
+   * therefore produces more than one sale transaction.</p>
+   *
+   * @param view view used by the receipt popup
+   * @param dialogStage stage containing the popup
+   * @param transactions completed transactions to summarize
+   * @throws IllegalArgumentException if any argument is invalid
+   */
   public TransactionReceiptController(
           TransactionReceiptView view,
           Stage dialogStage,

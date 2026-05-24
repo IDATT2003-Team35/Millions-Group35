@@ -44,6 +44,11 @@ public class PortfolioController {
     applyRefresh();
   }
 
+  /**
+   * Returns the portfolio view managed by this controller.
+   *
+   * @return the portfolio view
+   */
   public PortfolioView getView() {
     return view;
   }

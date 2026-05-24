@@ -242,6 +242,20 @@ public class Exchange {
     return sale;
   }
 
+  /**
+   * Sells a quantity of one stock for a player.
+   *
+   * <p>If the quantity spans multiple purchase lots, one sale transaction is
+   * created per affected lot.</p>
+   *
+   * @param symbol the stock symbol to sell; must be listed on this exchange
+   * @param quantity the quantity to sell; must be greater than zero and no larger
+   *                 than the player's owned quantity
+   * @param player the player making the sale; must not be null
+   * @return the completed sale transactions created by the sale
+   * @throws IllegalArgumentException if the symbol, quantity, or player is invalid
+   * @throws IllegalStateException if the player does not own shares with the symbol
+   */
   public List<Transaction> sell(String symbol, BigDecimal quantity, Player player) {
     validateQuantitySaleInput(symbol, quantity, player);
     List<Share> ownedShares = player.getPortfolio().getShares(symbol);

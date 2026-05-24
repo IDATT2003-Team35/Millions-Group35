@@ -33,6 +33,9 @@ public class StatusBar extends HBox {
   private final Label difficultyValue = new Label();
   private final Button advanceButton = new Button("ADVANCE WEEK  →");
 
+  /**
+   * Creates the status bar layout and initializes its labels and advance button.
+   */
   public StatusBar() {
     getStyleClass().add("status-bar");
     advanceButton.getStyleClass().add("advance-button");
@@ -114,6 +117,11 @@ public class StatusBar extends HBox {
     return name.charAt(0) + name.substring(1).toLowerCase();
   }
 
+  /**
+   * Returns the button used to advance the game by one week.
+   *
+   * @return the advance week button
+   */
   public Button getAdvanceButton() {
     return advanceButton;
   }

@@ -146,12 +146,36 @@ public class PortfolioHolding {
     return Percentages.change(getTotalPurchaseCost(), getTotalSaleValue());
   }
 
+  /**
+   * Estimates the net sale value for selling a quantity from this holding.
+   *
+   * <p>The estimate uses the same purchase-lot order as an actual quantity sale,
+   * but it does not mutate the portfolio.</p>
+   *
+   * @param quantity quantity to sell; must be greater than zero and no larger
+   *                 than the owned quantity
+   * @return estimated sale value after commission and tax
+   * @throws IllegalArgumentException if quantity is null, not positive, or greater
+   *                                  than the owned quantity
+   */
   public BigDecimal getEstimatedSaleValue(BigDecimal quantity) {
     return createPreviewShares(quantity).stream()
         .map(share -> new SaleCalculator(share).calculateTotal())
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
+  /**
+   * Estimates the net gain or loss for selling a quantity from this holding.
+   *
+   * <p>The estimate compares the net sale value with the purchase cost of the
+   * purchase lots that would be sold by an actual quantity sale.</p>
+   *
+   * @param quantity quantity to sell; must be greater than zero and no larger
+   *                 than the owned quantity
+   * @return estimated net gain or loss
+   * @throws IllegalArgumentException if quantity is null, not positive, or greater
+   *                                  than the owned quantity
+   */
   public BigDecimal getEstimatedGainLoss(BigDecimal quantity) {
     List<Share> previewShares = createPreviewShares(quantity);
     BigDecimal saleValue = previewShares.stream()
