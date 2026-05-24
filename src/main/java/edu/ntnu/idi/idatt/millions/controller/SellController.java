@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.PortfolioHolding;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Controller for the sell order popup.
@@ -25,7 +27,7 @@ public class SellController {
   private final SellView view;
   private final Stage dialogStage;
   private final GameSession session;
-  private final Share share;
+  private final PortfolioHolding holding;
 
   /**
    * Creates a controller for a sell order popup.
@@ -36,7 +38,7 @@ public class SellController {
    * @param share share being sold
    * @throws IllegalArgumentException if any argument is {@code null}
    */
-  public SellController(SellView view, Stage dialogStage, GameSession session, Share share) {
+  public SellController(SellView view, Stage dialogStage, GameSession session, PortfolioHolding holding) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
     }
@@ -46,36 +48,29 @@ public class SellController {
     if (session == null) {
       throw new IllegalArgumentException("session cannot be null");
     }
-    if (share == null) {
+    if (holding == null) {
       throw new IllegalArgumentException("share cannot be null");
     }
 
     this.view = view;
     this.dialogStage = dialogStage;
     this.session = session;
-    this.share = share;
+    this.holding = holding;
 
     populate();
     wireButtons();
   }
 
   private void populate() {
-    Stock stock = share.getStock();
-    SaleCalculator calculator = new SaleCalculator(share);
+    Stock stock = holding.getStock();
 
     view.setStockSymbol(stock.getSymbol());
     view.setCompanyName(stock.getCompany());
-    view.setQuantity(share.getQuantity().toPlainString());
-    view.setPurchasePrice(share.getPurchasePrice().toPlainString());
-    view.setCurrentPrice(stock.getSalesPrice().toPlainString());
-    view.setGainLoss(calculateGainLoss().toPlainString());
-    view.setEstimatedRevenue(calculator.calculateTotal().toPlainString());
-  }
-
-  private BigDecimal calculateGainLoss() {
-    return share.getStock().getSalesPrice()
-            .subtract(share.getPurchasePrice())
-            .multiply(share.getQuantity());
+    view.setQuantity(holding.getQuantity().toPlainString());
+    view.setPurchasePrice(holding.getAveragePurchasePrice().toPlainString());
+    view.setCurrentPrice(holding.getCurrentPrice().toPlainString());
+    view.setGainLoss(holding.getTotalGainLoss().toPlainString());
+    view.setEstimatedRevenue(holding.getCurrentValue().toPlainString());
   }
 
   private void wireButtons() {
@@ -87,15 +82,18 @@ public class SellController {
     view.clearErrorMessage();
 
     try {
-      Transaction transaction = session.sellShare(share);
+      BigDecimal quantity = new BigDecimal(view.getQuantityToSell().trim());
+      List<Transaction> transaction = session.sellStock(holding.getSymbol(), quantity);
       dialogStage.close();
       showReceipt(transaction);
+    } catch (NumberFormatException e) {
+      view.setErrorMessage("Quantity must be a valid number");
     } catch (IllegalArgumentException | IllegalStateException e) {
       view.setErrorMessage(e.getMessage());
     }
   }
 
-  private void showReceipt(Transaction transaction) {
+  private void showReceipt(List<Transaction> transactions) {
     TransactionReceiptView receiptView = new TransactionReceiptView();
 
     Stage receiptStage = new Stage();
@@ -104,7 +102,7 @@ public class SellController {
     receiptStage.initStyle(StageStyle.UNDECORATED);
     receiptStage.setTitle("Transaction Receipt");
     receiptStage.setScene(new Scene(receiptView.getRoot()));
-    new TransactionReceiptController(receiptView, receiptStage, transaction);
+    new TransactionReceiptController(receiptView, receiptStage, transactions);
     receiptStage.showAndWait();
   }
 }

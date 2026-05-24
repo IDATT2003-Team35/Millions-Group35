@@ -79,7 +79,7 @@ public class PortfolioController {
     dialogStage.setTitle("Sell Order");
     dialogStage.setScene(new Scene(sellView.getRoot()));
 
-    new SellController(sellView, dialogStage, session, holding.getShares().getFirst());
+    new SellController(sellView, dialogStage, session, holding);
     dialogStage.showAndWait();
   }
 }

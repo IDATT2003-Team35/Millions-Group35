@@ -10,6 +10,9 @@ import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.function.Function;
 
 
 /**
@@ -54,6 +57,32 @@ public class TransactionReceiptController {
     wireButtons();
   }
 
+  public TransactionReceiptController(
+          TransactionReceiptView view,
+          Stage dialogStage,
+          List<Transaction> transactions
+  ) {
+    if (view == null) {
+      throw new IllegalArgumentException("View cannot be null");
+    }
+    if (dialogStage == null) {
+      throw new IllegalArgumentException("Dialog stage cannot be null");
+    }
+    if (transactions == null || transactions.isEmpty()) {
+      throw new IllegalArgumentException("Transactions cannot be null or empty");
+    }
+    if (transactions.stream().anyMatch(transaction -> transaction == null)) {
+      throw new IllegalArgumentException("Transactions cannot contain null values");
+    }
+
+    this.view = view;
+    this.dialogStage = dialogStage;
+    this.transaction = transactions.getFirst();
+
+    populate(transactions);
+    wireButtons();
+  }
+
   private void populate() {
     Share share = transaction.getShare();
     Stock stock = share.getStock();
@@ -71,6 +100,44 @@ public class TransactionReceiptController {
     view.setTotalLabel(getTotalLabel());
     view.setTotal(calculator.calculateTotal().toPlainString());
     view.setWeek(String.valueOf(transaction.getWeek()));
+  }
+
+  private void populate(List<Transaction> transactions) {
+    Transaction firstTransaction = transactions.getFirst();
+    Share firstShare = firstTransaction.getShare();
+    Stock stock = firstShare.getStock();
+
+    BigDecimal quantity = sum(transactions, transaction ->
+            transaction.getShare().getQuantity());
+    BigDecimal gross = sum(transactions, transaction ->
+            transaction.getCalculator().calculateGross());
+    BigDecimal commission = sum(transactions, transaction ->
+            transaction.getCalculator().calculateCommission());
+    BigDecimal tax = sum(transactions, transaction ->
+            transaction.getCalculator().calculateTax());
+    BigDecimal total = sum(transactions, transaction ->
+            transaction.getCalculator().calculateTotal());
+
+    BigDecimal price = gross.divide(quantity, 2, RoundingMode.HALF_UP);
+
+    view.setTitle(getReceiptTitle());
+    view.setStockSymbol(stock.getSymbol());
+    view.setCompanyName(stock.getCompany());
+    view.setQuantity(quantity.toPlainString());
+    view.setPrice(price.toPlainString());
+    view.setGross(gross.toPlainString());
+    view.setCommission(commission.toPlainString());
+    view.setTax(tax.toPlainString());
+    view.setTaxVisible(firstTransaction instanceof Sale);
+    view.setTotalLabel(getTotalLabel());
+    view.setTotal(total.toPlainString());
+    view.setWeek(String.valueOf(firstTransaction.getWeek()));
+  }
+
+  private BigDecimal sum(List<Transaction> transactions, Function<Transaction, BigDecimal> mapper) {
+    return transactions.stream()
+            .map(mapper)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private BigDecimal getTransactionPricePerShare(Share share) {

@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -22,6 +23,7 @@ public class SellView {
   private final Label stockSymbolValue;
   private final Label companyNameValue;
   private final Label quantityValue;
+  private final TextField quantityInput;
   private final Label purchasePriceValue;
   private final Label currentPriceValue;
   private final Label gainLossValue;
@@ -39,7 +41,11 @@ public class SellView {
 
     stockSymbolValue = new Label();
     companyNameValue = new Label();
+
     quantityValue = new Label();
+    quantityInput = new TextField();
+    quantityInput.setPromptText("Quantity to sell");
+
     purchasePriceValue = new Label();
     currentPriceValue = new Label();
     gainLossValue = new Label();
@@ -56,8 +62,9 @@ public class SellView {
             12,
             row("Stock:", stockSymbolValue),
             row("Company:", companyNameValue),
-            row("Quantity:", quantityValue),
-            row("Purchase Price per Share ($):", purchasePriceValue),
+            row("Quantity owned:", quantityValue),
+            row("Quantity to sell:", quantityInput),
+            row("Average Purchase Price per Share ($):", purchasePriceValue),
             row("Current Price per Share ($):", currentPriceValue)
     );
 
@@ -146,6 +153,14 @@ public class SellView {
    */
   public void setQuantity(String quantity) {
     quantityValue.setText(quantity);
+  }
+
+  public String getQuantityToSell() {
+    return quantityInput.getText();
+  }
+
+  public void setQuantityToSell(String quantity) {
+    quantityInput.setText(quantity);
   }
 
   /**
