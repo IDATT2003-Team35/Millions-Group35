@@ -101,6 +101,38 @@ class PortfolioTest {
   }
 
   @Test
+  void getHoldingsEmptyPortfolioReturnsEmptyList() {
+    assertTrue(portfolio.getHoldings().isEmpty());
+  }
+
+  @Test
+  void getHoldingsGroupsSharesByStockSymbol() {
+    Share secondEquinorShare = new Share(equinor, new BigDecimal("3"), new BigDecimal("20.00"));
+    portfolio.addShare(share);
+    portfolio.addShare(secondEquinorShare);
+
+    List<PortfolioHolding> result = portfolio.getHoldings();
+
+    assertEquals(1, result.size());
+    assertEquals("EQNR", result.get(0).getSymbol());
+    assertEquals(new BigDecimal("8"), result.get(0).getQuantity());
+  }
+
+  @Test
+  void getHoldingsKeepsDifferentStocksSeparate() {
+    Stock tesla = new Stock("TSLA", "Tesla", new BigDecimal("23.20"));
+    Share teslaShare = new Share(tesla, new BigDecimal("2"), new BigDecimal("23.20"));
+    portfolio.addShare(share);
+    portfolio.addShare(teslaShare);
+
+    List<PortfolioHolding> result = portfolio.getHoldings();
+
+    assertEquals(2, result.size());
+    assertEquals("EQNR", result.get(0).getSymbol());
+    assertEquals("TSLA", result.get(1).getSymbol());
+  }
+
+  @Test
   void containsShareNotInPortfolioReturnsFalse() {
     assertFalse(portfolio.contains(share));
   }

@@ -13,13 +13,17 @@ import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.function.Function;
 
 
 /**
  * Controller for the transaction receipt popup.
  *
- * <p>The controller reads a completed transaction, calculates the displayed
- * receipt values, and wires the close button.</p>
+ * <p>The controller reads one completed transaction, or a group of transactions
+ * from one user-facing sale, calculates the displayed receipt values, and wires
+ * the close button.</p>
  */
 public class TransactionReceiptController {
   private final TransactionReceiptView view;
@@ -55,6 +59,43 @@ public class TransactionReceiptController {
 
     Styles.applyTo(dialogStage.getScene());
     populate();
+    wireButtons();
+  }
+
+  /**
+   * Creates a controller for a receipt that summarizes several completed transactions.
+   *
+   * <p>This is used when one user-facing sale spans multiple purchase lots and
+   * therefore produces more than one sale transaction.</p>
+   *
+   * @param view view used by the receipt popup
+   * @param dialogStage stage containing the popup
+   * @param transactions completed transactions to summarize
+   * @throws IllegalArgumentException if any argument is invalid
+   */
+  public TransactionReceiptController(
+          TransactionReceiptView view,
+          Stage dialogStage,
+          List<Transaction> transactions
+  ) {
+    if (view == null) {
+      throw new IllegalArgumentException("View cannot be null");
+    }
+    if (dialogStage == null) {
+      throw new IllegalArgumentException("Dialog stage cannot be null");
+    }
+    if (transactions == null || transactions.isEmpty()) {
+      throw new IllegalArgumentException("Transactions cannot be null or empty");
+    }
+    if (transactions.stream().anyMatch(transaction -> transaction == null)) {
+      throw new IllegalArgumentException("Transactions cannot contain null values");
+    }
+
+    this.view = view;
+    this.dialogStage = dialogStage;
+    this.transaction = transactions.getFirst();
+
+    populate(transactions);
     wireButtons();
   }
 
@@ -102,6 +143,44 @@ public class TransactionReceiptController {
         Percentages.format(returnPercent),
         gain.signum()
     );
+  }
+
+  private void populate(List<Transaction> transactions) {
+    Transaction firstTransaction = transactions.getFirst();
+    Share firstShare = firstTransaction.getShare();
+    Stock stock = firstShare.getStock();
+
+    BigDecimal quantity = sum(transactions, transaction ->
+            transaction.getShare().getQuantity());
+    BigDecimal gross = sum(transactions, transaction ->
+            transaction.getCalculator().calculateGross());
+    BigDecimal commission = sum(transactions, transaction ->
+            transaction.getCalculator().calculateCommission());
+    BigDecimal tax = sum(transactions, transaction ->
+            transaction.getCalculator().calculateTax());
+    BigDecimal total = sum(transactions, transaction ->
+            transaction.getCalculator().calculateTotal());
+
+    BigDecimal price = gross.divide(quantity, 2, RoundingMode.HALF_UP);
+
+    view.setTitle(getReceiptTitle());
+    view.setStockSymbol(stock.getSymbol());
+    view.setCompanyName(stock.getCompany());
+    view.setQuantity(quantity.toPlainString());
+    view.setPrice(price.toPlainString());
+    view.setGross(gross.toPlainString());
+    view.setCommission(commission.toPlainString());
+    view.setTax(tax.toPlainString());
+    view.setTaxVisible(firstTransaction instanceof Sale);
+    view.setTotalLabel(getTotalLabel());
+    view.setTotal(total.toPlainString());
+    view.setWeek(String.valueOf(firstTransaction.getWeek()));
+  }
+
+  private BigDecimal sum(List<Transaction> transactions, Function<Transaction, BigDecimal> mapper) {
+    return transactions.stream()
+            .map(mapper)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private BigDecimal getTransactionPricePerShare(Share share) {

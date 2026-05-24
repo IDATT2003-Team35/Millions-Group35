@@ -126,6 +126,32 @@ class GameSessionTest {
   }
 
   @Test
+  void sellStockValidInputNotifiesObserversOnce() {
+    session.addObserver(observer);
+    session.buyStock("EQNR", new BigDecimal("5"));
+
+    session.sellStock("EQNR", new BigDecimal("2"));
+
+    assertEquals(2, observer.updateCount);
+    assertEquals(new BigDecimal("3"),
+        player.getPortfolio().getShares("EQNR").getFirst().getQuantity());
+    assertEquals(1, player.getTransactionArchive().getSales(1).size());
+  }
+
+  @Test
+  void sellStockInvalidQuantityDoesNotNotifyObservers() {
+    session.addObserver(observer);
+    session.buyStock("EQNR", new BigDecimal("5"));
+
+    assertThrows(IllegalArgumentException.class, () ->
+        session.sellStock("EQNR", new BigDecimal("6")));
+
+    assertEquals(1, observer.updateCount);
+    assertEquals(new BigDecimal("5"),
+        player.getPortfolio().getShares("EQNR").getFirst().getQuantity());
+  }
+
+  @Test
   void advanceWeekIncrementsWeekAndNotifiesObservers() {
     session.addObserver(observer);
 

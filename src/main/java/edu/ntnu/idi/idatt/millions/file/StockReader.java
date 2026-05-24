@@ -24,7 +24,6 @@ public class StockReader {
    * @throws IOException if the file cannot be read
    * @throws StockParseException if the file contains invalid stock data
    */
-
   public List<Stock> readStockData(Path filepath) throws IOException, StockParseException {
     if (filepath == null) {
       throw new IllegalArgumentException("filepath cannot be null");
@@ -35,6 +34,17 @@ public class StockReader {
     }
   }
 
+  /**
+   * Reads stock data from an already opened reader.
+   *
+   * <p>This overload is package-private so tests can verify parser behavior
+   * without creating temporary files.</p>
+   *
+   * @param reader reader containing CSV stock data
+   * @return list of parsed Stock entries
+   * @throws IOException if the reader cannot be read
+   * @throws StockParseException if the reader contains invalid stock data
+   */
   List<Stock> readStockData(BufferedReader reader) throws IOException, StockParseException {
     List<Stock> stocks = new ArrayList<>();
     String line;

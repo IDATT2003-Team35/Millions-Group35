@@ -5,14 +5,16 @@ import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Represents a portfolio containing shares owned by a player.
  * Provides functionality to add, remove and check for shares
  */
-  public class Portfolio {
+public class Portfolio {
   private final List<Share> shares;
 
   /**
@@ -50,6 +52,22 @@ import java.util.stream.Collectors;
     return shares.remove(share);
   }
 
+  boolean replaceShare(Share share, List<Share> replacementShares) {
+    if (share == null) {
+      throw new IllegalArgumentException("Share cannot be null");
+    }
+    if (replacementShares == null || replacementShares.stream().anyMatch(replacementShare -> replacementShare == null)) {
+      throw new IllegalArgumentException("Replacement shares cannot be null");
+    }
+    int shareIndex = shares.indexOf(share);
+    if (shareIndex < 0) {
+      return false;
+    }
+    shares.remove(shareIndex);
+    shares.addAll(shareIndex, new ArrayList<>(replacementShares));
+    return true;
+  }
+
   /**
    * Returns a copy of all shares in this portfolio.
    *
@@ -57,6 +75,22 @@ import java.util.stream.Collectors;
    */
   public List<Share> getShares() {
     return new ArrayList<>(shares);
+  }
+
+  /**
+   * Returns portfolio shares grouped as one holding per stock symbol.
+   *
+   * @return a list of grouped holdings in first-purchase order
+   */
+  public List<PortfolioHolding> getHoldings() {
+    Map<String, List<Share>> groupedShares = new LinkedHashMap<>();
+    for (Share share : shares) {
+      String symbol = share.getStock().getSymbol();
+      groupedShares.computeIfAbsent(symbol, ignored -> new ArrayList<>()).add(share);
+    }
+    return groupedShares.values().stream()
+        .map(PortfolioHolding::new)
+        .collect(Collectors.toList());
   }
 
   /**

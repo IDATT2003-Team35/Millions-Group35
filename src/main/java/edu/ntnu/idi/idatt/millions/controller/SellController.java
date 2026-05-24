@@ -1,9 +1,8 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
-import edu.ntnu.idi.idatt.millions.model.Share;
+import edu.ntnu.idi.idatt.millions.model.PortfolioHolding;
 import edu.ntnu.idi.idatt.millions.model.Stock;
-import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Styles;
@@ -15,11 +14,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Controller for the sell order popup.
  *
- * <p>The controller fills the view with share and price data, performs the
+ * <p>The controller fills the view with holding and price data, performs the
  * sale through the game session, and opens a receipt when the transaction
  * succeeds.</p>
  */
@@ -27,7 +27,7 @@ public class SellController {
   private final SellView view;
   private final Stage dialogStage;
   private final GameSession session;
-  private final Share share;
+  private final PortfolioHolding holding;
 
   /**
    * Creates a controller for a sell order popup.
@@ -35,10 +35,10 @@ public class SellController {
    * @param view view used by the popup
    * @param dialogStage stage containing the popup
    * @param session active game session used to perform the sale
-   * @param share share being sold
+   * @param holding portfolio holding being sold from
    * @throws IllegalArgumentException if any argument is {@code null}
    */
-  public SellController(SellView view, Stage dialogStage, GameSession session, Share share) {
+  public SellController(SellView view, Stage dialogStage, GameSession session, PortfolioHolding holding) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
     }
@@ -48,36 +48,31 @@ public class SellController {
     if (session == null) {
       throw new IllegalArgumentException("session cannot be null");
     }
-    if (share == null) {
-      throw new IllegalArgumentException("share cannot be null");
+    if (holding == null) {
+      throw new IllegalArgumentException("holding cannot be null");
     }
 
     this.view = view;
     this.dialogStage = dialogStage;
     this.session = session;
-    this.share = share;
+    this.holding = holding;
 
     Styles.applyTo(dialogStage.getScene());
     populate();
     wireButtons();
+    wireQuantityListener();
   }
 
   private void populate() {
-    Stock stock = share.getStock();
-    SaleCalculator calculator = new SaleCalculator(share);
-
-    BigDecimal gainLoss = share.getNetGainLoss();
+    Stock stock = holding.getStock();
 
     view.setStockSymbol(stock.getSymbol());
     view.setCompanyName(stock.getCompany());
-    view.setQuantity(share.getQuantity().toPlainString());
-    view.setPurchasePrice(share.getPurchasePrice().toPlainString());
-    view.setCurrentPrice(stock.getSalesPrice().toPlainString());
-    view.setGross(calculator.calculateGross().toPlainString());
-    view.setCommission(calculator.calculateCommission().toPlainString());
-    view.setTax(calculator.calculateTax().toPlainString());
-    view.setCashReceived(calculator.calculateTotal().toPlainString());
-    view.setGainLoss(Money.formatWithSign(gainLoss), gainLoss.signum());
+    view.setQuantity(holding.getQuantity().toPlainString());
+    view.setPurchasePrice(holding.getAveragePurchasePrice().toPlainString());
+    view.setCurrentPrice(holding.getCurrentPrice().toPlainString());
+    view.setGainLoss("0.00", 0);
+    view.setCashReceived("0.00");
   }
 
   private void wireButtons() {
@@ -85,19 +80,48 @@ public class SellController {
     view.getConfirmButton().setOnAction(e -> handleSell());
   }
 
+  private void wireQuantityListener() {
+    view.getQuantityField().textProperty().addListener(
+        (obs, oldValue, newValue) -> updateSaleEstimate()
+    );
+  }
+
+  private void updateSaleEstimate() {
+    String quantityText = view.getQuantityToSell().trim();
+
+    if (quantityText.isEmpty()) {
+      view.setGainLoss("0.00", 0);
+      view.setCashReceived("0.00");
+      return;
+    }
+
+    try {
+      BigDecimal quantity = new BigDecimal(quantityText);
+      BigDecimal gainLoss = holding.getEstimatedGainLoss(quantity);
+      view.setGainLoss(Money.formatWithSign(gainLoss), gainLoss.signum());
+      view.setCashReceived(holding.getEstimatedSaleValue(quantity).toPlainString());
+    } catch (IllegalArgumentException e) {
+      view.setGainLoss("0.00", 0);
+      view.setCashReceived("0.00");
+    }
+  }
+
   private void handleSell() {
     view.clearErrorMessage();
 
     try {
-      Transaction transaction = session.sellShare(share);
+      BigDecimal quantity = new BigDecimal(view.getQuantityToSell().trim());
+      List<Transaction> transactions = session.sellStock(holding.getSymbol(), quantity);
       dialogStage.close();
-      showReceipt(transaction);
+      showReceipt(transactions);
+    } catch (NumberFormatException e) {
+      view.setErrorMessage("Quantity must be a valid number");
     } catch (IllegalArgumentException | IllegalStateException e) {
       view.setErrorMessage(e.getMessage());
     }
   }
 
-  private void showReceipt(Transaction transaction) {
+  private void showReceipt(List<Transaction> transactions) {
     TransactionReceiptView receiptView = new TransactionReceiptView();
 
     Stage receiptStage = new Stage();
@@ -106,7 +130,7 @@ public class SellController {
     receiptStage.initStyle(StageStyle.UNDECORATED);
     receiptStage.setTitle("Transaction Receipt");
     receiptStage.setScene(new Scene(receiptView.getRoot()));
-    new TransactionReceiptController(receiptView, receiptStage, transaction);
+    new TransactionReceiptController(receiptView, receiptStage, transactions);
     receiptStage.showAndWait();
   }
 }

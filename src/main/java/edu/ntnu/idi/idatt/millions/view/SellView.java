@@ -7,13 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
  * View for the sell order popup.
  *
- * <p>The view displays the selected share, estimated sale result, and action
+ * <p>The view displays the selected holding, estimated sale result, and action
  * buttons. Selling logic and validation are handled by the controller.</p>
  */
 public class SellView {
@@ -22,6 +23,7 @@ public class SellView {
   private final Label stockSymbolValue;
   private final Label companyNameValue;
   private final Label quantityValue;
+  private final TextField quantityInput;
   private final Label purchasePriceValue;
   private final Label currentPriceValue;
   private final Label grossValue;
@@ -43,7 +45,11 @@ public class SellView {
 
     stockSymbolValue = new Label();
     companyNameValue = new Label();
+
     quantityValue = new Label();
+    quantityInput = new TextField();
+    quantityInput.setPromptText("Quantity to sell");
+
     purchasePriceValue = new Label();
     currentPriceValue = new Label();
     grossValue = new Label();
@@ -72,8 +78,9 @@ public class SellView {
             detailsHeader,
             row("Stock:", stockSymbolValue),
             row("Company:", companyNameValue),
-            row("Quantity:", quantityValue),
-            row("Purchase Price per Share ($):", purchasePriceValue),
+            row("Quantity owned:", quantityValue),
+            row("Quantity to sell:", quantityInput),
+            row("Average Purchase Price per Share ($):", purchasePriceValue),
             row("Current Price per Share ($):", currentPriceValue)
     );
 
@@ -164,12 +171,39 @@ public class SellView {
   }
 
   /**
-   * Sets the share quantity displayed in the popup.
+   * Sets the owned quantity displayed in the popup.
    *
-   * @param quantity share quantity to display
+   * @param quantity owned quantity to display
    */
   public void setQuantity(String quantity) {
     quantityValue.setText(quantity);
+  }
+
+  /**
+   * Returns the text field where the user enters the quantity to sell.
+   *
+   * @return the quantity input field
+   */
+  public TextField getQuantityField() {
+    return quantityInput;
+  }
+
+  /**
+   * Returns the quantity currently entered for the sell order.
+   *
+   * @return the entered quantity text
+   */
+  public String getQuantityToSell() {
+    return quantityInput.getText();
+  }
+
+  /**
+   * Sets the quantity currently entered for the sell order.
+   *
+   * @param quantity quantity text to set
+   */
+  public void setQuantityToSell(String quantity) {
+    quantityInput.setText(quantity);
   }
 
   /**

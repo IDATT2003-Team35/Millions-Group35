@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.millions.view;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
-import edu.ntnu.idi.idatt.millions.model.Share;
+import edu.ntnu.idi.idatt.millions.model.PortfolioHolding;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.TableColumns;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 
 /**
  * Portfolio view showing the player's net worth graph, summary totals,
- * and table of owned shares. Refreshes itself when the game session changes.
+ * and table of owned holdings. Refreshes itself when the game session changes.
  */
 public class PortfolioView extends BorderPane implements Observer {
 
@@ -47,10 +47,10 @@ public class PortfolioView extends BorderPane implements Observer {
   private final Label totalGainLossValue = new Label();
   private final Label totalGainLossPercentValue = new Label();
 
-  private final TableView<Share> holdingsTable = new TableView<>();
+  private final TableView<PortfolioHolding> holdingsTable = new TableView<>();
 
   /** Handler invoked when a row's Sell button is clicked. No-op by default. */
-  private Consumer<Share> sellHandler = share -> { };
+  private Consumer<PortfolioHolding> sellHandler = holding -> { };
   private Runnable onUpdate = () -> { };
 
   /**
@@ -126,33 +126,33 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   private void setupColumns() {
-    TableColumn<Share, String> symbolCol = new TableColumn<>("SYMBOL");
+    TableColumn<PortfolioHolding, String> symbolCol = new TableColumn<>("SYMBOL");
     symbolCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getStock().getSymbol()));
     symbolCol.setCellFactory(ViewHelpers.symbolCellFactory());
 
-    TableColumn<Share, String> companyCol = new TableColumn<>("COMPANY");
+    TableColumn<PortfolioHolding, String> companyCol = new TableColumn<>("COMPANY");
     companyCol.setCellValueFactory(c ->
         new SimpleStringProperty(c.getValue().getStock().getCompany()));
 
-    TableColumn<Share, BigDecimal> qtyCol = TableColumns.numericColumn(
-        "QTY", Share::getQuantity, BigDecimal::toPlainString);
-    TableColumn<Share, BigDecimal> buyPriceCol = TableColumns.numericColumn(
-        "PURCHASE ($)", Share::getPurchasePrice, v -> Money.format(v).substring(1));
-    TableColumn<Share, BigDecimal> currentPriceCol = TableColumns.numericColumn(
+    TableColumn<PortfolioHolding, BigDecimal> qtyCol = TableColumns.numericColumn(
+        "QTY", PortfolioHolding::getQuantity, BigDecimal::toPlainString);
+    TableColumn<PortfolioHolding, BigDecimal> buyPriceCol = TableColumns.numericColumn(
+        "AVG PURCHASE ($)", PortfolioHolding::getAveragePurchasePrice, v -> Money.format(v).substring(1));
+    TableColumn<PortfolioHolding, BigDecimal> currentPriceCol = TableColumns.numericColumn(
         "CURRENT ($)", s -> s.getStock().getSalesPrice(), v -> Money.format(v).substring(1));
-    TableColumn<Share, BigDecimal> gainLossCol = TableColumns.coloredNumericColumn(
-        "GAIN / LOSS ($)", Share::getNetGainLoss, Money::formatWithArrow);
+    TableColumn<PortfolioHolding, BigDecimal> gainLossCol = TableColumns.coloredNumericColumn(
+        "GAIN / LOSS ($)", PortfolioHolding::getTotalGainLoss, Money::formatWithArrow);
 
-    TableColumn<Share, Void> actionCol = new TableColumn<>("");
-    actionCol.setCellFactory(col -> new TableCell<Share, Void>() {
+    TableColumn<PortfolioHolding, Void> actionCol = new TableColumn<>("");
+    actionCol.setCellFactory(col -> new TableCell<PortfolioHolding, Void>() {
       private final Button sellButton = new Button("SELL");
 
       {
         sellButton.getStyleClass().add("sell-button");
         sellButton.setOnAction(e -> {
-          Share share = getTableView().getItems().get(getIndex());
-          sellHandler.accept(share);
+          PortfolioHolding holding = getTableView().getItems().get(getIndex());
+          sellHandler.accept(holding);
         });
       }
 
@@ -191,7 +191,7 @@ public class PortfolioView extends BorderPane implements Observer {
   /**
    * Sets the value shown in the Holdings summary box.
    *
-   * @param count number of distinct shares held
+   * @param count number of distinct holdings held
    */
   public void setHoldingsCount(int count) {
     holdingsValue.setText(String.valueOf(count));
@@ -225,13 +225,13 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   /**
-   * Replaces the shares currently shown in the holdings table and re-applies any
+   * Replaces the holdings currently shown in the holdings table and re-applies any
    * active column sort so the user's chosen order persists across updates.
    *
-   * @param shares the shares to display
+   * @param holdings the holdings to display
    */
-  public void setShares(List<Share> shares) {
-    holdingsTable.getItems().setAll(shares);
+  public void setHoldings(List<PortfolioHolding> holdings) {
+    holdingsTable.getItems().setAll(holdings);
     holdingsTable.sort();
   }
 
@@ -251,10 +251,10 @@ public class PortfolioView extends BorderPane implements Observer {
   /**
    * Sets the handler invoked when the Sell button on a row is clicked.
    *
-   * @param handler the consumer to receive the clicked share; must not be null
+   * @param handler the consumer to receive the clicked holding; must not be null
    * @throws IllegalArgumentException if handler is null
    */
-  public void setSellHandler(Consumer<Share> handler) {
+  public void setSellHandler(Consumer<PortfolioHolding> handler) {
     if (handler == null) {
       throw new IllegalArgumentException("Handler cannot be null");
     }
