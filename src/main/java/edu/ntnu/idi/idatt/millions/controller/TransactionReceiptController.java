@@ -6,6 +6,8 @@ import edu.ntnu.idi.idatt.millions.model.calculator.TransactionCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.util.Money;
+import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.stage.Stage;
 
@@ -71,6 +73,32 @@ public class TransactionReceiptController {
     view.setTotalLabel(getTotalLabel());
     view.setTotal(calculator.calculateTotal().toPlainString());
     view.setWeek(String.valueOf(transaction.getWeek()));
+
+    populateSaleSummary(share, calculator);
+  }
+
+  /**
+   * Adds the cost basis row and the gain/loss header for Sale transactions.
+   * For Purchase transactions both are hidden, since no profit is realized yet.
+   */
+  private void populateSaleSummary(Share share, TransactionCalculator calculator) {
+    boolean isSale = transaction instanceof Sale;
+    view.setCostBasisVisible(isSale);
+    view.setGainHeaderVisible(isSale);
+    if (!isSale) {
+      return;
+    }
+
+    BigDecimal costBasis = share.getPurchasePrice().multiply(share.getQuantity());
+    BigDecimal cashReceived = calculator.calculateTotal();
+    BigDecimal gain = cashReceived.subtract(costBasis);
+    BigDecimal returnPercent = Percentages.change(costBasis, cashReceived);
+
+    view.setCostBasis(costBasis.toPlainString());
+    view.setGainHeader(
+        Money.formatWithSign(gain),
+        Percentages.format(returnPercent)
+    );
   }
 
   private BigDecimal getTransactionPricePerShare(Share share) {
@@ -99,7 +127,7 @@ public class TransactionReceiptController {
       return "Total Cost ($):";
     }
     if (transaction instanceof Sale) {
-      return "Total Revenue ($):";
+      return "Cash Received ($):";
     }
     return "Total ($):";
   }

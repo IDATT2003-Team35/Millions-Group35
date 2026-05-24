@@ -20,6 +20,9 @@ public class TransactionReceiptView {
   private final VBox root;
 
   private final Label titleLabel;
+  private final Label gainAmountValue;
+  private final Label gainPercentValue;
+  private final VBox gainHeader;
   private final Label stockSymbolValue;
   private final Label companyNameValue;
   private final Label quantityValue;
@@ -28,6 +31,8 @@ public class TransactionReceiptView {
   private final Label commissionValue;
   private final Label taxValue;
   private final HBox taxRow;
+  private final Label costBasisValue;
+  private final HBox costBasisRow;
   private final Label totalLabel;
   private final Label totalValue;
   private final Label weekValue;
@@ -39,6 +44,11 @@ public class TransactionReceiptView {
   public TransactionReceiptView() {
     titleLabel = new Label("TRANSACTION RECEIPT");
 
+    gainAmountValue = new Label();
+    gainPercentValue = new Label();
+    gainHeader = new VBox(4, gainAmountValue, gainPercentValue);
+    gainHeader.setAlignment(Pos.CENTER);
+
     stockSymbolValue = new Label();
     companyNameValue = new Label();
     quantityValue = new Label();
@@ -48,6 +58,8 @@ public class TransactionReceiptView {
     commissionValue = new Label();
     taxValue = new Label();
     taxRow = row("Tax ($):", taxValue);
+    costBasisValue = new Label();
+    costBasisRow = row("Cost Basis ($):", costBasisValue);
     totalLabel = new Label("Total:");
     totalValue = new Label();
 
@@ -66,6 +78,7 @@ public class TransactionReceiptView {
         row("Gross ($):", grossValue),
         row("Commission ($):", commissionValue),
         taxRow,
+        costBasisRow,
         row(totalLabel, totalValue),
         new Separator(),
         row("Week:", weekValue)
@@ -74,7 +87,7 @@ public class TransactionReceiptView {
     HBox buttonRow = new HBox(closeButton);
     buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
-    root = new VBox(16, titleLabel, detailsBox, buttonRow);
+    root = new VBox(16, titleLabel, gainHeader, detailsBox, buttonRow);
     root.setPadding(new Insets(20));
     root.setPrefWidth(430);
   }
@@ -189,6 +202,46 @@ public class TransactionReceiptView {
   public void setTaxVisible(boolean visible) {
     taxRow.setVisible(visible);
     taxRow.setManaged(visible);
+  }
+
+  /**
+   * Sets the cost basis amount displayed in the receipt.
+   *
+   * @param costBasis cost basis (purchase price × quantity) to display
+   */
+  public void setCostBasis(String costBasis) {
+    costBasisValue.setText(costBasis);
+  }
+
+  /**
+   * Shows or hides the cost basis row.
+   *
+   * @param visible {@code true} to show the cost basis row, {@code false} to hide it
+   */
+  public void setCostBasisVisible(boolean visible) {
+    costBasisRow.setVisible(visible);
+    costBasisRow.setManaged(visible);
+  }
+
+  /**
+   * Sets the realized gain/loss header values shown above the details.
+   *
+   * @param amount the realized profit or loss (e.g. "+$339.50" or "-$50.00")
+   * @param percent the realized return as a percentage (e.g. "+33.95%")
+   */
+  public void setGainHeader(String amount, String percent) {
+    gainAmountValue.setText(amount);
+    gainPercentValue.setText(percent);
+  }
+
+  /**
+   * Shows or hides the gain header (used only for completed sales).
+   *
+   * @param visible {@code true} to show the gain header, {@code false} to hide it
+   */
+  public void setGainHeaderVisible(boolean visible) {
+    gainHeader.setVisible(visible);
+    gainHeader.setManaged(visible);
   }
 
   /**
