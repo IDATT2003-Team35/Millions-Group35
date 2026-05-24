@@ -8,8 +8,8 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
+import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
@@ -53,25 +53,9 @@ public class TransactionReceiptController {
     this.dialogStage = dialogStage;
     this.transaction = transaction;
 
-    ensureStylesheetLoaded();
+    Styles.applyTo(dialogStage.getScene());
     populate();
     wireButtons();
-  }
-
-  /**
-   * The receipt popup is shown in its own {@link Scene}, which does not inherit
-   * stylesheets from the main scene. Load the project stylesheet here so the
-   * receipt picks up the same look as the rest of the application.
-   */
-  private void ensureStylesheetLoaded() {
-    Scene scene = dialogStage.getScene();
-    if (scene == null) {
-      return;
-    }
-    String css = getClass().getResource("/styles.css").toExternalForm();
-    if (!scene.getStylesheets().contains(css)) {
-      scene.getStylesheets().add(css);
-    }
   }
 
   private void populate() {

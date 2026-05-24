@@ -36,7 +36,7 @@ public class Purchase extends Transaction {
     BigDecimal totalCost = getCalculator().calculateTotal();
 
     if (player.getMoney().compareTo(totalCost) < 0) {
-      throw new IllegalStateException("Player does not have enough money for purchase");
+      throw new IllegalStateException("You don't have enough cash for this purchase");
     }
 
     player.withdrawMoney(totalCost);

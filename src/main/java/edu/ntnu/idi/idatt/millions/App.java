@@ -8,6 +8,7 @@ import edu.ntnu.idi.idatt.millions.file.StockReader;
 import edu.ntnu.idi.idatt.millions.file.save.GameSaveException;
 import edu.ntnu.idi.idatt.millions.file.save.GameSaveService;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.LoadGameView;
 import edu.ntnu.idi.idatt.millions.view.StartMenuView;
 import edu.ntnu.idi.idatt.millions.view.StartView;
@@ -27,8 +28,7 @@ public class App extends Application {
     this.primaryStage = stage;
 
     Scene scene = new Scene(new StackPane());
-    scene.getStylesheets().add(
-        getClass().getResource("/styles.css").toExternalForm());
+    Styles.applyTo(scene);
     stage.setTitle("Millions");
     stage.setScene(scene);
     stage.setMaximized(true);

@@ -57,7 +57,7 @@ class SaleTest {
 
     IllegalStateException exception = assertThrows(IllegalStateException.class,
             () -> purchase.commit(brokePlayer));
-    assertEquals("Player does not have enough money for purchase", exception.getMessage());
+    assertEquals("You don't have enough cash for this purchase", exception.getMessage());
   }
 
   @Test
