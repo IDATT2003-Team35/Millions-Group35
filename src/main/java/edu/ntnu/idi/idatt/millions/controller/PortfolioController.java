@@ -1,9 +1,6 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
-import edu.ntnu.idi.idatt.millions.model.GameSession;
-import edu.ntnu.idi.idatt.millions.model.Player;
-import edu.ntnu.idi.idatt.millions.model.Portfolio;
-import edu.ntnu.idi.idatt.millions.model.Share;
+import edu.ntnu.idi.idatt.millions.model.*;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.PortfolioView;
@@ -59,17 +56,17 @@ public class PortfolioController {
     Player player = session.getPlayer();
     Portfolio portfolio = player.getPortfolio();
 
-    view.setHoldingsCount(portfolio.getShares().size());
+    view.setHoldingsCount(portfolio.getHoldings().size());
     view.setStockValue(Money.format(portfolio.getNetWorth()));
     BigDecimal totalGainLoss = player.getNetWorth().subtract(player.getStartingMoney());
     view.setTotalGainLoss(Money.formatWithSign(totalGainLoss));
     view.setTotalGainLossPercent(Percentages.format(player.getTotalGainLossPercent()));
     view.setNetWorthHistory(session.getNetWorthHistory());
-    view.setShares(portfolio.getShares());
+    view.setHoldings(portfolio.getHoldings());
   }
 
-  private void showSellPopup(Share share) {
-    if (share == null) {
+  private void showSellPopup(PortfolioHolding holding) {
+    if (holding == null) {
       return;
     }
 
@@ -82,7 +79,7 @@ public class PortfolioController {
     dialogStage.setTitle("Sell Order");
     dialogStage.setScene(new Scene(sellView.getRoot()));
 
-    new SellController(sellView, dialogStage, session, share);
+    new SellController(sellView, dialogStage, session, holding.getShares().getFirst());
     dialogStage.showAndWait();
   }
 }
