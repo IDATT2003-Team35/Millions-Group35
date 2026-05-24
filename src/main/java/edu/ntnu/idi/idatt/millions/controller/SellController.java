@@ -5,6 +5,8 @@ import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.util.Money;
+import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.SellView;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import javafx.scene.Scene;
@@ -55,6 +57,7 @@ public class SellController {
     this.session = session;
     this.share = share;
 
+    Styles.applyTo(dialogStage.getScene());
     populate();
     wireButtons();
   }
@@ -63,19 +66,18 @@ public class SellController {
     Stock stock = share.getStock();
     SaleCalculator calculator = new SaleCalculator(share);
 
+    BigDecimal gainLoss = share.getNetGainLoss();
+
     view.setStockSymbol(stock.getSymbol());
     view.setCompanyName(stock.getCompany());
     view.setQuantity(share.getQuantity().toPlainString());
     view.setPurchasePrice(share.getPurchasePrice().toPlainString());
     view.setCurrentPrice(stock.getSalesPrice().toPlainString());
-    view.setGainLoss(calculateGainLoss().toPlainString());
-    view.setEstimatedRevenue(calculator.calculateTotal().toPlainString());
-  }
-
-  private BigDecimal calculateGainLoss() {
-    return share.getStock().getSalesPrice()
-            .subtract(share.getPurchasePrice())
-            .multiply(share.getQuantity());
+    view.setGross(calculator.calculateGross().toPlainString());
+    view.setCommission(calculator.calculateCommission().toPlainString());
+    view.setTax(calculator.calculateTax().toPlainString());
+    view.setCashReceived(calculator.calculateTotal().toPlainString());
+    view.setGainLoss(Money.formatWithSign(gainLoss), gainLoss.signum());
   }
 
   private void wireButtons() {
