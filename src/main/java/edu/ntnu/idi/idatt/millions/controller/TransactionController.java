@@ -3,10 +3,10 @@ package edu.ntnu.idi.idatt.millions.controller;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import edu.ntnu.idi.idatt.millions.model.transaction.TransactionArchive;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import edu.ntnu.idi.idatt.millions.view.TransactionView;
-import java.math.BigDecimal;
 import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -63,25 +63,13 @@ public class TransactionController {
 
   private void applyFilter() {
     String query = view.getSearchField().getText();
-    List<Transaction> all = session.getPlayer().getTransactionArchive().getAll();
+    TransactionArchive archive = session.getPlayer().getTransactionArchive();
+    List<Transaction> all = archive.getAll();
+    int buyCount = archive.getPurchaseCount();
+    int sellCount = archive.getSaleCount();
 
-    BigDecimal totalBought = BigDecimal.ZERO;
-    BigDecimal totalSold = BigDecimal.ZERO;
-    int buyCount = 0;
-    int sellCount = 0;
-    for (Transaction t : all) {
-      BigDecimal gross = t.getCalculator().calculateGross();
-      if (t instanceof Purchase) {
-        totalBought = totalBought.add(gross);
-        buyCount++;
-      } else {
-        totalSold = totalSold.add(gross);
-        sellCount++;
-      }
-    }
-    view.setTotalBought(Money.format(totalBought), buyCount);
-    view.setTotalSold(Money.format(totalSold), sellCount);
-    view.setNetActivity(Money.format(totalBought.subtract(totalSold)));
+    view.setTotalBought(Money.format(archive.getTotalBought()), buyCount);
+    view.setTotalSold(Money.format(archive.getTotalSold()), sellCount);
     view.setRecordsCount(all.size());
     view.setFilterCounts(all.size(), buyCount, sellCount);
 

@@ -40,4 +40,22 @@ public class Sale extends Transaction {
     player.addMoney(totalValue);
     player.getPortfolio().removeShare(getShare());
   }
+
+  /**
+   * Returns the original cost basis of the share being sold.
+   *
+   * @return purchase price multiplied by quantity
+   */
+  public BigDecimal getCostBasis() {
+    return getShare().getPurchasePrice().multiply(getShare().getQuantity());
+  }
+
+  /**
+   * Returns the realized gain or loss from this sale.
+   *
+   * @return net proceeds after fees and tax minus the original cost basis
+   */
+  public BigDecimal getRealizedGain() {
+    return getCalculator().calculateTotal().subtract(getCostBasis());
+  }
 }

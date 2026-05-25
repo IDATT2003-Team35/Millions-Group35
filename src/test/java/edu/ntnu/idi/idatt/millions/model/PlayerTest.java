@@ -140,6 +140,25 @@ class PlayerTest {
   }
 
   @Test
+  void getTotalGainLossIsZeroAtStart() {
+    assertEquals(0, player.getTotalGainLoss().compareTo(BigDecimal.ZERO));
+  }
+
+  @Test
+  void getTotalGainLossIsPositiveAfterGain() {
+    player.addMoney(new BigDecimal("2500"));
+
+    assertEquals(new BigDecimal("2500"), player.getTotalGainLoss());
+  }
+
+  @Test
+  void getTotalGainLossIsNegativeAfterLoss() {
+    player.withdrawMoney(new BigDecimal("1500"));
+
+    assertEquals(new BigDecimal("-1500"), player.getTotalGainLoss());
+  }
+
+  @Test
   void getStatusReturnsNoviceByDefault() {
     assertEquals(PlayerRank.NOVICE, player.getStatus());
   }

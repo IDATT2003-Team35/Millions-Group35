@@ -68,4 +68,19 @@ class SaleTest {
         assertThrows(IllegalStateException.class, () -> purchase.commit(player));
     assertEquals("transaction has already been committed", exception.getMessage());
   }
+
+  @Test
+  void getCostBasisReturnsPurchasePriceTimesQuantity() {
+    Sale sale = new Sale(share, 1);
+
+    assertEquals(new BigDecimal("1000.00"), sale.getCostBasis());
+  }
+
+  @Test
+  void getRealizedGainIsNegativeWhenSoldAtPurchasePrice() {
+    Sale sale = new Sale(share, 1);
+
+    // total proceeds 990.00 - cost  1000.00 = -10.00
+    assertEquals(new BigDecimal("-10.00"), sale.getRealizedGain());
+  }
 }

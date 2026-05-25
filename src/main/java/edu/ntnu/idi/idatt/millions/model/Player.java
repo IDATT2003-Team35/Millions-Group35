@@ -165,6 +165,15 @@ public class Player {
   }
 
   /**
+   * Returns the player's total gain or loss as a cash amount.
+   *
+   * @return current net worth minus starting money (positive for gain, negative for loss)
+   */
+  public BigDecimal getTotalGainLoss() {
+    return getNetWorth().subtract(startingMoney);
+  }
+
+  /**
    * Returns the player's portfolio.
    *
    * @return the portfolio

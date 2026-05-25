@@ -108,7 +108,32 @@ public class TransactionReceiptController {
     view.setTotal(calculator.calculateTotal().toPlainString());
     view.setWeek(String.valueOf(transaction.getWeek()));
 
-    populateSaleSummary(share, calculator);
+    populateSaleSummary();
+  }
+
+  /**
+   * Adds the cost basis row and the gain/loss header for Sale transactions.
+   * For Purchase transactions both are hidden, since no profit is realized yet.
+   */
+  private void populateSaleSummary() {
+    if (!(transaction instanceof Sale sale)) {
+      view.setCostBasisVisible(false);
+      view.setGainHeaderVisible(false);
+      return;
+    }
+    view.setCostBasisVisible(true);
+    view.setGainHeaderVisible(true);
+
+    BigDecimal costBasis = sale.getCostBasis();
+    BigDecimal gain = sale.getRealizedGain();
+    BigDecimal returnPercent = Percentages.change(costBasis, sale.getCalculator().calculateTotal());
+
+    view.setCostBasis(costBasis.toPlainString());
+    view.setGainHeader(
+        Money.formatWithSign(gain),
+        Percentages.format(returnPercent),
+        gain.signum()
+    );
   }
 
   private void populate(List<Transaction> transactions) {
@@ -139,24 +164,6 @@ public class TransactionReceiptController {
     view.setTotalLabel(getTotalLabel());
     view.setTotal(total.toPlainString());
     view.setWeek(String.valueOf(firstTransaction.getWeek()));
-  }
-
-  private void populateSaleSummary(Share share, TransactionCalculator calculator) {
-    boolean isSale = transaction instanceof Sale;
-    view.setCostBasisVisible(isSale);
-    view.setGainHeaderVisible(isSale);
-    if (!isSale) {
-      return;
-    }
-
-    BigDecimal costBasis = share.getPurchasePrice().multiply(share.getQuantity());
-    BigDecimal cashReceived = calculator.calculateTotal();
-    BigDecimal gain = cashReceived.subtract(costBasis);
-    BigDecimal returnPercent = Percentages.change(costBasis, cashReceived);
-
-    view.setCostBasis(costBasis.toPlainString());
-    view.setGainHeader(
-        Money.formatWithSign(gain), Percentages.format(returnPercent), gain.signum());
   }
 
   private BigDecimal sum(List<Transaction> transactions, Function<Transaction, BigDecimal> mapper) {
