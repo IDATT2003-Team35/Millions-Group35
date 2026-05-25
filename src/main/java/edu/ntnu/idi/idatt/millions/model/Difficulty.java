@@ -3,19 +3,19 @@ package edu.ntnu.idi.idatt.millions.model;
 import java.math.BigDecimal;
 
 /**
- * Difficulty level for a game session. Determines the player's default
- * starting capital and the market volatility.
+ * Difficulty level for a game session. Determines the player's default starting capital and the
+ * market volatility.
  *
- * <p>In {@link GameMode#SANDBOX} the player may override the default
- * starting capital, but in {@link GameMode#CHALLENGE} the capital is
- * locked to the difficulty's default value to ensure fair highscore
- * comparison across players.</p>
+ * <p>In {@link GameMode#SANDBOX} the player may override the default starting capital, but in
+ * {@link GameMode#CHALLENGE} the capital is locked to the difficulty's default value to ensure fair
+ * highscore comparison across players.
  *
  * <p>Volatility values are weekly standard deviations of log returns:
+ *
  * <ul>
- *   <li>EASY calm market, more forgiving</li>
- *   <li>NORMAL balanced default</li>
- *   <li>HARD turbulent market with low starting capital</li>
+ *   <li>EASY calm market, more forgiving
+ *   <li>NORMAL balanced default
+ *   <li>HARD turbulent market with low starting capital
  * </ul>
  */
 public enum Difficulty {
@@ -32,9 +32,8 @@ public enum Difficulty {
   }
 
   /**
-   * Returns the default starting capital for this difficulty.
-   * Used as the initial value in the new-game form; locked in
-   * {@link GameMode#CHALLENGE} mode.
+   * Returns the default starting capital for this difficulty. Used as the initial value in the
+   * new-game form; locked in {@link GameMode#CHALLENGE} mode.
    *
    * @return the default starting capital
    */

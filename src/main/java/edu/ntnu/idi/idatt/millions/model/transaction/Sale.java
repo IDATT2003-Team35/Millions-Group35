@@ -1,16 +1,14 @@
 package edu.ntnu.idi.idatt.millions.model.transaction;
 
-import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
-
+import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import java.math.BigDecimal;
 
 /**
- * Represents a sale transaction of a share in the game.
- * Handles the logic for completing the sale, including verifying that the player
- * owns the share, adding the total value to the player's balance, and removing
- * the share from the portfolio.
+ * Represents a sale transaction of a share in the game. Handles the logic for completing the sale,
+ * including verifying that the player owns the share, adding the total value to the player's
+ * balance, and removing the share from the portfolio.
  */
 public class Sale extends Transaction {
 
@@ -25,9 +23,8 @@ public class Sale extends Transaction {
   }
 
   /**
-   * Executes the sale logic for a given player.
-   * Calculates the total value, adds the amount to the player's balance,
-   * and removes the share from the player's portfolio.
+   * Executes the sale logic for a given player. Calculates the total value, adds the amount to the
+   * player's balance, and removes the share from the player's portfolio.
    *
    * @param player the player executing the sale
    * @throws IllegalStateException if the player does not own the share being sold

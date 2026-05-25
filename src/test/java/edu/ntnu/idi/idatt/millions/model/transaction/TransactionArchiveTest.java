@@ -1,14 +1,13 @@
 package edu.ntnu.idi.idatt.millions.model.transaction;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class TransactionArchiveTest {
   private TransactionArchive archive;
@@ -112,7 +111,6 @@ class TransactionArchiveTest {
   @Test
   void getAllReturnsUnmodifiableList() {
     archive.add(purchaseW1);
-    assertThrows(UnsupportedOperationException.class,
-        () -> archive.getAll().removeFirst());
+    assertThrows(UnsupportedOperationException.class, () -> archive.getAll().removeFirst());
   }
 }

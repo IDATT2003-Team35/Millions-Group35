@@ -1,28 +1,27 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
+import edu.ntnu.idi.idatt.millions.file.StockParseException;
 import edu.ntnu.idi.idatt.millions.file.StockReader;
 import edu.ntnu.idi.idatt.millions.model.Difficulty;
-import edu.ntnu.idi.idatt.millions.file.StockParseException;
 import edu.ntnu.idi.idatt.millions.model.Exchange;
 import edu.ntnu.idi.idatt.millions.model.GameMode;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.view.StartView;
-import javafx.scene.control.Tooltip;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
+import javafx.scene.control.Tooltip;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
- * Controller for the start screen.
- * Handles file selection, input validation, and creation of a new game session.
+ * Controller for the start screen. Handles file selection, input validation, and creation of a new
+ * game session.
  */
 public class StartController {
   private final StartView view;
@@ -42,7 +41,12 @@ public class StartController {
    * @param onBack callback invoked when the user wants to return to the start menu
    * @throws IllegalArgumentException if any constructor argument is null
    */
-  public StartController(StartView view, Stage stage, Consumer<GameSession> onGameStart, StockReader stockReader, Runnable onBack) {
+  public StartController(
+      StartView view,
+      Stage stage,
+      Consumer<GameSession> onGameStart,
+      StockReader stockReader,
+      Runnable onBack) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
     }
@@ -59,7 +63,6 @@ public class StartController {
       throw new IllegalArgumentException("onBack cannot be null");
     }
 
-
     this.view = view;
     this.stage = stage;
     this.stockReader = stockReader;
@@ -75,16 +78,18 @@ public class StartController {
     view.getDefaultStockDataButton().setOnAction(e -> handleDefaultStockData());
     view.getBackButton().setOnAction(e -> onBack.run());
 
-    view.getDifficultyGroup().selectedToggleProperty()
+    view.getDifficultyGroup()
+        .selectedToggleProperty()
         .addListener((obs, oldToggle, newToggle) -> applyDifficultyDefault());
-    view.getModeGroup().selectedToggleProperty()
+    view.getModeGroup()
+        .selectedToggleProperty()
         .addListener((obs, oldToggle, newToggle) -> applyModeLock());
 
     applyDifficultyDefault();
     applyModeLock();
   }
 
-    private void applyDifficultyDefault() {
+  private void applyDifficultyDefault() {
     Difficulty difficulty = view.getSelectedDifficulty();
     view.getCapitalField().setText(difficulty.getDefaultStartingCapital().toPlainString());
   }
@@ -93,8 +98,8 @@ public class StartController {
     boolean locked = view.getSelectedMode() == GameMode.CHALLENGE;
     view.getCapitalField().setDisable(locked);
     if (locked) {
-      view.getCapitalField().setTooltip(
-          new Tooltip("Locked in Challenge mode for fair highscore comparison"));
+      view.getCapitalField()
+          .setTooltip(new Tooltip("Locked in Challenge mode for fair highscore comparison"));
       applyDifficultyDefault();
     } else {
       view.getCapitalField().setTooltip(null);
@@ -104,7 +109,9 @@ public class StartController {
   private void handleBrowse() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose a stock CSV file");
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV file (*.csv)", "*.csv"));
+    fileChooser
+        .getExtensionFilters()
+        .add(new FileChooser.ExtensionFilter("CSV file (*.csv)", "*.csv"));
 
     var file = fileChooser.showOpenDialog(stage);
     if (file != null) {

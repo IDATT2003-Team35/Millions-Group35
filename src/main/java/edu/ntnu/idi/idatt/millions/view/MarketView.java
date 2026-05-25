@@ -8,7 +8,10 @@ import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.util.TableColumns;
 import edu.ntnu.idi.idatt.millions.view.components.FilterTabBar;
 import edu.ntnu.idi.idatt.millions.view.components.ViewHelpers;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,13 +27,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.function.Consumer;
-
 /**
- * Market view showing all listed stocks with search, plus a side panel
- * with top gainers and losers. Refreshes itself when the game session changes.
+ * Market view showing all listed stocks with search, plus a side panel with top gainers and losers.
+ * Refreshes itself when the game session changes.
  */
 public class MarketView extends BorderPane implements Observer {
 
@@ -38,6 +37,7 @@ public class MarketView extends BorderPane implements Observer {
   private final TextField searchField = new TextField();
   private final Label instrumentCountLabel = new Label();
   private final FilterTabBar filterTabs = new FilterTabBar();
+
   {
     searchField.setPromptText("Search symbol or company");
     filterTabs.addTab("ALL", "ALL");
@@ -51,6 +51,7 @@ public class MarketView extends BorderPane implements Observer {
   private final VBox losersBox = new VBox();
   private final VBox gainersPanel;
   private final VBox losersPanel;
+
   {
     gainersPanel = buildTopPanel("TOP GAINERS", gainersBox, "▲");
     losersPanel = buildTopPanel("TOP LOSERS", losersBox, "▼");
@@ -58,8 +59,8 @@ public class MarketView extends BorderPane implements Observer {
     losersBox.getStyleClass().add("top-panel-body");
   }
 
-  private Runnable onUpdate = () -> { };
-  private Consumer<Stock> onStockClick = stock -> { };
+  private Runnable onUpdate = () -> {};
+  private Consumer<Stock> onStockClick = stock -> {};
 
   /**
    * Creates a new market view bound to the given game session.
@@ -129,29 +130,31 @@ public class MarketView extends BorderPane implements Observer {
 
   private void setupColumns() {
     TableColumn<Stock, String> symbolCol = new TableColumn<>("SYMBOL");
-    symbolCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getSymbol()));
+    symbolCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSymbol()));
     symbolCol.setCellFactory(ViewHelpers.symbolCellFactory());
 
     TableColumn<Stock, String> companyCol = new TableColumn<>("COMPANY");
-    companyCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getCompany()));
+    companyCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCompany()));
 
-    TableColumn<Stock, BigDecimal> priceCol = TableColumns.numericColumn(
-        "PRICE", Stock::getSalesPrice, v -> Money.format(v).substring(1));
+    TableColumn<Stock, BigDecimal> priceCol =
+        TableColumns.numericColumn(
+            "PRICE", Stock::getSalesPrice, v -> Money.format(v).substring(1));
 
-    TableColumn<Stock, BigDecimal> percentChangeCol = TableColumns.coloredNumericColumn(
-        "CHANGE (%)", Stock::getLatestPercentChange, Percentages::formatWithArrow);
-    TableColumn<Stock, BigDecimal> allTimeChangeCol = TableColumns.coloredNumericColumn(
-        "ALL-TIME (%)", Stock::getTotalPercentChange, Percentages::formatWithArrow);
+    TableColumn<Stock, BigDecimal> percentChangeCol =
+        TableColumns.coloredNumericColumn(
+            "CHANGE (%)", Stock::getLatestPercentChange, Percentages::formatWithArrow);
+    TableColumn<Stock, BigDecimal> allTimeChangeCol =
+        TableColumns.coloredNumericColumn(
+            "ALL-TIME (%)", Stock::getTotalPercentChange, Percentages::formatWithArrow);
     TableColumn<Stock, String> openCol = new TableColumn<>("");
     openCol.setCellValueFactory(c -> new SimpleStringProperty("→"));
     openCol.setSortable(false);
     openCol.setResizable(false);
     openCol.getStyleClass().add("open-column");
 
-    stockTable.getColumns().addAll(
-        symbolCol, companyCol, priceCol, percentChangeCol, allTimeChangeCol, openCol);
+    stockTable
+        .getColumns()
+        .addAll(symbolCol, companyCol, priceCol, percentChangeCol, allTimeChangeCol, openCol);
     symbolCol.setPrefWidth(90);
     companyCol.setPrefWidth(360);
     priceCol.setPrefWidth(140);
@@ -169,8 +172,8 @@ public class MarketView extends BorderPane implements Observer {
   }
 
   /**
-   * Registers a callback invoked when the view receives an Observer update.
-   * The controller uses this to re-apply its current filter and push fresh data.
+   * Registers a callback invoked when the view receives an Observer update. The controller uses
+   * this to re-apply its current filter and push fresh data.
    *
    * @param callback the runnable to execute on each update; must not be null
    * @throws IllegalArgumentException if callback is null
@@ -183,8 +186,8 @@ public class MarketView extends BorderPane implements Observer {
   }
 
   /**
-   * Registers a handler invoked when the user clicks a stock entry in the
-   * top gainers or top losers side panels.
+   * Registers a handler invoked when the user clicks a stock entry in the top gainers or top losers
+   * side panels.
    *
    * @param handler the consumer that receives the clicked stock; must not be null
    * @throws IllegalArgumentException if handler is null
@@ -197,8 +200,8 @@ public class MarketView extends BorderPane implements Observer {
   }
 
   /**
-   * Replaces the stocks currently shown in the main table and re-applies any
-   * active column sort so the user's chosen order persists across updates.
+   * Replaces the stocks currently shown in the main table and re-applies any active column sort so
+   * the user's chosen order persists across updates.
    *
    * @param stocks the stocks to display
    */

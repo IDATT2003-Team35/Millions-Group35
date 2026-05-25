@@ -11,8 +11,8 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 
 /**
- * Static helpers for building the styled UI elements shared by the
- * main views (market, portfolio, transactions).
+ * Static helpers for building the styled UI elements shared by the main views (market, portfolio,
+ * transactions).
  */
 public final class ViewHelpers {
 
@@ -46,25 +46,27 @@ public final class ViewHelpers {
   }
 
   /**
-   * Binds a table's preferred height to the number of items so the table
-   * grows with its content instead of scrolling internally.
+   * Binds a table's preferred height to the number of items so the table grows with its content
+   * instead of scrolling internally.
    */
   public static <T> void autoSizeTable(TableView<T> table) {
     table.setFixedCellSize(ROW_HEIGHT);
-    table.prefHeightProperty().bind(
-        Bindings.size(table.getItems()).multiply(ROW_HEIGHT).add(HEADER_HEIGHT));
+    table
+        .prefHeightProperty()
+        .bind(Bindings.size(table.getItems()).multiply(ROW_HEIGHT).add(HEADER_HEIGHT));
   }
 
   /** Cell factory that displays a string with the "symbol-cell" style class. */
   public static <T> Callback<TableColumn<T, String>, TableCell<T, String>> symbolCellFactory() {
     return col -> {
-      TableCell<T, String> cell = new TableCell<>() {
-        @Override
-        protected void updateItem(String item, boolean empty) {
-          super.updateItem(item, empty);
-          setText(empty || item == null ? "" : item);
-        }
-      };
+      TableCell<T, String> cell =
+          new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+              super.updateItem(item, empty);
+              setText(empty || item == null ? "" : item);
+            }
+          };
       cell.getStyleClass().add("symbol-cell");
       return cell;
     };

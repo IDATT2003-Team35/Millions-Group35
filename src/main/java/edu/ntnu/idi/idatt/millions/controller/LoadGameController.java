@@ -4,14 +4,11 @@ import edu.ntnu.idi.idatt.millions.file.save.GameSaveException;
 import edu.ntnu.idi.idatt.millions.file.save.GameSaveService;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.view.LoadGameView;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Controller for loading saved games.
- */
+/** Controller for loading saved games. */
 public class LoadGameController {
   private final LoadGameView view;
   private final GameSaveService saveService;
@@ -31,8 +28,7 @@ public class LoadGameController {
       LoadGameView view,
       GameSaveService saveService,
       Consumer<GameSession> onGameLoaded,
-      Runnable onBack
-  ) {
+      Runnable onBack) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
     }

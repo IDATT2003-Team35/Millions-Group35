@@ -1,8 +1,6 @@
 package edu.ntnu.idi.idatt.millions.file.save;
 
-/**
- * Exception thrown when saving or loading game data fails.
- */
+/** Exception thrown when saving or loading game data fails. */
 public class GameSaveException extends Exception {
 
   /**

@@ -3,30 +3,23 @@ package edu.ntnu.idi.idatt.millions.model;
 import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
-
 import java.math.BigDecimal;
 
 /**
- * Represents an owned share of a specific {@link Stock} with a quantity and the
- * purchase price per share.
+ * Represents an owned share of a specific {@link Stock} with a quantity and the purchase price per
+ * share.
  *
- * <p>Instances are immutable after construction.</p>
+ * <p>Instances are immutable after construction.
  */
 public class Share {
 
-  /**
-   * The stock represented by this share.
-   */
+  /** The stock represented by this share. */
   private final Stock stock;
 
-  /**
-   * The quantity of shares owned.
-   */
+  /** The quantity of shares owned. */
   private final BigDecimal quantity;
 
-  /**
-   * The purchase price per share.
-   */
+  /** The purchase price per share. */
   private final BigDecimal purchasePrice;
 
   /**
@@ -34,21 +27,20 @@ public class Share {
    *
    * @param stock the stock for this share; must not be {@code null}
    * @param quantity the quantity owned; must not be {@code null}
-   * @param purchasePrice the purchase price per share; must not be {@code null} and,
-   *                     not negative
+   * @param purchasePrice the purchase price per share; must not be {@code null} and, not negative
    * @throws IllegalArgumentException if {@code stock} is {@code null}
    * @throws IllegalArgumentException if {@code quantity} is {@code null}
-   * @throws IllegalArgumentException if {@code purchasePrice} is {@code null} or
-   *                                  {@code purchasePrice.compareTo(BigDecimal.ZERO) >= 0}
+   * @throws IllegalArgumentException if {@code purchasePrice} is {@code null} or {@code
+   *     purchasePrice.compareTo(BigDecimal.ZERO) >= 0}
    */
-  public Share(Stock stock, BigDecimal quantity, BigDecimal purchasePrice){
-    if(stock == null){
+  public Share(Stock stock, BigDecimal quantity, BigDecimal purchasePrice) {
+    if (stock == null) {
       throw new IllegalArgumentException("Stock cant be null");
     }
-    if(quantity == null){
+    if (quantity == null) {
       throw new IllegalArgumentException("Quantity cant be null");
     }
-    if(purchasePrice == null || purchasePrice.compareTo(BigDecimal.ZERO) <= 0){
+    if (purchasePrice == null || purchasePrice.compareTo(BigDecimal.ZERO) <= 0) {
       throw new IllegalArgumentException("Purchase price cant be null");
     }
     this.stock = stock;
@@ -70,7 +62,7 @@ public class Share {
    *
    * @return the purchase price as a {@link BigDecimal}
    */
-  public BigDecimal getPurchasePrice(){
+  public BigDecimal getPurchasePrice() {
     return purchasePrice;
   }
 
@@ -84,9 +76,9 @@ public class Share {
   }
 
   /**
-   * Returns the net gain or loss in dollars for this share at the current market price,
-   * accounting for commission on both the original purchase and a hypothetical sale,
-   * and the tax that would be paid on the realized gain.
+   * Returns the net gain or loss in dollars for this share at the current market price, accounting
+   * for commission on both the original purchase and a hypothetical sale, and the tax that would be
+   * paid on the realized gain.
    *
    * @return the net gain (positive) or loss (negative) as a {@link BigDecimal}
    */
@@ -97,8 +89,8 @@ public class Share {
   }
 
   /**
-   * Returns the net gain or loss as a percentage of the total purchase cost,
-   * accounting for commissions and tax.
+   * Returns the net gain or loss as a percentage of the total purchase cost, accounting for
+   * commissions and tax.
    *
    * @return the net gain/loss percentage as a {@link BigDecimal}
    */

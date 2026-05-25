@@ -2,7 +2,6 @@ package edu.ntnu.idi.idatt.millions.model;
 
 import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -11,15 +10,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Represents a portfolio containing shares owned by a player.
- * Provides functionality to add, remove and check for shares
+ * Represents a portfolio containing shares owned by a player. Provides functionality to add, remove
+ * and check for shares
  */
 public class Portfolio {
   private final List<Share> shares;
 
-  /**
-   * Creates an empty {@code Portfolio}.
-   */
+  /** Creates an empty {@code Portfolio}. */
   public Portfolio() {
     this.shares = new ArrayList<>();
   }
@@ -56,7 +53,8 @@ public class Portfolio {
     if (share == null) {
       throw new IllegalArgumentException("Share cannot be null");
     }
-    if (replacementShares == null || replacementShares.stream().anyMatch(replacementShare -> replacementShare == null)) {
+    if (replacementShares == null
+        || replacementShares.stream().anyMatch(replacementShare -> replacementShare == null)) {
       throw new IllegalArgumentException("Replacement shares cannot be null");
     }
     int shareIndex = shares.indexOf(share);
@@ -88,9 +86,7 @@ public class Portfolio {
       String symbol = share.getStock().getSymbol();
       groupedShares.computeIfAbsent(symbol, ignored -> new ArrayList<>()).add(share);
     }
-    return groupedShares.values().stream()
-        .map(PortfolioHolding::new)
-        .collect(Collectors.toList());
+    return groupedShares.values().stream().map(PortfolioHolding::new).collect(Collectors.toList());
   }
 
   /**
@@ -105,8 +101,7 @@ public class Portfolio {
       throw new IllegalArgumentException("Symbol cannot be null or blank");
     }
     return shares.stream()
-        .filter(share -> share
-            .getStock().getSymbol().equals(symbol))
+        .filter(share -> share.getStock().getSymbol().equals(symbol))
         .collect(Collectors.toList());
   }
 
@@ -136,14 +131,13 @@ public class Portfolio {
     return shares.stream()
         .map(share -> new SaleCalculator(share).calculateTotal())
         .reduce(BigDecimal.ZERO, BigDecimal::add);
-
   }
 
   /**
    * Calculates the total invested amount across all owned shares.
    *
-   * @return the sum of gross purchase amounts for all shares, or
-   *         {@link BigDecimal#ZERO} if the portfolio is empty
+   * @return the sum of gross purchase amounts for all shares, or {@link BigDecimal#ZERO} if the
+   *     portfolio is empty
    */
   public BigDecimal getTotalInvested() {
     if (shares.isEmpty()) {

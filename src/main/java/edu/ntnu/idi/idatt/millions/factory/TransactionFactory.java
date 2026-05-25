@@ -5,16 +5,13 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 
 /**
- * Factory class for creating transaction objects.
- * Provides centralized creation and validation of purchases and sales.
+ * Factory class for creating transaction objects. Provides centralized creation and validation of
+ * purchases and sales.
  */
 public final class TransactionFactory {
 
-  /**
-   * Private constructor to prevent instantiation of this utility class.
-   */
-  private TransactionFactory() {
-  }
+  /** Private constructor to prevent instantiation of this utility class. */
+  private TransactionFactory() {}
 
   /**
    * Creates a new purchase transaction for the given share and week.

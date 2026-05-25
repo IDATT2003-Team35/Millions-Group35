@@ -6,6 +6,9 @@ import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.TableColumns;
 import edu.ntnu.idi.idatt.millions.view.components.ViewHelpers;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Consumer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -23,13 +26,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.function.Consumer;
-
 /**
- * Portfolio view showing the player's net worth graph, summary totals,
- * and table of owned holdings. Refreshes itself when the game session changes.
+ * Portfolio view showing the player's net worth graph, summary totals, and table of owned holdings.
+ * Refreshes itself when the game session changes.
  */
 public class PortfolioView extends BorderPane implements Observer {
 
@@ -39,8 +38,7 @@ public class PortfolioView extends BorderPane implements Observer {
 
   private final CategoryAxis weekAxis = new CategoryAxis();
   private final NumberAxis netWorthAxis = new NumberAxis();
-  private final AreaChart<String, Number> netWorthChart =
-      new AreaChart<>(weekAxis, netWorthAxis);
+  private final AreaChart<String, Number> netWorthChart = new AreaChart<>(weekAxis, netWorthAxis);
 
   private final Label holdingsValue = new Label();
   private final Label stockValueValue = new Label();
@@ -50,8 +48,9 @@ public class PortfolioView extends BorderPane implements Observer {
   private final TableView<PortfolioHolding> holdingsTable = new TableView<>();
 
   /** Handler invoked when a row's Sell button is clicked. No-op by default. */
-  private Consumer<PortfolioHolding> sellHandler = holding -> { };
-  private Runnable onUpdate = () -> { };
+  private Consumer<PortfolioHolding> sellHandler = holding -> {};
+
+  private Runnable onUpdate = () -> {};
 
   /**
    * Creates a new portfolio view bound to the given game session.
@@ -77,8 +76,9 @@ public class PortfolioView extends BorderPane implements Observer {
     ViewHelpers.autoSizeTable(holdingsTable);
 
     Node chartPanel = buildNetWorthChart();
-    VBox content = new VBox(
-        titleLabel, chartPanel, buildSummaryBar(), ViewHelpers.tableWrapper(holdingsTable));
+    VBox content =
+        new VBox(
+            titleLabel, chartPanel, buildSummaryBar(), ViewHelpers.tableWrapper(holdingsTable));
     content.setSpacing(14);
 
     setCenter(ViewHelpers.pageScrollPane(content));
@@ -105,12 +105,12 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   private Node buildSummaryBar() {
-    HBox bar = new HBox(
-        buildSummaryBox("HOLDINGS", holdingsValue),
-        buildSummaryBox("STOCK VALUE", stockValueValue),
-        buildSummaryBox("TOTAL GAIN / LOSS", totalGainLossValue),
-        buildSummaryBox("RETURN", totalGainLossPercentValue)
-    );
+    HBox bar =
+        new HBox(
+            buildSummaryBox("HOLDINGS", holdingsValue),
+            buildSummaryBox("STOCK VALUE", stockValueValue),
+            buildSummaryBox("TOTAL GAIN / LOSS", totalGainLossValue),
+            buildSummaryBox("RETURN", totalGainLossPercentValue));
     bar.getStyleClass().add("summary-bar");
     return bar;
   }
@@ -127,45 +127,54 @@ public class PortfolioView extends BorderPane implements Observer {
 
   private void setupColumns() {
     TableColumn<PortfolioHolding, String> symbolCol = new TableColumn<>("SYMBOL");
-    symbolCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getStock().getSymbol()));
+    symbolCol.setCellValueFactory(
+        c -> new SimpleStringProperty(c.getValue().getStock().getSymbol()));
     symbolCol.setCellFactory(ViewHelpers.symbolCellFactory());
 
     TableColumn<PortfolioHolding, String> companyCol = new TableColumn<>("COMPANY");
-    companyCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().getStock().getCompany()));
+    companyCol.setCellValueFactory(
+        c -> new SimpleStringProperty(c.getValue().getStock().getCompany()));
 
-    TableColumn<PortfolioHolding, BigDecimal> qtyCol = TableColumns.numericColumn(
-        "QTY", PortfolioHolding::getQuantity, BigDecimal::toPlainString);
-    TableColumn<PortfolioHolding, BigDecimal> buyPriceCol = TableColumns.numericColumn(
-        "AVG PURCHASE ($)", PortfolioHolding::getAveragePurchasePrice, v -> Money.format(v).substring(1));
-    TableColumn<PortfolioHolding, BigDecimal> currentPriceCol = TableColumns.numericColumn(
-        "CURRENT ($)", s -> s.getStock().getSalesPrice(), v -> Money.format(v).substring(1));
-    TableColumn<PortfolioHolding, BigDecimal> gainLossCol = TableColumns.coloredNumericColumn(
-        "GAIN / LOSS ($)", PortfolioHolding::getTotalGainLoss, Money::formatWithArrow);
+    TableColumn<PortfolioHolding, BigDecimal> qtyCol =
+        TableColumns.numericColumn("QTY", PortfolioHolding::getQuantity, BigDecimal::toPlainString);
+    TableColumn<PortfolioHolding, BigDecimal> buyPriceCol =
+        TableColumns.numericColumn(
+            "AVG PURCHASE ($)",
+            PortfolioHolding::getAveragePurchasePrice,
+            v -> Money.format(v).substring(1));
+    TableColumn<PortfolioHolding, BigDecimal> currentPriceCol =
+        TableColumns.numericColumn(
+            "CURRENT ($)", s -> s.getStock().getSalesPrice(), v -> Money.format(v).substring(1));
+    TableColumn<PortfolioHolding, BigDecimal> gainLossCol =
+        TableColumns.coloredNumericColumn(
+            "GAIN / LOSS ($)", PortfolioHolding::getTotalGainLoss, Money::formatWithArrow);
 
     TableColumn<PortfolioHolding, Void> actionCol = new TableColumn<>("");
-    actionCol.setCellFactory(col -> new TableCell<PortfolioHolding, Void>() {
-      private final Button sellButton = new Button("SELL");
+    actionCol.setCellFactory(
+        col ->
+            new TableCell<PortfolioHolding, Void>() {
+              private final Button sellButton = new Button("SELL");
 
-      {
-        sellButton.getStyleClass().add("sell-button");
-        sellButton.setOnAction(e -> {
-          PortfolioHolding holding = getTableView().getItems().get(getIndex());
-          sellHandler.accept(holding);
-        });
-      }
+              {
+                sellButton.getStyleClass().add("sell-button");
+                sellButton.setOnAction(
+                    e -> {
+                      PortfolioHolding holding = getTableView().getItems().get(getIndex());
+                      sellHandler.accept(holding);
+                    });
+              }
 
-      @Override
-      protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
-        setGraphic(empty ? null : sellButton);
-      }
-    });
+              @Override
+              protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : sellButton);
+              }
+            });
 
-    holdingsTable.getColumns().addAll(
-        symbolCol, companyCol, qtyCol, buyPriceCol,
-        currentPriceCol, gainLossCol, actionCol);
+    holdingsTable
+        .getColumns()
+        .addAll(
+            symbolCol, companyCol, qtyCol, buyPriceCol, currentPriceCol, gainLossCol, actionCol);
     holdingsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
   }
 
@@ -175,8 +184,8 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   /**
-   * Registers a callback invoked when the view receives an Observer update.
-   * The controller uses this to push fresh data to the view.
+   * Registers a callback invoked when the view receives an Observer update. The controller uses
+   * this to push fresh data to the view.
    *
    * @param callback the runnable to execute on each update; must not be null
    * @throws IllegalArgumentException if callback is null
@@ -225,8 +234,8 @@ public class PortfolioView extends BorderPane implements Observer {
   }
 
   /**
-   * Replaces the holdings currently shown in the holdings table and re-applies any
-   * active column sort so the user's chosen order persists across updates.
+   * Replaces the holdings currently shown in the holdings table and re-applies any active column
+   * sort so the user's chosen order persists across updates.
    *
    * @param holdings the holdings to display
    */
@@ -260,5 +269,4 @@ public class PortfolioView extends BorderPane implements Observer {
     }
     this.sellHandler = handler;
   }
-
 }

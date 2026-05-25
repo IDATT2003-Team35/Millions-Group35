@@ -5,16 +5,13 @@ import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.PortfolioView;
 import edu.ntnu.idi.idatt.millions.view.SellView;
+import java.math.BigDecimal;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.math.BigDecimal;
-
-/**
- * Controller for the portfolio view.
- */
+/** Controller for the portfolio view. */
 public class PortfolioController {
 
   private final GameSession session;

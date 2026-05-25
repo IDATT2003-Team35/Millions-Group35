@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.millions.view;
 
+import java.nio.file.Path;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -12,12 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.nio.file.Path;
-import java.util.List;
-
-/**
- * View for selecting and loading a saved game.
- */
+/** View for selecting and loading a saved game. */
 public class LoadGameView {
   private final StackPane root;
   private final ListView<Path> saveListView;
@@ -25,9 +22,7 @@ public class LoadGameView {
   private final Button backButton;
   private final Label errorLabel;
 
-  /**
-   * Creates the load game layout and initializes its controls.
-   */
+  /** Creates the load game layout and initializes its controls. */
   public LoadGameView() {
     Label titleLabel = new Label("LOAD GAME");
     titleLabel.getStyleClass().add("start-title");
@@ -40,13 +35,15 @@ public class LoadGameView {
     titleBox.setMaxWidth(Double.MAX_VALUE);
 
     saveListView = new ListView<>();
-    saveListView.setCellFactory(listView -> new ListCell<>() {
-      @Override
-      protected void updateItem(Path path, boolean empty) {
-        super.updateItem(path, empty);
-        setText(empty || path == null ? null : path.getFileName().toString());
-      }
-    });
+    saveListView.setCellFactory(
+        listView ->
+            new ListCell<>() {
+              @Override
+              protected void updateItem(Path path, boolean empty) {
+                super.updateItem(path, empty);
+                setText(empty || path == null ? null : path.getFileName().toString());
+              }
+            });
     VBox.setVgrow(saveListView, Priority.ALWAYS);
 
     errorLabel = new Label();
@@ -62,12 +59,7 @@ public class LoadGameView {
     HBox buttonBox = new HBox(12, backButton, loadButton);
     buttonBox.setAlignment(Pos.CENTER);
 
-    VBox contentBox = new VBox(
-        14,
-        saveListView,
-        errorLabel,
-        buttonBox
-    );
+    VBox contentBox = new VBox(14, saveListView, errorLabel, buttonBox);
     contentBox.getStyleClass().add("start-card-body");
     contentBox.setAlignment(Pos.CENTER);
 
@@ -138,9 +130,7 @@ public class LoadGameView {
     errorLabel.setText(message);
   }
 
-  /**
-   * Clears the displayed error message.
-   */
+  /** Clears the displayed error message. */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }

@@ -1,7 +1,6 @@
 package edu.ntnu.idi.idatt.millions.file;
 
 import edu.ntnu.idi.idatt.millions.model.Stock;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -11,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Reads stock data from a CSV file into Stock objects.
- */
+/** Reads stock data from a CSV file into Stock objects. */
 public class StockReader {
 
   /**
@@ -37,8 +34,8 @@ public class StockReader {
   /**
    * Reads stock data from an already opened reader.
    *
-   * <p>This overload is package-private so tests can verify parser behavior
-   * without creating temporary files.</p>
+   * <p>This overload is package-private so tests can verify parser behavior without creating
+   * temporary files.
    *
    * @param reader reader containing CSV stock data
    * @return list of parsed Stock entries
@@ -66,8 +63,11 @@ public class StockReader {
     }
 
     if (values.length != 3) {
-      throw new StockParseException("Invalid stock data on line "
-              + lineNumber + ": expected 3 values but found " + values.length);
+      throw new StockParseException(
+          "Invalid stock data on line "
+              + lineNumber
+              + ": expected 3 values but found "
+              + values.length);
     }
 
     String symbol = values[0].trim();
@@ -86,7 +86,8 @@ public class StockReader {
     try {
       return new BigDecimal(stringPrice);
     } catch (NumberFormatException e) {
-      throw new StockParseException("Invalid stock price on line " + lineNumber + ": " + stringPrice, e);
+      throw new StockParseException(
+          "Invalid stock price on line " + lineNumber + ": " + stringPrice, e);
     }
   }
 }

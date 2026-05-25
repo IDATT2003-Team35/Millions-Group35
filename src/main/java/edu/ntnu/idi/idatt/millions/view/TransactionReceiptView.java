@@ -13,8 +13,8 @@ import javafx.scene.layout.VBox;
 /**
  * View for displaying a completed transaction receipt.
  *
- * <p>The same receipt view is used for both purchase and sale transactions.
- * The controller decides which values and labels should be shown.</p>
+ * <p>The same receipt view is used for both purchase and sale transactions. The controller decides
+ * which values and labels should be shown.
  */
 public class TransactionReceiptView {
   private final VBox root;
@@ -38,9 +38,7 @@ public class TransactionReceiptView {
   private final Label weekValue;
   private final Button closeButton;
 
-  /**
-   * Creates the transaction receipt popup layout.
-   */
+  /** Creates the transaction receipt popup layout. */
   public TransactionReceiptView() {
     titleLabel = new Label("TRANSACTION RECEIPT");
     titleLabel.getStyleClass().add("popup-title");
@@ -78,22 +76,22 @@ public class TransactionReceiptView {
     Label detailsHeader = new Label("DETAILS");
     detailsHeader.getStyleClass().add("popup-section-header");
 
-    VBox detailsBox = new VBox(
-        10,
-        detailsHeader,
-        row("Stock:", stockSymbolValue),
-        row("Company:", companyNameValue),
-        row("Quantity:", quantityValue),
-        row("Price per Share ($):", priceValue),
-        new Separator(),
-        row("Gross ($):", grossValue),
-        row("Commission ($):", commissionValue),
-        taxRow,
-        costBasisRow,
-        row(totalLabel, totalValue),
-        new Separator(),
-        row("Week:", weekValue)
-    );
+    VBox detailsBox =
+        new VBox(
+            10,
+            detailsHeader,
+            row("Stock:", stockSymbolValue),
+            row("Company:", companyNameValue),
+            row("Quantity:", quantityValue),
+            row("Price per Share ($):", priceValue),
+            new Separator(),
+            row("Gross ($):", grossValue),
+            row("Commission ($):", commissionValue),
+            taxRow,
+            costBasisRow,
+            row(totalLabel, totalValue),
+            new Separator(),
+            row("Week:", weekValue));
     detailsBox.getStyleClass().add("receipt-details");
 
     HBox buttonRow = new HBox(closeButton);
@@ -208,7 +206,7 @@ public class TransactionReceiptView {
   /**
    * Shows or hides the tax row.
    *
-   * <p>Hidden rows are also unmanaged so they do not reserve layout space.</p>
+   * <p>Hidden rows are also unmanaged so they do not reserve layout space.
    *
    * @param visible {@code true} to show the tax row, {@code false} to hide it
    */

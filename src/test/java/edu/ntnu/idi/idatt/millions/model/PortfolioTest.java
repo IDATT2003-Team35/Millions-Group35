@@ -1,12 +1,11 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class PortfolioTest {
 
@@ -35,8 +34,7 @@ class PortfolioTest {
 
   @Test
   void addShareNullShareThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        portfolio.addShare(null));
+    assertThrows(IllegalArgumentException.class, () -> portfolio.addShare(null));
   }
 
   @Test
@@ -61,8 +59,7 @@ class PortfolioTest {
 
   @Test
   void removeShareNullShareThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        portfolio.removeShare(null));
+    assertThrows(IllegalArgumentException.class, () -> portfolio.removeShare(null));
   }
 
   @Test
@@ -90,14 +87,12 @@ class PortfolioTest {
 
   @Test
   void getSharesBySymbolNullSymbolThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        portfolio.getShares(null));
+    assertThrows(IllegalArgumentException.class, () -> portfolio.getShares(null));
   }
 
   @Test
   void getSharesBySymbolBlankSymbolThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        portfolio.getShares(" "));
+    assertThrows(IllegalArgumentException.class, () -> portfolio.getShares(" "));
   }
 
   @Test
@@ -139,8 +134,7 @@ class PortfolioTest {
 
   @Test
   void containsNullShareThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        portfolio.contains(null));
+    assertThrows(IllegalArgumentException.class, () -> portfolio.contains(null));
   }
 
   @Test

@@ -1,14 +1,13 @@
 package edu.ntnu.idi.idatt.millions.model;
 
 import edu.ntnu.idi.idatt.millions.util.Percentages;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a stock with a symbol, company name and a history of sales prices.
- * Inputs are validated to ensure non-null and reasonable lengths/values.
+ * Represents a stock with a symbol, company name and a history of sales prices. Inputs are
+ * validated to ensure non-null and reasonable lengths/values.
  */
 public class Stock {
 
@@ -26,10 +25,12 @@ public class Stock {
    */
   public Stock(String symbol, String company, BigDecimal salesPrice) {
     if (symbol == null || symbol.isBlank() || symbol.length() > 20) {
-      throw new IllegalArgumentException("Symbol must be non-empty and not longer than 20 characters.");
+      throw new IllegalArgumentException(
+          "Symbol must be non-empty and not longer than 20 characters.");
     }
     if (company == null || company.isBlank() || company.length() > 100) {
-      throw new IllegalArgumentException("Company name must be non-empty and not longer than 100 characters.");
+      throw new IllegalArgumentException(
+          "Company name must be non-empty and not longer than 100 characters.");
     }
     if (salesPrice == null || salesPrice.compareTo(BigDecimal.ZERO) < 0) {
       throw new IllegalArgumentException("Initial price cannot be negative.");
@@ -101,9 +102,7 @@ public class Stock {
    * @return the maximum price, or ZERO if no prices exist
    */
   public BigDecimal getHighestPrice() {
-    return prices.stream()
-            .max(BigDecimal::compareTo)
-            .orElse(BigDecimal.ZERO);
+    return prices.stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
   }
 
   /**
@@ -112,14 +111,12 @@ public class Stock {
    * @return the minimum price, or ZERO if no prices exist
    */
   public BigDecimal getLowestPrice() {
-    return prices.stream()
-            .min(BigDecimal::compareTo)
-            .orElse(BigDecimal.ZERO);
+    return prices.stream().min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
   }
 
   /**
-   * Calculates the difference between the current price and the previous week's price.
-   * If only one price is recorded, the change is considered to be zero.
+   * Calculates the difference between the current price and the previous week's price. If only one
+   * price is recorded, the change is considered to be zero.
    *
    * @return the price change as a BigDecimal
    */
@@ -133,8 +130,8 @@ public class Stock {
   }
 
   /**
-   * Calculates the percentage change between the current price and the previous week's price.
-   * If only one price is recorded, the change is considered to be zero.
+   * Calculates the percentage change between the current price and the previous week's price. If
+   * only one price is recorded, the change is considered to be zero.
    *
    * @return the percentage change as a BigDecimal
    */

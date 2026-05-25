@@ -9,9 +9,4 @@ import java.util.List;
  * @param company the company name
  * @param prices the saved historical stock prices
  */
-public record StockSaveData(
-        String symbol,
-        String company,
-        List<String> prices
-) {
-}
+public record StockSaveData(String symbol, String company, List<String> prices) {}

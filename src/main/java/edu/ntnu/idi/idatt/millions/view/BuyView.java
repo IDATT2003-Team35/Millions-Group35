@@ -14,8 +14,8 @@ import javafx.scene.layout.VBox;
 /**
  * View for the buy order popup.
  *
- * <p>The view displays the selected stock, quantity input, estimated total cost,
- * and action buttons. Buying logic and validation are handled by the controller.</p>
+ * <p>The view displays the selected stock, quantity input, estimated total cost, and action
+ * buttons. Buying logic and validation are handled by the controller.
  */
 public class BuyView {
   private final VBox root;
@@ -31,9 +31,7 @@ public class BuyView {
   private final Button cancelButton;
   private final Button confirmButton;
 
-  /**
-   * Creates the buy order popup layout.
-   */
+  /** Creates the buy order popup layout. */
   public BuyView() {
     Label titleLabel = new Label("BUY ORDER");
     titleLabel.getStyleClass().add("popup-title");
@@ -60,37 +58,29 @@ public class BuyView {
     Label detailsHeader = new Label("DETAILS");
     detailsHeader.getStyleClass().add("popup-section-header");
 
-    VBox infoBox = new VBox(
+    VBox infoBox =
+        new VBox(
             10,
             detailsHeader,
             row("Stock:", stockSymbolValue),
             row("Price per Share ($):", stockPriceValue),
-            row("Quantity:", quantityField)
-    );
+            row("Quantity:", quantityField));
 
     Label summaryHeader = new Label("SUMMARY");
     summaryHeader.getStyleClass().add("popup-section-header");
 
-    VBox summaryBox = new VBox(
+    VBox summaryBox =
+        new VBox(
             10,
             summaryHeader,
             row("Commission ($):", commissionValue),
             row("Total Cost ($):", totalCostValue),
-            row("Available Cash ($):", availableCashValue)
-    );
+            row("Available Cash ($):", availableCashValue));
 
     HBox buttonRow = new HBox(12, cancelButton, confirmButton);
     buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
-    root = new VBox(
-            16,
-            titleLabel,
-            infoBox,
-            new Separator(),
-            summaryBox,
-            errorLabel,
-            buttonRow
-    );
+    root = new VBox(16, titleLabel, infoBox, new Separator(), summaryBox, errorLabel, buttonRow);
     root.getStyleClass().add("transaction-popup");
     root.setSpacing(16);
     root.setPadding(new Insets(24));
@@ -152,8 +142,8 @@ public class BuyView {
     stockSymbolValue.setText(symbol);
   }
 
-  /**r
-   * Sets the price per share displayed in the popup.
+  /**
+   * r Sets the price per share displayed in the popup.
    *
    * @param price price per share to display
    */
@@ -197,9 +187,7 @@ public class BuyView {
     errorLabel.setText(message);
   }
 
-  /**
-   * Clears the current error message.
-   */
+  /** Clears the current error message. */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }

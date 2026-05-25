@@ -8,23 +8,21 @@ import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
-import java.math.BigDecimal;
 import edu.ntnu.idi.idatt.millions.view.GameOverView;
 import edu.ntnu.idi.idatt.millions.view.MainView;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
- * Root controller for the main screen. Wires status bar and navigation events
- * to the game session; the view itself observes the session for display updates.
+ * Root controller for the main screen. Wires status bar and navigation events to the game session;
+ * the view itself observes the session for display updates.
  */
 public class MainController {
 
@@ -36,6 +34,7 @@ public class MainController {
   private final Node portfolioContent;
   private final Node transactionContent;
   private final StockDetailController stockDetailController;
+
   /**
    * Creates the main controller and the main view it manages.
    *
@@ -66,13 +65,12 @@ public class MainController {
   }
 
   private void wireStatusBar() {
-    view.getStatusBar().getAdvanceButton()
-        .setOnAction(e -> handleAdvance());
+    view.getStatusBar().getAdvanceButton().setOnAction(e -> handleAdvance());
   }
 
   /**
-   * Advances one week and shows the game-over screen if the session has
-   * reached its end condition (Challenge mode hitting the week limit).
+   * Advances one week and shows the game-over screen if the session has reached its end condition
+   * (Challenge mode hitting the week limit).
    */
   private void handleAdvance() {
     if (session.isGameOver()) {
@@ -122,33 +120,29 @@ public class MainController {
     }
   }
 
-  /**
-   * Shows the market view in the center area and marks the Market button active.
-   */
+  /** Shows the market view in the center area and marks the Market button active. */
   public void showMarket() {
     view.showContent(marketContent, view.getSideBar().getMarketButton());
   }
 
-  /**
-   * Shows the portfolio view in the center area and marks the Portfolio button active.
-   */
+  /** Shows the portfolio view in the center area and marks the Portfolio button active. */
   public void showPortfolio() {
     view.showContent(portfolioContent, view.getSideBar().getPortfolioButton());
   }
 
   private void handleSellAllAndQuit() {
-    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-        "Sell all holdings and end the game?",
-        ButtonType.YES, ButtonType.NO);
+    Alert confirm =
+        new Alert(
+            Alert.AlertType.CONFIRMATION,
+            "Sell all holdings and end the game?",
+            ButtonType.YES,
+            ButtonType.NO);
     confirm.setHeaderText(null);
-    confirm.showAndWait()
-        .filter(b -> b == ButtonType.YES)
-        .ifPresent(b -> sellAllAndEndGame());
+    confirm.showAndWait().filter(b -> b == ButtonType.YES).ifPresent(b -> sellAllAndEndGame());
   }
 
   private void sellAllAndEndGame() {
-    List<Share> sharesToSell = new ArrayList<>(
-        session.getPlayer().getPortfolio().getShares());
+    List<Share> sharesToSell = new ArrayList<>(session.getPlayer().getPortfolio().getShares());
     for (Share share : sharesToSell) {
       session.sellShare(share);
     }
@@ -167,8 +161,7 @@ public class MainController {
     gameOverView.setHeadlineSignum(gainPercent.signum());
     gameOverView.setRank(player.getStatus().toString());
     gameOverView.setWeeks(String.valueOf(session.getExchange().getWeek()));
-    gameOverView.setTransactions(
-        String.valueOf(player.getTransactionArchive().getAll().size()));
+    gameOverView.setTransactions(String.valueOf(player.getTransactionArchive().getAll().size()));
     gameOverView.getQuitButton().setOnAction(e -> Platform.exit());
 
     Scene scene = view.getScene();
@@ -177,12 +170,10 @@ public class MainController {
 
   public void showStockDetail(Stock stock) {
     stockDetailController.display(stock);
-    view.showContent(stockDetailController.getView(),
-        view.getSideBar().getMarketButton());
+    view.showContent(stockDetailController.getView(), view.getSideBar().getMarketButton());
   }
 
   public void showTransaction() {
-    view.showContent(transactionContent,
-        view.getSideBar().getTransactionButton());
+    view.showContent(transactionContent, view.getSideBar().getTransactionButton());
   }
 }

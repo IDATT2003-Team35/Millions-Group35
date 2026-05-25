@@ -10,8 +10,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * View shown when the player ends the game. Displays a summary of the
- * final session state and a quit button.
+ * View shown when the player ends the game. Displays a summary of the final session state and a
+ * quit button.
  */
 public class GameOverView {
   private final StackPane root;
@@ -24,9 +24,7 @@ public class GameOverView {
   private final Label transactionsValue = new Label();
   private final Button quitButton = new Button("QUIT");
 
-  /**
-   * Creates the game over screen layout.
-   */
+  /** Creates the game over screen layout. */
   public GameOverView() {
     Label titleLabel = new Label("GAME OVER");
     titleLabel.getStyleClass().add("game-over-title");
@@ -43,28 +41,21 @@ public class GameOverView {
     headlineBox.setAlignment(Pos.CENTER);
     headlineBox.getStyleClass().add("game-over-headline");
 
-    VBox statsBox = new VBox(
-        12,
-        row("PLAYER", playerNameValue),
-        row("STARTING CAPITAL", startingCapitalValue),
-        row("FINAL RANK", rankValue),
-        row("WEEKS PLAYED", weeksValue),
-        row("TRANSACTIONS COMPLETED", transactionsValue)
-    );
+    VBox statsBox =
+        new VBox(
+            12,
+            row("PLAYER", playerNameValue),
+            row("STARTING CAPITAL", startingCapitalValue),
+            row("FINAL RANK", rankValue),
+            row("WEEKS PLAYED", weeksValue),
+            row("TRANSACTIONS COMPLETED", transactionsValue));
     statsBox.getStyleClass().add("game-over-stats");
 
     quitButton.setDefaultButton(true);
     quitButton.getStyleClass().add("game-over-quit-button");
 
-    VBox card = new VBox(
-        20,
-        titleBox,
-        headlineBox,
-        new Separator(),
-        statsBox,
-        new Separator(),
-        quitButton
-    );
+    VBox card =
+        new VBox(20, titleBox, headlineBox, new Separator(), statsBox, new Separator(), quitButton);
     card.getStyleClass().add("game-over-card");
     card.setAlignment(Pos.CENTER);
     card.setMaxWidth(560);
@@ -110,8 +101,8 @@ public class GameOverView {
   }
 
   /**
-   * Applies a green/red color class to the headline values (net worth +
-   * percent) based on the sign of the overall gain.
+   * Applies a green/red color class to the headline values (net worth + percent) based on the sign
+   * of the overall gain.
    *
    * @param signum 1 for gain, -1 for loss, 0 for neutral
    */

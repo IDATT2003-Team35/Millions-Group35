@@ -1,13 +1,12 @@
 package edu.ntnu.idi.idatt.millions.model.calculator;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PurchaseCalculatorTest {
   private Stock testStock;
@@ -34,13 +33,18 @@ class PurchaseCalculatorTest {
     PurchaseCalculator calc = new PurchaseCalculator(testShare);
     assertNotNull(calc);
 
-    assertThrows(NullPointerException.class,
-            () -> new PurchaseCalculator(null));
+    assertThrows(NullPointerException.class, () -> new PurchaseCalculator(null));
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new PurchaseCalculator(new Share(testStock, new BigDecimal("10"), new BigDecimal("0.00"))));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new PurchaseCalculator(
+                new Share(testStock, new BigDecimal("10"), new BigDecimal("0.00"))));
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new PurchaseCalculator(new Share(testStock, new BigDecimal("0"), new BigDecimal("100.00"))));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new PurchaseCalculator(
+                new Share(testStock, new BigDecimal("0"), new BigDecimal("100.00"))));
   }
 }

@@ -1,23 +1,19 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
 import edu.ntnu.idi.idatt.millions.model.GameSession;
-
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
 import edu.ntnu.idi.idatt.millions.view.TransactionView;
+import java.math.BigDecimal;
+import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-/**
- * Controller for the portfolio view.
- */
+/** Controller for the portfolio view. */
 public class TransactionController {
 
   private final GameSession session;
@@ -57,8 +53,7 @@ public class TransactionController {
   }
 
   private void wireSearch() {
-    view.getSearchField().textProperty()
-        .addListener((obs, oldValue, newValue) -> applyFilter());
+    view.getSearchField().textProperty().addListener((obs, oldValue, newValue) -> applyFilter());
   }
 
   private void applyFilter() {
@@ -85,28 +80,28 @@ public class TransactionController {
     view.setRecordsCount(all.size());
     view.setFilterCounts(all.size(), buyCount, sellCount);
 
-    List<Transaction> searched = (query == null || query.isBlank())
-        ? all
-        : filter(all, query);
+    List<Transaction> searched = (query == null || query.isBlank()) ? all : filter(all, query);
 
     String tab = view.getSelectedFilter();
-    List<Transaction> shown = switch (tab) {
-      case "BUYS" -> searched.stream().filter(t -> t instanceof Purchase).toList();
-      case "SELLS" -> searched.stream().filter(t -> !(t instanceof Purchase)).toList();
-      default -> searched;
-    };
+    List<Transaction> shown =
+        switch (tab) {
+          case "BUYS" -> searched.stream().filter(t -> t instanceof Purchase).toList();
+          case "SELLS" -> searched.stream().filter(t -> !(t instanceof Purchase)).toList();
+          default -> searched;
+        };
     view.setTransactions(shown);
   }
 
   private static List<Transaction> filter(List<Transaction> all, String query) {
     String q = query.toLowerCase();
     return all.stream()
-        .filter(t -> {
-          String type = t instanceof Purchase ? "buy" : "sell";
-          String symbol = t.getShare().getStock().getSymbol().toLowerCase();
-          String week = String.valueOf(t.getWeek());
-          return type.contains(q) || symbol.contains(q) || week.contains(q);
-        })
+        .filter(
+            t -> {
+              String type = t instanceof Purchase ? "buy" : "sell";
+              String symbol = t.getShare().getStock().getSymbol().toLowerCase();
+              String week = String.valueOf(t.getWeek());
+              return type.contains(q) || symbol.contains(q) || week.contains(q);
+            })
         .toList();
   }
 
@@ -123,5 +118,3 @@ public class TransactionController {
     receiptStage.showAndWait();
   }
 }
-
-
