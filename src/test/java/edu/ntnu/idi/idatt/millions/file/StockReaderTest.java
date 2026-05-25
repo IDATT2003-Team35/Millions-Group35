@@ -1,24 +1,23 @@
 package edu.ntnu.idi.idatt.millions.file;
 
-import edu.ntnu.idi.idatt.millions.model.Stock;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
+import edu.ntnu.idi.idatt.millions.model.Stock;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class StockReaderTest {
   Path path = Path.of("src/test/resources/stockTests.csv");
   Path extraColumnPath = Path.of("src/test/resources/stockTestsExtraColumn.csv");
 
   @Test
-  void stockReaderReadsCorrectAmountOfStocks() throws Exception{
+  void stockReaderReadsCorrectAmountOfStocks() throws Exception {
     StockReader reader = new StockReader();
-    assertEquals(4,reader.readStockData(path).toArray().length);
+    assertEquals(4, reader.readStockData(path).toArray().length);
   }
 
   @Test
@@ -40,10 +39,8 @@ class StockReaderTest {
   void lineWithFourValuesThrowsException() {
     StockReader reader = new StockReader();
 
-    StockParseException exception = assertThrows(
-            StockParseException.class,
-            () -> reader.readStockData(extraColumnPath)
-    );
+    StockParseException exception =
+        assertThrows(StockParseException.class, () -> reader.readStockData(extraColumnPath));
 
     assertTrue(exception.getMessage().contains("line 2"));
     assertTrue(exception.getMessage().contains("expected 3 values but found 4"));
@@ -53,13 +50,14 @@ class StockReaderTest {
   void nullFilePathThrowsException() {
     StockReader reader = new StockReader();
 
-    assertThrows(IllegalArgumentException.class,
-            () -> reader.readStockData((Path) null));
+    assertThrows(IllegalArgumentException.class, () -> reader.readStockData((Path) null));
   }
 
   @Test
   void valuesAreTrimmedBeforeStockIsCreated() throws Exception {
-    List<Stock> stocks = readFromText("""
+    List<Stock> stocks =
+        readFromText(
+            """
        AAPL , Apple Inc. , 276.43
       """);
 
@@ -70,12 +68,14 @@ class StockReaderTest {
 
   @Test
   void invalidPriceThrowsExceptionWithLineNumber() {
-    StockParseException exception = assertThrows(
+    StockParseException exception =
+        assertThrows(
             StockParseException.class,
-            () -> readFromText("""
+            () ->
+                readFromText(
+                    """
           AAPL,Apple Inc.,abc
-          """)
-    );
+          """));
 
     assertTrue(exception.getMessage().contains("line 1"));
     assertTrue(exception.getMessage().contains("abc"));
@@ -83,19 +83,23 @@ class StockReaderTest {
 
   @Test
   void trailingEmptyColumnThrowsExceptionWithLineNumber() {
-    StockParseException exception = assertThrows(
+    StockParseException exception =
+        assertThrows(
             StockParseException.class,
-            () -> readFromText("""
+            () ->
+                readFromText(
+                    """
           AAPL,Apple Inc.,
-          """)
-    );
+          """));
 
     assertTrue(exception.getMessage().contains("line 1"));
   }
 
   @Test
   void blankAndCommentLinesAreIgnored() throws Exception {
-    List<Stock> stocks = readFromText("""
+    List<Stock> stocks =
+        readFromText(
+            """
          # Ticker,Name,Price
 
       AAPL,Apple Inc.,276.43

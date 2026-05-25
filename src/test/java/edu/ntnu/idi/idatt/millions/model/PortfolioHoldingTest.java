@@ -1,12 +1,11 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class PortfolioHoldingTest {
 
@@ -23,14 +22,12 @@ class PortfolioHoldingTest {
 
   @Test
   void constructorNullSharesThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new PortfolioHolding(null));
+    assertThrows(IllegalArgumentException.class, () -> new PortfolioHolding(null));
   }
 
   @Test
   void constructorEmptySharesThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new PortfolioHolding(List.of()));
+    assertThrows(IllegalArgumentException.class, () -> new PortfolioHolding(List.of()));
   }
 
   @Test
@@ -38,8 +35,9 @@ class PortfolioHoldingTest {
     Stock tesla = new Stock("TSLA", "Tesla", new BigDecimal("23.20"));
     Share teslaShare = new Share(tesla, new BigDecimal("2"), new BigDecimal("23.20"));
 
-    assertThrows(IllegalArgumentException.class, () ->
-        new PortfolioHolding(List.of(firstShare, teslaShare)));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new PortfolioHolding(List.of(firstShare, teslaShare)));
   }
 
   @Test

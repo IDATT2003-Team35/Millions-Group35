@@ -7,9 +7,4 @@ package edu.ntnu.idi.idatt.millions.file.save.dto;
  * @param quantity the owned quantity
  * @param purchasePrice the purchase price per share
  */
-public record ShareSaveData(
-        String stockSymbol,
-        String quantity,
-        String purchasePrice
-) {
-}
+public record ShareSaveData(String stockSymbol, String quantity, String purchasePrice) {}

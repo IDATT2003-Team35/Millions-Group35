@@ -10,20 +10,17 @@ import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
-import javafx.stage.Stage;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Function;
-
+import javafx.stage.Stage;
 
 /**
  * Controller for the transaction receipt popup.
  *
- * <p>The controller reads one completed transaction, or a group of transactions
- * from one user-facing sale, calculates the displayed receipt values, and wires
- * the close button.</p>
+ * <p>The controller reads one completed transaction, or a group of transactions from one
+ * user-facing sale, calculates the displayed receipt values, and wires the close button.
  */
 public class TransactionReceiptController {
   private final TransactionReceiptView view;
@@ -39,10 +36,7 @@ public class TransactionReceiptController {
    * @throws IllegalArgumentException if any argument is {@code null}
    */
   public TransactionReceiptController(
-      TransactionReceiptView view,
-      Stage dialogStage,
-      Transaction transaction
-  ) {
+      TransactionReceiptView view, Stage dialogStage, Transaction transaction) {
     if (view == null) {
       throw new IllegalArgumentException("View cannot be null");
     }
@@ -65,8 +59,8 @@ public class TransactionReceiptController {
   /**
    * Creates a controller for a receipt that summarizes several completed transactions.
    *
-   * <p>This is used when one user-facing sale spans multiple purchase lots and
-   * therefore produces more than one sale transaction.</p>
+   * <p>This is used when one user-facing sale spans multiple purchase lots and therefore produces
+   * more than one sale transaction.
    *
    * @param view view used by the receipt popup
    * @param dialogStage stage containing the popup
@@ -74,10 +68,7 @@ public class TransactionReceiptController {
    * @throws IllegalArgumentException if any argument is invalid
    */
   public TransactionReceiptController(
-          TransactionReceiptView view,
-          Stage dialogStage,
-          List<Transaction> transactions
-  ) {
+      TransactionReceiptView view, Stage dialogStage, List<Transaction> transactions) {
     if (view == null) {
       throw new IllegalArgumentException("View cannot be null");
     }
@@ -120,46 +111,19 @@ public class TransactionReceiptController {
     populateSaleSummary(share, calculator);
   }
 
-  /**
-   * Adds the cost basis row and the gain/loss header for Sale transactions.
-   * For Purchase transactions both are hidden, since no profit is realized yet.
-   */
-  private void populateSaleSummary(Share share, TransactionCalculator calculator) {
-    boolean isSale = transaction instanceof Sale;
-    view.setCostBasisVisible(isSale);
-    view.setGainHeaderVisible(isSale);
-    if (!isSale) {
-      return;
-    }
-
-    BigDecimal costBasis = share.getPurchasePrice().multiply(share.getQuantity());
-    BigDecimal cashReceived = calculator.calculateTotal();
-    BigDecimal gain = cashReceived.subtract(costBasis);
-    BigDecimal returnPercent = Percentages.change(costBasis, cashReceived);
-
-    view.setCostBasis(costBasis.toPlainString());
-    view.setGainHeader(
-        Money.formatWithSign(gain),
-        Percentages.format(returnPercent),
-        gain.signum()
-    );
-  }
-
   private void populate(List<Transaction> transactions) {
     Transaction firstTransaction = transactions.getFirst();
     Share firstShare = firstTransaction.getShare();
     Stock stock = firstShare.getStock();
 
-    BigDecimal quantity = sum(transactions, transaction ->
-            transaction.getShare().getQuantity());
-    BigDecimal gross = sum(transactions, transaction ->
-            transaction.getCalculator().calculateGross());
-    BigDecimal commission = sum(transactions, transaction ->
-            transaction.getCalculator().calculateCommission());
-    BigDecimal tax = sum(transactions, transaction ->
-            transaction.getCalculator().calculateTax());
-    BigDecimal total = sum(transactions, transaction ->
-            transaction.getCalculator().calculateTotal());
+    BigDecimal quantity = sum(transactions, transaction -> transaction.getShare().getQuantity());
+    BigDecimal gross =
+        sum(transactions, transaction -> transaction.getCalculator().calculateGross());
+    BigDecimal commission =
+        sum(transactions, transaction -> transaction.getCalculator().calculateCommission());
+    BigDecimal tax = sum(transactions, transaction -> transaction.getCalculator().calculateTax());
+    BigDecimal total =
+        sum(transactions, transaction -> transaction.getCalculator().calculateTotal());
 
     BigDecimal price = gross.divide(quantity, 2, RoundingMode.HALF_UP);
 
@@ -177,10 +141,26 @@ public class TransactionReceiptController {
     view.setWeek(String.valueOf(firstTransaction.getWeek()));
   }
 
+  private void populateSaleSummary(Share share, TransactionCalculator calculator) {
+    boolean isSale = transaction instanceof Sale;
+    view.setCostBasisVisible(isSale);
+    view.setGainHeaderVisible(isSale);
+    if (!isSale) {
+      return;
+    }
+
+    BigDecimal costBasis = share.getPurchasePrice().multiply(share.getQuantity());
+    BigDecimal cashReceived = calculator.calculateTotal();
+    BigDecimal gain = cashReceived.subtract(costBasis);
+    BigDecimal returnPercent = Percentages.change(costBasis, cashReceived);
+
+    view.setCostBasis(costBasis.toPlainString());
+    view.setGainHeader(
+        Money.formatWithSign(gain), Percentages.format(returnPercent), gain.signum());
+  }
+
   private BigDecimal sum(List<Transaction> transactions, Function<Transaction, BigDecimal> mapper) {
-    return transactions.stream()
-            .map(mapper)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return transactions.stream().map(mapper).reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private BigDecimal getTransactionPricePerShare(Share share) {

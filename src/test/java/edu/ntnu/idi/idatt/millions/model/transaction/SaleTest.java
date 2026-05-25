@@ -1,14 +1,13 @@
 package edu.ntnu.idi.idatt.millions.model.transaction;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SaleTest {
   private Player player;
@@ -55,8 +54,8 @@ class SaleTest {
     Player brokePlayer = new Player("Broke", new BigDecimal("0.01"));
     Purchase purchase = new Purchase(share, 1);
 
-    IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> purchase.commit(brokePlayer));
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> purchase.commit(brokePlayer));
     assertEquals("You don't have enough cash for this purchase", exception.getMessage());
   }
 
@@ -65,8 +64,8 @@ class SaleTest {
     Purchase purchase = new Purchase(share, 1);
     purchase.commit(player);
 
-    IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> purchase.commit(player));
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> purchase.commit(player));
     assertEquals("transaction has already been committed", exception.getMessage());
   }
 }

@@ -14,8 +14,8 @@ import javafx.scene.layout.VBox;
 /**
  * View for the sell order popup.
  *
- * <p>The view displays the selected holding, estimated sale result, and action
- * buttons. Selling logic and validation are handled by the controller.</p>
+ * <p>The view displays the selected holding, estimated sale result, and action buttons. Selling
+ * logic and validation are handled by the controller.
  */
 public class SellView {
   private final VBox root;
@@ -36,9 +36,7 @@ public class SellView {
   private final Button cancelButton;
   private final Button confirmButton;
 
-  /**
-   * Creates the sell order popup layout.
-   */
+  /** Creates the sell order popup layout. */
   public SellView() {
     Label titleLabel = new Label("SELL ORDER");
     titleLabel.getStyleClass().add("popup-title");
@@ -73,7 +71,8 @@ public class SellView {
     Label detailsHeader = new Label("DETAILS");
     detailsHeader.getStyleClass().add("popup-section-header");
 
-    VBox infoBox = new VBox(
+    VBox infoBox =
+        new VBox(
             10,
             detailsHeader,
             row("Stock:", stockSymbolValue),
@@ -81,34 +80,25 @@ public class SellView {
             row("Quantity owned:", quantityValue),
             row("Quantity to sell:", quantityInput),
             row("Average Purchase Price per Share ($):", purchasePriceValue),
-            row("Current Price per Share ($):", currentPriceValue)
-    );
+            row("Current Price per Share ($):", currentPriceValue));
 
     Label summaryHeader = new Label("SUMMARY");
     summaryHeader.getStyleClass().add("popup-section-header");
 
-    VBox summaryBox = new VBox(
+    VBox summaryBox =
+        new VBox(
             10,
             summaryHeader,
             row("Gross ($):", grossValue),
             row("Commission ($):", commissionValue),
             row("Tax ($):", taxValue),
             row("Cash Received ($):", cashReceivedValue),
-            row("Gain / Loss ($):", gainLossValue)
-    );
+            row("Gain / Loss ($):", gainLossValue));
 
     HBox buttonRow = new HBox(12, cancelButton, confirmButton);
     buttonRow.setAlignment(Pos.CENTER_RIGHT);
 
-    root = new VBox(
-            16,
-            titleLabel,
-            infoBox,
-            new Separator(),
-            summaryBox,
-            errorLabel,
-            buttonRow
-    );
+    root = new VBox(16, titleLabel, infoBox, new Separator(), summaryBox, errorLabel, buttonRow);
     root.getStyleClass().add("transaction-popup");
     root.setSpacing(16);
     root.setPadding(new Insets(24));
@@ -225,9 +215,8 @@ public class SellView {
   }
 
   /**
-   * Sets the estimated gain or loss displayed in the popup, with a green
-   * or red color class applied based on sign for consistency with the
-   * portfolio gain/loss column.
+   * Sets the estimated gain or loss displayed in the popup, with a green or red color class applied
+   * based on sign for consistency with the portfolio gain/loss column.
    *
    * @param gainLoss formatted gain or loss text
    * @param signum the sign of the realized return: 1 for gain, -1 for loss, 0 for neutral
@@ -243,8 +232,8 @@ public class SellView {
   }
 
   /**
-   * Sets the estimated cash the player will receive (gross minus commission
-   * and tax) displayed in the popup.
+   * Sets the estimated cash the player will receive (gross minus commission and tax) displayed in
+   * the popup.
    *
    * @param cashReceived cash amount to display
    */
@@ -288,9 +277,7 @@ public class SellView {
     errorLabel.setText(message);
   }
 
-  /**
-   * Clears the current error message.
-   */
+  /** Clears the current error message. */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }

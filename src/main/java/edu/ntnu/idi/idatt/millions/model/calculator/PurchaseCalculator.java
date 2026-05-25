@@ -1,25 +1,24 @@
 package edu.ntnu.idi.idatt.millions.model.calculator;
 
 import edu.ntnu.idi.idatt.millions.model.Share;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
- * Calculator for share purchase transactions.
- * Calculates gross amount, commission, and total cost.
+ * Calculator for share purchase transactions. Calculates gross amount, commission, and total cost.
  */
 public class PurchaseCalculator implements TransactionCalculator {
 
   private final BigDecimal purchasePrice;
   private final BigDecimal quantity;
-  /** Commission rate of 0.5% applied to gross purchase amount. */
+
+  // Commission rate of 0.5% applied to gross purchase amount.
   private static final BigDecimal COMMISSION_RATE = new BigDecimal("0.005");
 
   /**
-   * Constructs a PurchaseCalculator for a given share.
-   * Validates that the share and its attributes are non-null and positive.
+   * Constructs a PurchaseCalculator for a given share. Validates that the share and its attributes
+   * are non-null and positive.
    *
    * @param share the share being purchased
    * @throws NullPointerException if share or its attributes are null
@@ -66,8 +65,7 @@ public class PurchaseCalculator implements TransactionCalculator {
   }
 
   /**
-   * Calculates tax for purchase transactions.
-   * Purchases are not subject to tax.
+   * Calculates tax for purchase transactions. Purchases are not subject to tax.
    *
    * @return zero with 2 decimal places
    */
@@ -83,8 +81,6 @@ public class PurchaseCalculator implements TransactionCalculator {
    */
   @Override
   public BigDecimal calculateTotal() {
-    return calculateGross()
-            .add(calculateCommission())
-            .setScale(2, RoundingMode.HALF_UP);
+    return calculateGross().add(calculateCommission()).setScale(2, RoundingMode.HALF_UP);
   }
 }

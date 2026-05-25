@@ -6,8 +6,4 @@ package edu.ntnu.idi.idatt.millions.file.save.dto;
  * @param name the exchange name
  * @param week the current trading week
  */
-public record ExchangeSaveData(
-        String name,
-        int week
-) {
-}
+public record ExchangeSaveData(String name, int week) {}

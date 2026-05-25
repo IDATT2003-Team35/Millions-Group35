@@ -1,28 +1,29 @@
 package edu.ntnu.idi.idatt.millions.model.calculator;
 
 import edu.ntnu.idi.idatt.millions.model.Share;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
- * Calculator for share sale transactions.
- * Calculates gross amount, commission, tax on profit, and net total.
+ * Calculator for share sale transactions. Calculates gross amount, commission, tax on profit, and
+ * net total.
  */
 public class SaleCalculator implements TransactionCalculator {
 
   private final BigDecimal purchasePrice;
   private final BigDecimal salesPrice;
   private final BigDecimal quantity;
-  /** Commission rate of 1% applied to gross sale amount. */
+
+  // Commission rate of 1% applied to gross sale amount.
   private static final BigDecimal COMMISSION_RATE = new BigDecimal("0.01");
-  /** Tax rate of 30% applied to profit. */
+
+  // Tax rate of 30% applied to profit.
   private static final BigDecimal TAX_RATE = new BigDecimal("0.3");
 
   /**
-   * Constructs a SaleCalculator for a given share.
-   * Validates that the share and its attributes are non-null and positive.
+   * Constructs a SaleCalculator for a given share. Validates that the share and its attributes are
+   * non-null and positive.
    *
    * @param share the share being sold
    * @throws NullPointerException if share or any of its attributes are null
@@ -31,27 +32,27 @@ public class SaleCalculator implements TransactionCalculator {
   public SaleCalculator(Share share) {
     Objects.requireNonNull(share, "Share object cannot be null");
 
-    BigDecimal pPrice = share.getPurchasePrice();
-    BigDecimal sPrice = share.getStock().getSalesPrice();
-    BigDecimal qty = share.getQuantity();
+    BigDecimal purchasePrice = share.getPurchasePrice();
+    BigDecimal salesPrice = share.getStock().getSalesPrice();
+    BigDecimal quantity = share.getQuantity();
 
-    Objects.requireNonNull(pPrice, "Purchase price cannot be null");
-    Objects.requireNonNull(sPrice, "Sales price cannot be null");
-    Objects.requireNonNull(qty, "Quantity cannot be null");
+    Objects.requireNonNull(purchasePrice, "Purchase price cannot be null");
+    Objects.requireNonNull(salesPrice, "Sales price cannot be null");
+    Objects.requireNonNull(quantity, "Quantity cannot be null");
 
-    if (pPrice.compareTo(BigDecimal.ZERO) <= 0) {
+    if (purchasePrice.compareTo(BigDecimal.ZERO) <= 0) {
       throw new IllegalArgumentException("Purchase price must be greater than zero");
     }
-    if (sPrice.compareTo(BigDecimal.ZERO) <= 0) {
+    if (salesPrice.compareTo(BigDecimal.ZERO) <= 0) {
       throw new IllegalArgumentException("Sales price must be greater than zero");
     }
-    if (qty.compareTo(BigDecimal.ZERO) <= 0) {
+    if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
       throw new IllegalArgumentException("Quantity must be greater than zero");
     }
 
-    this.purchasePrice = pPrice;
-    this.salesPrice = sPrice;
-    this.quantity = qty;
+    this.purchasePrice = purchasePrice;
+    this.salesPrice = salesPrice;
+    this.quantity = quantity;
   }
 
   /**
@@ -75,17 +76,15 @@ public class SaleCalculator implements TransactionCalculator {
   }
 
   /**
-   * Calculates tax on profit (30% of profit if positive).
-   * Profit is calculated as gross minus commission minus purchase cost.
+   * Calculates tax on profit (30% of profit if positive). Profit is calculated as gross minus
+   * commission minus purchase cost.
    *
    * @return the tax amount, or zero if no profit
    */
   @Override
   public BigDecimal calculateTax() {
     BigDecimal purchaseCost = purchasePrice.multiply(quantity);
-    BigDecimal profit = calculateGross()
-            .subtract(calculateCommission())
-            .subtract(purchaseCost);
+    BigDecimal profit = calculateGross().subtract(calculateCommission()).subtract(purchaseCost);
 
     if (profit.compareTo(BigDecimal.ZERO) > 0) {
       return profit.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
@@ -101,8 +100,8 @@ public class SaleCalculator implements TransactionCalculator {
   @Override
   public BigDecimal calculateTotal() {
     return calculateGross()
-            .subtract(calculateCommission())
-            .subtract(calculateTax())
-            .setScale(2, RoundingMode.HALF_UP);
+        .subtract(calculateCommission())
+        .subtract(calculateTax())
+        .setScale(2, RoundingMode.HALF_UP);
   }
 }

@@ -1,15 +1,14 @@
 package edu.ntnu.idi.idatt.millions.model.transaction;
 
-import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
-
+import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import java.math.BigDecimal;
 
 /**
- * Represents a purchase transaction of a share in the game.
- * Handles the logic for completing the purchase, including checking if the player
- * has sufficient funds, deducting the cost, and adding the share to the portfolio.
+ * Represents a purchase transaction of a share in the game. Handles the logic for completing the
+ * purchase, including checking if the player has sufficient funds, deducting the cost, and adding
+ * the share to the portfolio.
  */
 public class Purchase extends Transaction {
 
@@ -24,9 +23,8 @@ public class Purchase extends Transaction {
   }
 
   /**
-   * Executes the purchase logic for a given player.
-   * Calculates the total cost, deducts the amount from the player's balance,
-   * and adds the share to the player's portfolio.
+   * Executes the purchase logic for a given player. Calculates the total cost, deducts the amount
+   * from the player's balance, and adds the share to the player's portfolio.
    *
    * @param player the player executing the purchase
    * @throws IllegalStateException if the player does not have enough money to complete the purchase

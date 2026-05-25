@@ -8,20 +8,18 @@ import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.SellView;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
+import java.math.BigDecimal;
+import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 /**
  * Controller for the sell order popup.
  *
- * <p>The controller fills the view with holding and price data, performs the
- * sale through the game session, and opens a receipt when the transaction
- * succeeds.</p>
+ * <p>The controller fills the view with holding and price data, performs the sale through the game
+ * session, and opens a receipt when the transaction succeeds.
  */
 public class SellController {
   private final SellView view;
@@ -38,7 +36,8 @@ public class SellController {
    * @param holding portfolio holding being sold from
    * @throws IllegalArgumentException if any argument is {@code null}
    */
-  public SellController(SellView view, Stage dialogStage, GameSession session, PortfolioHolding holding) {
+  public SellController(
+      SellView view, Stage dialogStage, GameSession session, PortfolioHolding holding) {
     if (view == null) {
       throw new IllegalArgumentException("view cannot be null");
     }
@@ -81,9 +80,9 @@ public class SellController {
   }
 
   private void wireQuantityListener() {
-    view.getQuantityField().textProperty().addListener(
-        (obs, oldValue, newValue) -> updateSaleEstimate()
-    );
+    view.getQuantityField()
+        .textProperty()
+        .addListener((obs, oldValue, newValue) -> updateSaleEstimate());
   }
 
   private void updateSaleEstimate() {

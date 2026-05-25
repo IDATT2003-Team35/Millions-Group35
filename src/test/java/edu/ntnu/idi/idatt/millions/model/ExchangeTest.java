@@ -1,15 +1,14 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class ExchangeTest {
   private Exchange exchange;
@@ -41,38 +40,36 @@ class ExchangeTest {
   @Test
   void buyInsufficientFundsThrowsIllegalStateException() {
     Player poorPlayer = new Player("Broke", new BigDecimal("1"));
-    assertThrows(IllegalStateException.class, () ->
-        exchange.buy("EQNR", new BigDecimal("1"), poorPlayer));
+    assertThrows(
+        IllegalStateException.class, () -> exchange.buy("EQNR", new BigDecimal("1"), poorPlayer));
   }
 
   @Test
   void buyInvalidSymbolThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.buy("INVALID", new BigDecimal("5"), player));
+    assertThrows(
+        IllegalArgumentException.class, () -> exchange.buy("INVALID", new BigDecimal("5"), player));
   }
 
   @Test
   void buyZeroQuantityThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.buy("EQNR", BigDecimal.ZERO, player));
+    assertThrows(
+        IllegalArgumentException.class, () -> exchange.buy("EQNR", BigDecimal.ZERO, player));
   }
 
   @Test
   void buyNegativeQuantityThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.buy("EQNR", new BigDecimal("-1"), player));
+    assertThrows(
+        IllegalArgumentException.class, () -> exchange.buy("EQNR", new BigDecimal("-1"), player));
   }
 
   @Test
   void buyNullQuantityThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.buy("EQNR", null, player));
+    assertThrows(IllegalArgumentException.class, () -> exchange.buy("EQNR", null, player));
   }
 
   @Test
   void buyNullPlayerThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.buy("EQNR", BigDecimal.ONE, null));
+    assertThrows(IllegalArgumentException.class, () -> exchange.buy("EQNR", BigDecimal.ONE, null));
   }
 
   @Test
@@ -103,10 +100,8 @@ class ExchangeTest {
 
   @Test
   void findStocksBlankAndNullThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.findStocks(" "));
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.findStocks(null));
+    assertThrows(IllegalArgumentException.class, () -> exchange.findStocks(" "));
+    assertThrows(IllegalArgumentException.class, () -> exchange.findStocks(null));
   }
 
   @Test
@@ -138,7 +133,7 @@ class ExchangeTest {
     assertEquals(1, player.getTransactionArchive().getSales(1).size());
   }
 
-    @Test
+  @Test
   void sellQuantityAcrossMultipleLotsUsesFirstInFirstOutOrder() {
     exchange.buy("EQNR", new BigDecimal("5"), player);
     equinor.addNewSalesPrice(new BigDecimal("30.00"));
@@ -167,32 +162,29 @@ class ExchangeTest {
   void sellQuantityMoreThanOwnedThrowsIllegalArgumentException() {
     exchange.buy("EQNR", new BigDecimal("5"), player);
 
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.sell("EQNR", new BigDecimal("6"), player));
+    assertThrows(
+        IllegalArgumentException.class, () -> exchange.sell("EQNR", new BigDecimal("6"), player));
   }
 
   @Test
   void sellQuantityWithoutOwnedSharesThrowsIllegalStateException() {
-    assertThrows(IllegalStateException.class, () ->
-        exchange.sell("EQNR", BigDecimal.ONE, player));
+    assertThrows(IllegalStateException.class, () -> exchange.sell("EQNR", BigDecimal.ONE, player));
   }
 
   @Test
   void sellQuantityZeroThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.sell("EQNR", BigDecimal.ZERO, player));
+    assertThrows(
+        IllegalArgumentException.class, () -> exchange.sell("EQNR", BigDecimal.ZERO, player));
   }
 
   @Test
   void sellQuantityNullQuantityThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.sell("EQNR", null, player));
+    assertThrows(IllegalArgumentException.class, () -> exchange.sell("EQNR", null, player));
   }
 
   @Test
   void sellQuantityNullPlayerThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        exchange.sell("EQNR", BigDecimal.ONE, null));
+    assertThrows(IllegalArgumentException.class, () -> exchange.sell("EQNR", BigDecimal.ONE, null));
   }
 
   @Test
@@ -298,20 +290,19 @@ class ExchangeTest {
 
   @Test
   void constructorWithZeroVolatilityThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-        () -> new Exchange("OSEBX", List.of(equinor), 0.0));
+    assertThrows(
+        IllegalArgumentException.class, () -> new Exchange("OSEBX", List.of(equinor), 0.0));
   }
 
   @Test
   void constructorWithNegativeVolatilityThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-        () -> new Exchange("OSEBX", List.of(equinor), -0.1));
+    assertThrows(
+        IllegalArgumentException.class, () -> new Exchange("OSEBX", List.of(equinor), -0.1));
   }
 
   @Test
   void constructorWithDifficultyVolatilityWorks() {
-    Exchange ex = new Exchange("OSEBX", List.of(equinor),
-        Difficulty.HARD.getVolatility());
+    Exchange ex = new Exchange("OSEBX", List.of(equinor), Difficulty.HARD.getVolatility());
     assertEquals(0.20, ex.getVolatility());
   }
 }

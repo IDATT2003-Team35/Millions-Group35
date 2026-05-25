@@ -2,8 +2,8 @@ package edu.ntnu.idi.idatt.millions;
 
 import edu.ntnu.idi.idatt.millions.controller.LoadGameController;
 import edu.ntnu.idi.idatt.millions.controller.MainController;
-import edu.ntnu.idi.idatt.millions.controller.StartMenuController;
 import edu.ntnu.idi.idatt.millions.controller.StartController;
+import edu.ntnu.idi.idatt.millions.controller.StartMenuController;
 import edu.ntnu.idi.idatt.millions.file.StockReader;
 import edu.ntnu.idi.idatt.millions.file.save.GameSaveException;
 import edu.ntnu.idi.idatt.millions.file.save.GameSaveService;
@@ -17,11 +17,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-/**
- * Entry point for the Millions JavaFX application.
- */
+/** Entry point for the Millions JavaFX application. */
 public class App extends Application {
   private Stage primaryStage;
+
+  /** Creates the JavaFX application instance. */
+  public App() {}
 
   @Override
   public void start(Stage stage) {
@@ -44,14 +45,16 @@ public class App extends Application {
 
   private void showNewGameSetup() {
     StartView startView = new StartView();
-    new StartController(startView, primaryStage, this::handleGameStart, new StockReader(), this::showStartMenu);
+    new StartController(
+        startView, primaryStage, this::handleGameStart, new StockReader(), this::showStartMenu);
     primaryStage.getScene().setRoot(startView.getRoot());
   }
 
   private void showLoadGame() {
     LoadGameView loadGameView = new LoadGameView();
     try {
-      new LoadGameController(loadGameView, new GameSaveService(), this::handleGameStart, this::showStartMenu);
+      new LoadGameController(
+          loadGameView, new GameSaveService(), this::handleGameStart, this::showStartMenu);
     } catch (GameSaveException e) {
       loadGameView.setErrorMessage(e.getMessage());
     }
@@ -63,6 +66,11 @@ public class App extends Application {
     primaryStage.getScene().setRoot(controller.getView());
   }
 
+  /**
+   * Launches the JavaFX application.
+   *
+   * @param args command line arguments passed to JavaFX
+   */
   public static void main(String[] args) {
     launch(args);
   }

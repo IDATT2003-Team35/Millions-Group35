@@ -1,5 +1,11 @@
 package edu.ntnu.idi.idatt.millions.file.save;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import edu.ntnu.idi.idatt.millions.model.Exchange;
 import edu.ntnu.idi.idatt.millions.model.GameSession;
 import edu.ntnu.idi.idatt.millions.model.Player;
@@ -8,24 +14,16 @@ import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class GameSaveServiceTest {
-  @TempDir
-  Path tempDir;
+  @TempDir Path tempDir;
 
   private GameSaveService service;
 
@@ -103,10 +101,10 @@ class GameSaveServiceTest {
 
     assertAll(
         () -> assertEquals(original.getPlayer().getName(), loaded.getPlayer().getName()),
-        () -> assertEquals(original.getPlayer().getStartingMoney(),
-            loaded.getPlayer().getStartingMoney()),
-        () -> assertEquals(original.getPlayer().getMoney(), loaded.getPlayer().getMoney())
-    );
+        () ->
+            assertEquals(
+                original.getPlayer().getStartingMoney(), loaded.getPlayer().getStartingMoney()),
+        () -> assertEquals(original.getPlayer().getMoney(), loaded.getPlayer().getMoney()));
   }
 
   @Test
@@ -117,7 +115,8 @@ class GameSaveServiceTest {
 
     assertEquals(original.getExchange().getName(), loaded.getExchange().getName());
     assertEquals(original.getExchange().getWeek(), loaded.getExchange().getWeek());
-    assertEquals(original.getExchange().getStocks().size(), loaded.getExchange().getStocks().size());
+    assertEquals(
+        original.getExchange().getStocks().size(), loaded.getExchange().getStocks().size());
 
     for (Stock originalStock : original.getExchange().getStocks()) {
       Stock loadedStock = loaded.getExchange().getStock(originalStock.getSymbol());
@@ -137,8 +136,12 @@ class GameSaveServiceTest {
 
     assertEquals(originalShares.size(), loadedShares.size());
     for (Share originalShare : originalShares) {
-      Share loadedShare = loaded.getPlayer().getPortfolio()
-          .getShares(originalShare.getStock().getSymbol()).getFirst();
+      Share loadedShare =
+          loaded
+              .getPlayer()
+              .getPortfolio()
+              .getShares(originalShare.getStock().getSymbol())
+              .getFirst();
 
       assertEquals(originalShare.getStock().getSymbol(), loadedShare.getStock().getSymbol());
       assertEquals(originalShare.getQuantity(), loadedShare.getQuantity());
@@ -166,11 +169,13 @@ class GameSaveServiceTest {
 
       assertEquals(originalTransaction.getWeek(), loadedTransaction.getWeek());
       assertEquals(originalTransaction.isCommitted(), loadedTransaction.isCommitted());
-      assertEquals(originalTransaction.getShare().getStock().getSymbol(),
+      assertEquals(
+          originalTransaction.getShare().getStock().getSymbol(),
           loadedTransaction.getShare().getStock().getSymbol());
-      assertEquals(originalTransaction.getShare().getQuantity(),
-          loadedTransaction.getShare().getQuantity());
-      assertEquals(originalTransaction.getShare().getPurchasePrice(),
+      assertEquals(
+          originalTransaction.getShare().getQuantity(), loadedTransaction.getShare().getQuantity());
+      assertEquals(
+          originalTransaction.getShare().getPurchasePrice(),
           loadedTransaction.getShare().getPurchasePrice());
     }
   }

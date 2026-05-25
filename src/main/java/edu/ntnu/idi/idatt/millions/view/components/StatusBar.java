@@ -20,8 +20,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
- * Top status bar showing compact game state and the advance-week button.
- * Values are updated via {@link #refresh}.
+ * Top status bar showing compact game state and the advance-week button. Values are updated via
+ * {@link #refresh}.
  */
 public class StatusBar extends HBox {
 
@@ -33,9 +33,7 @@ public class StatusBar extends HBox {
   private final Label difficultyValue = new Label();
   private final Button advanceButton = new Button("ADVANCE WEEK  →");
 
-  /**
-   * Creates the status bar layout and initializes its labels and advance button.
-   */
+  /** Creates the status bar layout and initializes its labels and advance button. */
   public StatusBar() {
     getStyleClass().add("status-bar");
     advanceButton.getStyleClass().add("advance-button");
@@ -45,12 +43,12 @@ public class StatusBar extends HBox {
     weekProgress.setVisible(false);
     weekProgress.setManaged(false);
 
-    HBox stats = new HBox(
-        field("CASH", cashValue),
-        field("NET WORTH", compact(netWorthValue, changeValue)),
-        field("WEEK", compactVertical(weekValue, weekProgress)),
-        field("DIFFICULTY", difficultyValue)
-    );
+    HBox stats =
+        new HBox(
+            field("CASH", cashValue),
+            field("NET WORTH", compact(netWorthValue, changeValue)),
+            field("WEEK", compactVertical(weekValue, weekProgress)),
+            field("DIFFICULTY", difficultyValue));
     stats.getStyleClass().add("status-stats");
 
     Region spacer = new Region();
@@ -84,7 +82,6 @@ public class StatusBar extends HBox {
     refreshDifficulty(session.getDifficulty());
   }
 
-  /** Updates the week label and progress bar based on the active mode. */
   private void refreshWeek(Exchange exchange, GameMode mode) {
     int week = exchange.getWeek();
     if (mode.hasWeekLimit()) {
@@ -100,15 +97,16 @@ public class StatusBar extends HBox {
     }
   }
 
-  /** Updates the difficulty label with text and color class. */
   private void refreshDifficulty(Difficulty difficulty) {
     difficultyValue.setText(formatDifficulty(difficulty));
-    difficultyValue.getStyleClass().removeAll(
-        "difficulty-easy", "difficulty-normal", "difficulty-hard");
+    difficultyValue
+        .getStyleClass()
+        .removeAll("difficulty-easy", "difficulty-normal", "difficulty-hard");
     switch (difficulty) {
       case EASY -> difficultyValue.getStyleClass().add("difficulty-easy");
       case NORMAL -> difficultyValue.getStyleClass().add("difficulty-normal");
       case HARD -> difficultyValue.getStyleClass().add("difficulty-hard");
+      default -> throw new IllegalArgumentException("Unknown difficulty: " + difficulty);
     }
   }
 

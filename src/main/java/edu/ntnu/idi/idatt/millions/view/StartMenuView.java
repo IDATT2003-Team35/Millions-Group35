@@ -9,17 +9,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-/**
- * View for the first screen where the user chooses how to start the game.
- */
+/** View for the first screen where the user chooses how to start the game. */
 public class StartMenuView {
   private final StackPane root;
   private final Button newGameButton;
   private final Button loadGameButton;
 
-  /**
-   * Creates the start menu layout and initializes its controls.
-   */
+  /** Creates the start menu layout and initializes its controls. */
   public StartMenuView() {
     Label titleLabel = new Label("MILLIONS");
     titleLabel.getStyleClass().add("start-title");
@@ -37,11 +33,7 @@ public class StartMenuView {
     loadGameButton = new Button("LOAD GAME");
     loadGameButton.getStyleClass().add("start-primary-button");
 
-    VBox buttonBox = new VBox(
-        12,
-        newGameButton,
-        loadGameButton
-    );
+    VBox buttonBox = new VBox(12, newGameButton, loadGameButton);
     buttonBox.getStyleClass().addAll("start-card-body", "start-menu-body");
     buttonBox.setAlignment(Pos.CENTER);
     buttonBox.setMaxHeight(Double.MAX_VALUE);

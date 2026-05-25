@@ -1,17 +1,17 @@
 package edu.ntnu.idi.idatt.millions.file;
 
 import edu.ntnu.idi.idatt.millions.model.Stock;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-/**
- * Writes stock data to a CSV file.
- */
+/** Writes stock data to a CSV file. */
 public class StockWriter {
+
+  /** Creates a stock writer. */
+  public StockWriter() {}
 
   /**
    * Writes the given stocks to the provided file path.
@@ -28,10 +28,8 @@ public class StockWriter {
       writer.newLine();
       writer.newLine();
 
-      for (Stock stock : stocks){
-        String line = stock.getSymbol() + ","
-            + stock.getCompany() + ","
-            + stock.getSalesPrice();
+      for (Stock stock : stocks) {
+        String line = stock.getSymbol() + "," + stock.getCompany() + "," + stock.getSalesPrice();
         writer.write(line);
         writer.newLine();
       }

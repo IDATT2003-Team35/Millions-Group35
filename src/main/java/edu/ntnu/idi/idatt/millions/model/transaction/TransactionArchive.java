@@ -3,15 +3,11 @@ package edu.ntnu.idi.idatt.millions.model.transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Archive for storing and retrieving completed transactions.
- */
+/** Archive for storing and retrieving completed transactions. */
 public class TransactionArchive {
   private final List<Transaction> transactions;
 
-  /**
-   * Constructs a new, empty transaction archive.
-   */
+  /** Constructs a new, empty transaction archive. */
   public TransactionArchive() {
     this.transactions = new ArrayList<>();
   }
@@ -32,8 +28,7 @@ public class TransactionArchive {
   /**
    * Adds a transaction restored from saved data.
    *
-   * <p>The transaction is marked as committed without executing its transaction
-   * logic again.</p>
+   * <p>The transaction is marked as committed without executing its transaction logic again.
    *
    * @param transaction the restored transaction to add
    * @return true if added successfully, false if transaction is null
@@ -67,9 +62,7 @@ public class TransactionArchive {
       throw new IllegalArgumentException("Week must be positive");
     }
 
-    return transactions.stream()
-        .filter(t -> t.getWeek() == week)
-        .toList();
+    return transactions.stream().filter(t -> t.getWeek() == week).toList();
   }
 
   /**
@@ -114,10 +107,7 @@ public class TransactionArchive {
    * @return the number of distinct weeks
    */
   public int countDistinctWeeks() {
-    return (int) transactions.stream()
-        .map(Transaction::getWeek)
-        .distinct()
-        .count();
+    return (int) transactions.stream().map(Transaction::getWeek).distinct().count();
   }
 
   /**

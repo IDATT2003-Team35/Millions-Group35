@@ -8,19 +8,18 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.util.Styles;
 import edu.ntnu.idi.idatt.millions.view.BuyView;
 import edu.ntnu.idi.idatt.millions.view.TransactionReceiptView;
+import java.math.BigDecimal;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.math.BigDecimal;
-
 /**
  * Controller for the buy order popup.
  *
- * <p>The controller fills the view with stock and player data, validates the
- * requested quantity, performs the purchase through the game session, and
- * opens a receipt when the transaction succeeds.</p>
+ * <p>The controller fills the view with stock and player data, validates the requested quantity,
+ * performs the purchase through the game session, and opens a receipt when the transaction
+ * succeeds.
  */
 public class BuyController {
   private final BuyView view;
@@ -75,9 +74,9 @@ public class BuyController {
   }
 
   private void wireQuantityListener() {
-    view.getQuantityField().textProperty().addListener(
-            (obs, oldTotCost, newTotCost) -> updateTotalCost()
-    );
+    view.getQuantityField()
+        .textProperty()
+        .addListener((obs, oldTotCost, newTotCost) -> updateTotalCost());
   }
 
   private void updateTotalCost() {

@@ -1,29 +1,27 @@
 package edu.ntnu.idi.idatt.millions.file;
 
-import edu.ntnu.idi.idatt.millions.model.Stock;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.junit.jupiter.api.Assertions.*;
 
+import edu.ntnu.idi.idatt.millions.model.Stock;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class StockWriterTest {
 
-  @TempDir
-  Path tempDir;
+  @TempDir Path tempDir;
 
   @Test
   void writesCorrectNumberOfLines() throws Exception {
     Path outputFile = tempDir.resolve("output.csv");
     StockWriter writer = new StockWriter();
-    List<Stock> stocks = List.of(
-        new Stock("AAPL", "Apple.", new BigDecimal("276.43")),
-        new Stock("MSFT", "Microsoft", new BigDecimal("404.68"))
-    );
+    List<Stock> stocks =
+        List.of(
+            new Stock("AAPL", "Apple.", new BigDecimal("276.43")),
+            new Stock("MSFT", "Microsoft", new BigDecimal("404.68")));
 
     writer.writeStockData(outputFile, stocks);
 
@@ -35,9 +33,7 @@ class StockWriterTest {
   void writtenFileContainsCommentHeader() throws Exception {
     Path outputFile = tempDir.resolve("output.csv");
     StockWriter writer = new StockWriter();
-    List<Stock> stocks = List.of(
-        new Stock("AAPL", "Apple Inc.", new BigDecimal("276.43"))
-    );
+    List<Stock> stocks = List.of(new Stock("AAPL", "Apple Inc.", new BigDecimal("276.43")));
 
     writer.writeStockData(outputFile, stocks);
 
@@ -50,10 +46,10 @@ class StockWriterTest {
     Path outputFile = tempDir.resolve("output.csv");
     StockWriter writer = new StockWriter();
     StockReader reader = new StockReader();
-    List<Stock> originalStocks = List.of(
-        new Stock("AAPL", "Apple Inc.", new BigDecimal("276.43")),
-        new Stock("NVDA", "Nvidia", new BigDecimal("191.27"))
-    );
+    List<Stock> originalStocks =
+        List.of(
+            new Stock("AAPL", "Apple Inc.", new BigDecimal("276.43")),
+            new Stock("NVDA", "Nvidia", new BigDecimal("191.27")));
 
     writer.writeStockData(outputFile, originalStocks);
     List<Stock> readStocks = reader.readStockData(outputFile);

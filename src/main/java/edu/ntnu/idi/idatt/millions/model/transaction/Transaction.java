@@ -1,12 +1,12 @@
 package edu.ntnu.idi.idatt.millions.model.transaction;
 
-import edu.ntnu.idi.idatt.millions.model.calculator.TransactionCalculator;
 import edu.ntnu.idi.idatt.millions.model.Player;
 import edu.ntnu.idi.idatt.millions.model.Share;
+import edu.ntnu.idi.idatt.millions.model.calculator.TransactionCalculator;
 
 /**
- * Represents a financial transaction (e.g., purchase or sale).
- * Ensures the transaction is only committed once and handles archiving.
+ * Represents a financial transaction (e.g., purchase or sale). Ensures the transaction is only
+ * committed once and handles archiving.
  */
 public abstract class Transaction {
   private final Share share;
@@ -40,6 +40,8 @@ public abstract class Transaction {
   }
 
   /**
+   * Returns the share involved in this transaction.
+   *
    * @return the associated share
    */
   public Share getShare() {
@@ -47,6 +49,8 @@ public abstract class Transaction {
   }
 
   /**
+   * Returns the trading week when this transaction was created.
+   *
    * @return the transaction week
    */
   public int getWeek() {
@@ -54,6 +58,8 @@ public abstract class Transaction {
   }
 
   /**
+   * Returns the calculator used to derive this transaction's amounts.
+   *
    * @return the transaction calculator
    */
   public TransactionCalculator getCalculator() {
@@ -61,6 +67,8 @@ public abstract class Transaction {
   }
 
   /**
+   * Checks whether this transaction has already been committed.
+   *
    * @return true if the transaction has been committed, false otherwise
    */
   public boolean isCommitted() {
@@ -72,8 +80,8 @@ public abstract class Transaction {
   }
 
   /**
-   * Commits the transaction for the given player.
-   * Marks it as committed and adds it to the player's archive.
+   * Commits the transaction for the given player. Marks it as committed and adds it to the player's
+   * archive.
    *
    * @param player the player executing the transaction
    * @throws IllegalStateException if already committed

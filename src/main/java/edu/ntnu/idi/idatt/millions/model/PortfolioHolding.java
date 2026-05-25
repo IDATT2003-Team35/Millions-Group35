@@ -3,7 +3,6 @@ package edu.ntnu.idi.idatt.millions.model;
 import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.calculator.SaleCalculator;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -12,8 +11,8 @@ import java.util.List;
 /**
  * Represents a grouped portfolio position for one stock.
  *
- * <p>The portfolio still stores individual purchase lots as {@link Share} objects,
- * while this class provides a read-only view of those lots grouped by stock.</p>
+ * <p>The portfolio still stores individual purchase lots as {@link Share} objects, while this class
+ * provides a read-only view of those lots grouped by stock.
  */
 public class PortfolioHolding {
 
@@ -36,8 +35,8 @@ public class PortfolioHolding {
 
     this.stock = shares.get(0).getStock();
     String symbol = stock.getSymbol();
-    boolean allSharesMatchSymbol = shares.stream()
-        .allMatch(share -> share.getStock().getSymbol().equals(symbol));
+    boolean allSharesMatchSymbol =
+        shares.stream().allMatch(share -> share.getStock().getSymbol().equals(symbol));
     if (!allSharesMatchSymbol) {
       throw new IllegalArgumentException("All shares must belong to the same stock symbol");
     }
@@ -86,9 +85,7 @@ public class PortfolioHolding {
    * @return the total quantity
    */
   public BigDecimal getQuantity() {
-    return shares.stream()
-        .map(Share::getQuantity)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return shares.stream().map(Share::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   /**
@@ -102,9 +99,10 @@ public class PortfolioHolding {
       return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
     }
 
-    BigDecimal totalPurchasePrice = shares.stream()
-        .map(share -> share.getPurchasePrice().multiply(share.getQuantity()))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal totalPurchasePrice =
+        shares.stream()
+            .map(share -> share.getPurchasePrice().multiply(share.getQuantity()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     return totalPurchasePrice.divide(totalQuantity, 2, RoundingMode.HALF_UP);
   }
 
@@ -123,9 +121,7 @@ public class PortfolioHolding {
    * @return the current gross value rounded to two decimals
    */
   public BigDecimal getCurrentValue() {
-    return getCurrentPrice()
-        .multiply(getQuantity())
-        .setScale(2, RoundingMode.HALF_UP);
+    return getCurrentPrice().multiply(getQuantity()).setScale(2, RoundingMode.HALF_UP);
   }
 
   /**
@@ -149,14 +145,14 @@ public class PortfolioHolding {
   /**
    * Estimates the net sale value for selling a quantity from this holding.
    *
-   * <p>The estimate uses the same purchase-lot order as an actual quantity sale,
-   * but it does not mutate the portfolio.</p>
+   * <p>The estimate uses the same purchase-lot order as an actual quantity sale, but it does not
+   * mutate the portfolio.
    *
-   * @param quantity quantity to sell; must be greater than zero and no larger
-   *                 than the owned quantity
+   * @param quantity quantity to sell; must be greater than zero and no larger than the owned
+   *     quantity
    * @return estimated sale value after commission and tax
-   * @throws IllegalArgumentException if quantity is null, not positive, or greater
-   *                                  than the owned quantity
+   * @throws IllegalArgumentException if quantity is null, not positive, or greater than the owned
+   *     quantity
    */
   public BigDecimal getEstimatedSaleValue(BigDecimal quantity) {
     return createPreviewShares(quantity).stream()
@@ -167,23 +163,25 @@ public class PortfolioHolding {
   /**
    * Estimates the net gain or loss for selling a quantity from this holding.
    *
-   * <p>The estimate compares the net sale value with the purchase cost of the
-   * purchase lots that would be sold by an actual quantity sale.</p>
+   * <p>The estimate compares the net sale value with the purchase cost of the purchase lots that
+   * would be sold by an actual quantity sale.
    *
-   * @param quantity quantity to sell; must be greater than zero and no larger
-   *                 than the owned quantity
+   * @param quantity quantity to sell; must be greater than zero and no larger than the owned
+   *     quantity
    * @return estimated net gain or loss
-   * @throws IllegalArgumentException if quantity is null, not positive, or greater
-   *                                  than the owned quantity
+   * @throws IllegalArgumentException if quantity is null, not positive, or greater than the owned
+   *     quantity
    */
   public BigDecimal getEstimatedGainLoss(BigDecimal quantity) {
     List<Share> previewShares = createPreviewShares(quantity);
-    BigDecimal saleValue = previewShares.stream()
-        .map(share -> new SaleCalculator(share).calculateTotal())
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
-    BigDecimal purchaseCost = previewShares.stream()
-        .map(share -> new PurchaseCalculator(share).calculateTotal())
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal saleValue =
+        previewShares.stream()
+            .map(share -> new SaleCalculator(share).calculateTotal())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal purchaseCost =
+        previewShares.stream()
+            .map(share -> new PurchaseCalculator(share).calculateTotal())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     return saleValue.subtract(purchaseCost);
   }
 

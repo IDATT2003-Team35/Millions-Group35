@@ -1,18 +1,17 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import edu.ntnu.idi.idatt.millions.observer.Observer;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import edu.ntnu.idi.idatt.millions.observer.Observer;
+import java.math.BigDecimal;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class GameSessionTest {
   private Exchange exchange;
@@ -40,13 +39,9 @@ class GameSessionTest {
   @Test
   void nullInputsThrowIllegalArgumentException() {
     assertAll(
-        () -> assertThrows(IllegalArgumentException.class,
-            () -> new GameSession(null, exchange)),
-        () -> assertThrows(IllegalArgumentException.class,
-            () -> new GameSession(player, null)),
-        () -> assertThrows(IllegalArgumentException.class,
-            () -> session.addObserver(null))
-    );
+        () -> assertThrows(IllegalArgumentException.class, () -> new GameSession(null, exchange)),
+        () -> assertThrows(IllegalArgumentException.class, () -> new GameSession(player, null)),
+        () -> assertThrows(IllegalArgumentException.class, () -> session.addObserver(null)));
   }
 
   @Test
@@ -98,8 +93,8 @@ class GameSessionTest {
     GameSession poorSession = new GameSession(poorPlayer, exchange);
     poorSession.addObserver(observer);
 
-    assertThrows(IllegalStateException.class, () ->
-        poorSession.buyStock("EQNR", new BigDecimal("5")));
+    assertThrows(
+        IllegalStateException.class, () -> poorSession.buyStock("EQNR", new BigDecimal("5")));
     assertEquals(0, observer.updateCount);
   }
 
@@ -133,8 +128,8 @@ class GameSessionTest {
     session.sellStock("EQNR", new BigDecimal("2"));
 
     assertEquals(2, observer.updateCount);
-    assertEquals(new BigDecimal("3"),
-        player.getPortfolio().getShares("EQNR").getFirst().getQuantity());
+    assertEquals(
+        new BigDecimal("3"), player.getPortfolio().getShares("EQNR").getFirst().getQuantity());
     assertEquals(1, player.getTransactionArchive().getSales(1).size());
   }
 
@@ -143,12 +138,12 @@ class GameSessionTest {
     session.addObserver(observer);
     session.buyStock("EQNR", new BigDecimal("5"));
 
-    assertThrows(IllegalArgumentException.class, () ->
-        session.sellStock("EQNR", new BigDecimal("6")));
+    assertThrows(
+        IllegalArgumentException.class, () -> session.sellStock("EQNR", new BigDecimal("6")));
 
     assertEquals(1, observer.updateCount);
-    assertEquals(new BigDecimal("5"),
-        player.getPortfolio().getShares("EQNR").getFirst().getQuantity());
+    assertEquals(
+        new BigDecimal("5"), player.getPortfolio().getShares("EQNR").getFirst().getQuantity());
   }
 
   @Test
@@ -169,21 +164,23 @@ class GameSessionTest {
 
   @Test
   void constructorWithDifficultyAndModeStoresValues() {
-    GameSession challengeSession = new GameSession(
-        player, exchange, Difficulty.HARD, GameMode.CHALLENGE);
+    GameSession challengeSession =
+        new GameSession(player, exchange, Difficulty.HARD, GameMode.CHALLENGE);
     assertSame(Difficulty.HARD, challengeSession.getDifficulty());
     assertSame(GameMode.CHALLENGE, challengeSession.getMode());
   }
 
   @Test
   void constructorWithNullDifficultyThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> new GameSession(player, exchange, null, GameMode.SANDBOX));
   }
 
   @Test
   void constructorWithNullModeThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> new GameSession(player, exchange, Difficulty.NORMAL, null));
   }
 
@@ -197,10 +194,10 @@ class GameSessionTest {
 
   @Test
   void isGameOverIsFalseForChallengeBeforeWeekLimit() {
-    Exchange challengeExchange = new Exchange("OSEBX",
-        List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))));
-    GameSession challengeSession = new GameSession(
-        player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
+    Exchange challengeExchange =
+        new Exchange("OSEBX", List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))));
+    GameSession challengeSession =
+        new GameSession(player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
     for (int i = 0; i < 50; i++) {
       challengeSession.advanceWeek();
     }
@@ -209,21 +206,19 @@ class GameSessionTest {
 
   @Test
   void isGameOverIsTrueForChallengeAtWeekLimit() {
-    Exchange challengeExchange = new Exchange("OSEBX",
-        List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))),
-        52);
-    GameSession challengeSession = new GameSession(
-        player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
+    Exchange challengeExchange =
+        new Exchange("OSEBX", List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))), 52);
+    GameSession challengeSession =
+        new GameSession(player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
     assertTrue(challengeSession.isGameOver());
   }
 
   @Test
   void advanceWeekThrowsWhenGameIsOver() {
-    Exchange challengeExchange = new Exchange("OSEBX",
-        List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))),
-        52);
-    GameSession challengeSession = new GameSession(
-        player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
+    Exchange challengeExchange =
+        new Exchange("OSEBX", List.of(new Stock("EQNR", "Equinor", new BigDecimal("29.2"))), 52);
+    GameSession challengeSession =
+        new GameSession(player, challengeExchange, Difficulty.NORMAL, GameMode.CHALLENGE);
     assertThrows(IllegalStateException.class, challengeSession::advanceWeek);
   }
 

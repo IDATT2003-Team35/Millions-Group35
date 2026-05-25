@@ -1,12 +1,12 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.idatt.millions.model.calculator.PurchaseCalculator;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 
@@ -39,39 +39,35 @@ class PlayerTest {
 
   @Test
   void constructorNullNameThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new Player(null, new BigDecimal("10000")));
+    assertThrows(IllegalArgumentException.class, () -> new Player(null, new BigDecimal("10000")));
   }
 
   @Test
   void constructorBlankNameThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new Player(" ", new BigDecimal("10000")));
+    assertThrows(IllegalArgumentException.class, () -> new Player(" ", new BigDecimal("10000")));
   }
 
   @Test
   void constructorNameTooLongThrowsIllegalArgumentException() {
     String longName = "A".repeat(51);
-    assertThrows(IllegalArgumentException.class, () ->
-        new Player(longName, new BigDecimal("10000")));
+    assertThrows(
+        IllegalArgumentException.class, () -> new Player(longName, new BigDecimal("10000")));
   }
 
   @Test
   void constructorNullStartingMoneyThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new Player("Petter", null));
+    assertThrows(IllegalArgumentException.class, () -> new Player("Petter", null));
   }
 
   @Test
   void constructorZeroStartingMoneyThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new Player("Petter", BigDecimal.ZERO));
+    assertThrows(IllegalArgumentException.class, () -> new Player("Petter", BigDecimal.ZERO));
   }
 
   @Test
   void constructorNegativeStartingMoneyThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        new Player("Petter", new BigDecimal("-100")));
+    assertThrows(
+        IllegalArgumentException.class, () -> new Player("Petter", new BigDecimal("-100")));
   }
 
   @Test
@@ -82,20 +78,17 @@ class PlayerTest {
 
   @Test
   void addMoneyNullAmountThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.addMoney(null));
+    assertThrows(IllegalArgumentException.class, () -> player.addMoney(null));
   }
 
   @Test
   void addMoneyZeroAmountThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.addMoney(BigDecimal.ZERO));
+    assertThrows(IllegalArgumentException.class, () -> player.addMoney(BigDecimal.ZERO));
   }
 
   @Test
   void addMoneyNegativeAmountThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.addMoney(new BigDecimal("-100")));
+    assertThrows(IllegalArgumentException.class, () -> player.addMoney(new BigDecimal("-100")));
   }
 
   @Test
@@ -112,26 +105,24 @@ class PlayerTest {
 
   @Test
   void withdrawMoneyAmountExceedsBalanceThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.withdrawMoney(new BigDecimal("99999")));
+    assertThrows(
+        IllegalArgumentException.class, () -> player.withdrawMoney(new BigDecimal("99999")));
   }
 
   @Test
   void withdrawMoneyNullAmountThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.withdrawMoney(null));
+    assertThrows(IllegalArgumentException.class, () -> player.withdrawMoney(null));
   }
 
   @Test
   void withdrawMoneyZeroAmountThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.withdrawMoney(BigDecimal.ZERO));
+    assertThrows(IllegalArgumentException.class, () -> player.withdrawMoney(BigDecimal.ZERO));
   }
 
   @Test
   void withdrawMoneyNegativeAmountThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class, () ->
-        player.withdrawMoney(new BigDecimal("-100")));
+    assertThrows(
+        IllegalArgumentException.class, () -> player.withdrawMoney(new BigDecimal("-100")));
   }
 
   @Test
@@ -187,10 +178,11 @@ class PlayerTest {
     Stock dummyStock = new Stock("DUMMY", "dummy", BigDecimal.ONE);
     Share dummyShare = new Share(dummyStock, BigDecimal.ONE, BigDecimal.ONE);
     for (int i = 1; i <= amountOfWeeks; i++) {
-      Transaction dummyTransaction = new Transaction(dummyShare, i, new PurchaseCalculator(dummyShare)) {
-        @Override
-        protected void executeTransaction(Player player) {}
-      };
+      Transaction dummyTransaction =
+          new Transaction(dummyShare, i, new PurchaseCalculator(dummyShare)) {
+            @Override
+            protected void executeTransaction(Player player) {}
+          };
 
       player.getTransactionArchive().add(dummyTransaction);
     }

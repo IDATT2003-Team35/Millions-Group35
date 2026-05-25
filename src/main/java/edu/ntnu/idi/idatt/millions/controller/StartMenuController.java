@@ -3,8 +3,8 @@ package edu.ntnu.idi.idatt.millions.controller;
 import edu.ntnu.idi.idatt.millions.view.StartMenuView;
 
 /**
- * Controller for the start menu.
- * Wires the new game and load game choices to app-level navigation callbacks.
+ * Controller for the start menu. Wires the new game and load game choices to app-level navigation
+ * callbacks.
  */
 public class StartMenuController {
   private final StartMenuView view;

@@ -1,8 +1,6 @@
 package edu.ntnu.idi.idatt.millions.observer;
 
-/**
- * Subject interface for objects that can be observed for state changes.
- */
+/** Subject interface for objects that can be observed for state changes. */
 public interface Subject {
 
   /**
@@ -19,8 +17,6 @@ public interface Subject {
    */
   void removeObserver(Observer observer);
 
-  /**
-   * Notifies all registered observers about a state change.
-   */
+  /** Notifies all registered observers about a state change. */
   void notifyObservers();
 }

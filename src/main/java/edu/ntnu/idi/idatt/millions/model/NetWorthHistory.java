@@ -7,15 +7,13 @@ import java.util.List;
 /**
  * Stores a player's net worth history during a game session.
  *
- * <p>The history keeps one value per week. If a value is recorded multiple times
- * for the same week, the newest value replaces the old one.</p>
+ * <p>The history keeps one value per week. If a value is recorded multiple times for the same week,
+ * the newest value replaces the old one.
  */
 public class NetWorthHistory {
   private final List<BigDecimal> netWorthHistory;
 
-  /**
-   * Creates an empty net worth history.
-   */
+  /** Creates an empty net worth history. */
   public NetWorthHistory() {
     this.netWorthHistory = new ArrayList<>();
   }

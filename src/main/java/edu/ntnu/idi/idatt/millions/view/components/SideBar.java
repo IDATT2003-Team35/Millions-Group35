@@ -8,9 +8,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
- * Left side navigation bar. Contains buttons for Market, Portfolio,
- * Transactions and a bottom-anchored "Sell All and Quit". Controllers
- * wire actions to the exposed buttons.
+ * Left side navigation bar. Contains buttons for Market, Portfolio, Transactions and a
+ * bottom-anchored "Sell All and Quit". Controllers wire actions to the exposed buttons.
  */
 public class SideBar extends VBox {
 
@@ -23,29 +22,32 @@ public class SideBar extends VBox {
   private final Button saveButton = new Button("Save Game");
   private final Button sellAllButton = new Button("Sell All and Quit");
 
+  /** Creates the sidebar layout with profile information, navigation buttons, and game actions. */
   public SideBar() {
     getStyleClass().add("side-bar");
     saveButton.getStyleClass().add("save-game-button");
     sellAllButton.getStyleClass().add("sell-all-button");
 
-    for (Button b : new Button[] {
-        marketButton, portfolioButton, transactionButton, saveButton, sellAllButton}) {
+    for (Button b :
+        new Button[] {
+          marketButton, portfolioButton, transactionButton, saveButton, sellAllButton
+        }) {
       b.setMaxWidth(Double.MAX_VALUE);
     }
 
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
 
-    getChildren().addAll(
-        buildProfileCard(),
-        new Label("NAVIGATION"),
-        marketButton,
-        portfolioButton,
-        transactionButton,
-        spacer,
-        saveButton,
-        sellAllButton
-    );
+    getChildren()
+        .addAll(
+            buildProfileCard(),
+            new Label("NAVIGATION"),
+            marketButton,
+            portfolioButton,
+            transactionButton,
+            spacer,
+            saveButton,
+            sellAllButton);
   }
 
   /**
@@ -59,22 +61,47 @@ public class SideBar extends VBox {
     weeksTraded.setText(String.valueOf(player.getTransactionArchive().countDistinctWeeks()));
   }
 
+  /**
+   * Returns the market navigation button.
+   *
+   * @return the market button
+   */
   public Button getMarketButton() {
     return marketButton;
   }
 
+  /**
+   * Returns the portfolio navigation button.
+   *
+   * @return the portfolio button
+   */
   public Button getPortfolioButton() {
     return portfolioButton;
   }
 
+  /**
+   * Returns the transactions navigation button.
+   *
+   * @return the transactions button
+   */
   public Button getTransactionButton() {
     return transactionButton;
   }
 
+  /**
+   * Returns the save-game action button.
+   *
+   * @return the save button
+   */
   public Button getSaveButton() {
     return saveButton;
   }
 
+  /**
+   * Returns the sell-all-and-quit action button.
+   *
+   * @return the sell all button
+   */
   public Button getSellAllButton() {
     return sellAllButton;
   }

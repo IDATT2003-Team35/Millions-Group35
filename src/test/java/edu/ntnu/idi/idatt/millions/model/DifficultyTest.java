@@ -1,12 +1,11 @@
 package edu.ntnu.idi.idatt.millions.model;
 
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 class DifficultyTest {
 
@@ -38,7 +37,8 @@ class DifficultyTest {
   @Test
   void startingCapitalDecreasesWithDifficulty() {
     assertEquals(0, new BigDecimal("10000").compareTo(Difficulty.EASY.getDefaultStartingCapital()));
-    assertEquals(0, new BigDecimal("5000").compareTo(Difficulty.NORMAL.getDefaultStartingCapital()));
+    assertEquals(
+        0, new BigDecimal("5000").compareTo(Difficulty.NORMAL.getDefaultStartingCapital()));
     assertEquals(0, new BigDecimal("1000").compareTo(Difficulty.HARD.getDefaultStartingCapital()));
   }
 

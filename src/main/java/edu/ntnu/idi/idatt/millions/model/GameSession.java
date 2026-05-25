@@ -1,17 +1,15 @@
 package edu.ntnu.idi.idatt.millions.model;
 
+import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
 import edu.ntnu.idi.idatt.millions.observer.Observer;
 import edu.ntnu.idi.idatt.millions.observer.Subject;
-import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents the active game session used by the GUI.
- * Coordinates player and exchange operations, records net worth snapshots,
- * and notifies observers after successful changes.
+ * Represents the active game session used by the GUI. Coordinates player and exchange operations,
+ * records net worth snapshots, and notifies observers after successful changes.
  */
 public class GameSession implements Subject {
   private final Player player;
@@ -22,8 +20,8 @@ public class GameSession implements Subject {
   private final NetWorthHistory netWorthHistory;
 
   /**
-   * Creates a new game session with default settings
-   * ({@link Difficulty#NORMAL}, {@link GameMode#SANDBOX}).
+   * Creates a new game session with default settings ({@link Difficulty#NORMAL}, {@link
+   * GameMode#SANDBOX}).
    *
    * @param player the active player
    * @param exchange the active exchange
@@ -42,29 +40,27 @@ public class GameSession implements Subject {
    * @param mode the game mode
    * @throws IllegalArgumentException if any argument is null
    */
-  public GameSession(Player player, Exchange exchange,
-                     Difficulty difficulty, GameMode mode) {
+  public GameSession(Player player, Exchange exchange, Difficulty difficulty, GameMode mode) {
     this(player, exchange, difficulty, mode, null);
   }
 
   /**
-   * Creates a game session from saved game state with default settings
-   * ({@link Difficulty#NORMAL}, {@link GameMode#SANDBOX}). Used for loading
-   * legacy save files that predate the difficulty/mode feature.
+   * Creates a game session from saved game state with default settings ({@link Difficulty#NORMAL},
+   * {@link GameMode#SANDBOX}). Used for loading legacy save files that predate the difficulty/mode
+   * feature.
    *
    * @param player the active player
    * @param exchange the active exchange
    * @param savedNetWorthHistory the saved net worth history, or null to record current net worth
    * @throws IllegalArgumentException if player or exchange is null
    */
-  public GameSession(Player player, Exchange exchange,
-                     List<BigDecimal> savedNetWorthHistory) {
+  public GameSession(Player player, Exchange exchange, List<BigDecimal> savedNetWorthHistory) {
     this(player, exchange, Difficulty.NORMAL, GameMode.SANDBOX, savedNetWorthHistory);
   }
 
   /**
-   * Canonical constructor: creates a game session with explicit settings and
-   * optional saved net worth history.
+   * Canonical constructor: creates a game session with explicit settings and optional saved net
+   * worth history.
    *
    * @param player the active player
    * @param exchange the active exchange
@@ -73,9 +69,12 @@ public class GameSession implements Subject {
    * @param savedNetWorthHistory the saved net worth history, or null to record current net worth
    * @throws IllegalArgumentException if any required argument is null
    */
-  public GameSession(Player player, Exchange exchange,
-                     Difficulty difficulty, GameMode mode,
-                     List<BigDecimal> savedNetWorthHistory) {
+  public GameSession(
+      Player player,
+      Exchange exchange,
+      Difficulty difficulty,
+      GameMode mode,
+      List<BigDecimal> savedNetWorthHistory) {
     if (player == null) {
       throw new IllegalArgumentException("Player cannot be null");
     }
@@ -140,10 +139,9 @@ public class GameSession implements Subject {
   /**
    * Checks whether the game has reached its end condition.
    *
-   * <p>For {@link GameMode#SANDBOX} this always returns {@code false}
-   * (no time limit). For {@link GameMode#CHALLENGE} this returns
-   * {@code true} once the exchange week reaches the mode's week limit
-   * (e.g. week 52 for the standard 52-week challenge).</p>
+   * <p>For {@link GameMode#SANDBOX} this always returns {@code false} (no time limit). For {@link
+   * GameMode#CHALLENGE} this returns {@code true} once the exchange week reaches the mode's week
+   * limit (e.g. week 52 for the standard 52-week challenge).
    *
    * @return {@code true} if the game should end, {@code false} otherwise
    */
@@ -195,14 +193,16 @@ public class GameSession implements Subject {
   /**
    * Advances the game to the next week and notifies observers.
    *
-   * @throws IllegalStateException if the game is already over
-   *         (see {@link #isGameOver()})
+   * @throws IllegalStateException if the game is already over (see {@link #isGameOver()})
    */
   public void advanceWeek() {
     if (isGameOver()) {
       throw new IllegalStateException(
           "Cannot advance: game is already over (week "
-              + exchange.getWeek() + " of " + mode.getWeekLimit() + ")");
+              + exchange.getWeek()
+              + " of "
+              + mode.getWeekLimit()
+              + ")");
     }
     exchange.advance();
     recordNewNetWorthPoint();
@@ -218,9 +218,6 @@ public class GameSession implements Subject {
     return netWorthHistory.getHistory();
   }
 
-  /**
-   * Records the player's current net worth for the current exchange week.
-   */
   private void recordNewNetWorthPoint() {
     netWorthHistory.recordNewPoint(getExchange().getWeek(), getPlayer().getNetWorth());
   }

@@ -1,8 +1,6 @@
 package edu.ntnu.idi.idatt.millions.file;
 
-/**
- * Exception thrown when stock data cannot be parsed from a CSV file.
- */
+/** Exception thrown when stock data cannot be parsed from a CSV file. */
 public class StockParseException extends Exception {
 
   /**
