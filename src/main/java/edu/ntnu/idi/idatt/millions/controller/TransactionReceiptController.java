@@ -86,6 +86,7 @@ public class TransactionReceiptController {
     this.dialogStage = dialogStage;
     this.transaction = transactions.getFirst();
 
+    Styles.applyTo(dialogStage.getScene());
     populate(transactions);
     wireButtons();
   }
