@@ -115,4 +115,39 @@ class TransactionArchiveTest {
     assertThrows(UnsupportedOperationException.class,
         () -> archive.getAll().removeFirst());
   }
+
+  @Test
+  void getTotalBoughtIsZeroForEmptyArchive() {
+    assertEquals(0, archive.getTotalBought().compareTo(BigDecimal.ZERO));
+  }
+
+  @Test
+  void getTotalBoughtSumsPurchaseGrossValues() {
+    archive.add(purchaseW1);
+    archive.add(purchaseW2);
+
+    // Each purchase has gross = price * quantity = 10 * 1 = 10
+    assertEquals(0, new BigDecimal("20").compareTo(archive.getTotalBought()));
+  }
+
+  @Test
+  void getTotalBoughtIgnoresSales() {
+    archive.add(saleW1);
+
+    assertEquals(0, archive.getTotalBought().compareTo(BigDecimal.ZERO));
+  }
+
+  @Test
+  void getTotalSoldSumsSaleGrossValues() {
+    archive.add(saleW1);
+
+    assertEquals(0, new BigDecimal("10").compareTo(archive.getTotalSold()));
+  }
+
+  @Test
+  void getTotalSoldIgnoresPurchases() {
+    archive.add(purchaseW1);
+
+    assertEquals(0, archive.getTotalSold().compareTo(BigDecimal.ZERO));
+  }
 }

@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.millions.model.transaction;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,5 +128,29 @@ public class TransactionArchive {
    */
   public List<Transaction> getAll() {
     return List.copyOf(transactions);
+  }
+
+  /**
+   * Sums the gross value of every purchase in the archive.
+   *
+   * @return total gross spent on purchases (zero if none)
+   */
+  public BigDecimal getTotalBought() {
+    return transactions.stream()
+        .filter(t -> t instanceof Purchase)
+        .map(t -> t.getCalculator().calculateGross())
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  /**
+   * Sums the gross value of every sale in the archive.
+   *
+   * @return total gross received from sales (zero if none)
+   */
+  public BigDecimal getTotalSold() {
+    return transactions.stream()
+        .filter(t -> t instanceof Sale)
+        .map(t -> t.getCalculator().calculateGross())
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
