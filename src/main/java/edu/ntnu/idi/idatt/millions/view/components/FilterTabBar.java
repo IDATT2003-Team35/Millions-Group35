@@ -20,6 +20,7 @@ public class FilterTabBar extends HBox {
   private final Map<String, Label> badgesByCode = new LinkedHashMap<>();
   private String defaultCode;
 
+  /** Creates an empty filter tab bar with single-selection behavior. */
   public FilterTabBar() {
     setAlignment(Pos.CENTER_LEFT);
     setSpacing(0);
@@ -66,7 +67,11 @@ public class FilterTabBar extends HBox {
     getChildren().add(tab);
   }
 
-  /** Sets the badge counts. Map keys must match the codes used in {@link #addTab}. */
+  /**
+   * Sets the badge counts. Map keys must match the codes used in {@link #addTab}.
+   *
+   * @param counts map from tab code to visible badge count
+   */
   public void setCounts(Map<String, Integer> counts) {
     counts.forEach(
         (code, count) -> {
@@ -77,7 +82,11 @@ public class FilterTabBar extends HBox {
         });
   }
 
-  /** Returns the code of the currently selected tab, or the default if none. */
+  /**
+   * Returns the code of the currently selected tab, or the default if none.
+   *
+   * @return selected tab code
+   */
   public String getSelectedCode() {
     Toggle selected = group.getSelectedToggle();
     for (Map.Entry<String, ToggleButton> entry : tabsByCode.entrySet()) {
@@ -88,7 +97,11 @@ public class FilterTabBar extends HBox {
     return defaultCode;
   }
 
-  /** Registers a listener invoked whenever the selected tab changes. */
+  /**
+   * Registers a listener invoked whenever the selected tab changes.
+   *
+   * @param callback callback to run when the selected tab changes
+   */
   public void setOnSelectionChange(Runnable callback) {
     group
         .selectedToggleProperty()

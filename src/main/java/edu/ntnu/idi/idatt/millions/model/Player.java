@@ -10,16 +10,16 @@ import java.math.BigDecimal;
  */
 public class Player {
 
-  /** Minimum net worth multiplier (vs starting money) to qualify as SPECULATOR. */
+  // Minimum net worth multiplier versus starting money to qualify as SPECULATOR.
   private static final BigDecimal SPECULATOR_MULTIPLIER = new BigDecimal("2");
 
-  /** Minimum net worth multiplier (vs starting money) to qualify as INVESTOR. */
+  // Minimum net worth multiplier versus starting money to qualify as INVESTOR.
   private static final BigDecimal INVESTOR_MULTIPLIER = new BigDecimal("1.2");
 
-  /** Minimum number of distinct trading weeks required for SPECULATOR rank. */
+  // Minimum number of distinct trading weeks required for SPECULATOR rank.
   private static final int SPECULATOR_MIN_WEEKS = 20;
 
-  /** Minimum number of distinct trading weeks required for INVESTOR rank. */
+  // Minimum number of distinct trading weeks required for INVESTOR rank.
   private static final int INVESTOR_MIN_WEEKS = 10;
 
   private String name;

@@ -10,7 +10,6 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
  */
 public final class TransactionFactory {
 
-  /** Private constructor to prevent instantiation of this utility class. */
   private TransactionFactory() {}
 
   /**
@@ -39,13 +38,6 @@ public final class TransactionFactory {
     return new Sale(share, week);
   }
 
-  /**
-   * Validates common input used when creating transactions.
-   *
-   * @param share the share used in the transaction
-   * @param week the transaction week
-   * @throws IllegalArgumentException if share is {@code null} or week is not positive
-   */
   private static void validateInput(Share share, int week) {
     if (share == null) {
       throw new IllegalArgumentException("Share cannot be null");

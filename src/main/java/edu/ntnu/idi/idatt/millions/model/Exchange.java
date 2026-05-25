@@ -19,19 +19,13 @@ import java.util.stream.Collectors;
  */
 public class Exchange {
 
-  /**
-   * Expected weekly drift (μ) in the GBM price model. 0.005 = 0.5% expected weekly return (~28%
-   * annualized). Shared across all difficulty levels; only volatility varies.
-   */
+  // Expected weekly drift in the GBM model. Shared across difficulties; only volatility varies.
   private static final double DRIFT = 0.005;
 
-  /**
-   * Default weekly volatility (σ) in the GBM price model, used when no difficulty is supplied. 0.10
-   * = 10% weekly standard deviation of log returns, matching {@link Difficulty#NORMAL}.
-   */
+  // Default weekly volatility in the GBM model, matching Difficulty.NORMAL.
   private static final double DEFAULT_VOLATILITY = 0.10;
 
-  /** Lower floor on stock prices to prevent rounding artifacts. */
+  // Lower floor on stock prices to prevent rounding artifacts.
   private static final BigDecimal PRICE_FLOOR = BigDecimal.valueOf(0.01);
 
   private final String name;
@@ -333,11 +327,12 @@ public class Exchange {
    *   S_{t+1} = S_t * exp[(μ − σ²/2) + σ·Z],   Z ~ N(0,1)
    * </pre>
    *
-   * derived from the GBM stochastic differential equation {@code dS_t = μS_t dt + σS_t dW_t} with
-   * Δt = 1 week. The {@code −σ²/2} correction term in the exponent compensates for volatility drag
-   * (a consequence of Jensen's inequality on multiplicative noise) — without it, symmetric random
-   * returns would cause all prices to drift toward zero over time. A floor of {@link #PRICE_FLOOR}
-   * prevents rounding artifacts from producing non-positive prices.
+   * <p>Derived from the GBM stochastic differential equation
+   * {@code dS_t = μS_t dt + σS_t dW_t} with Δt = 1 week. The {@code −σ²/2}
+   * correction term in the exponent compensates for volatility drag (a consequence of Jensen's
+   * inequality on multiplicative noise) — without it, symmetric random returns would cause all
+   * prices to drift toward zero over time. A floor of {@link #PRICE_FLOOR} prevents rounding
+   * artifacts from producing non-positive prices.
    */
   public void advance() {
     week++;

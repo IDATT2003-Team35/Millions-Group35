@@ -22,6 +22,7 @@ public class SideBar extends VBox {
   private final Button saveButton = new Button("Save Game");
   private final Button sellAllButton = new Button("Sell All and Quit");
 
+  /** Creates the sidebar layout with profile information, navigation buttons, and game actions. */
   public SideBar() {
     getStyleClass().add("side-bar");
     saveButton.getStyleClass().add("save-game-button");
@@ -60,22 +61,47 @@ public class SideBar extends VBox {
     weeksTraded.setText(String.valueOf(player.getTransactionArchive().countDistinctWeeks()));
   }
 
+  /**
+   * Returns the market navigation button.
+   *
+   * @return the market button
+   */
   public Button getMarketButton() {
     return marketButton;
   }
 
+  /**
+   * Returns the portfolio navigation button.
+   *
+   * @return the portfolio button
+   */
   public Button getPortfolioButton() {
     return portfolioButton;
   }
 
+  /**
+   * Returns the transactions navigation button.
+   *
+   * @return the transactions button
+   */
   public Button getTransactionButton() {
     return transactionButton;
   }
 
+  /**
+   * Returns the save-game action button.
+   *
+   * @return the save button
+   */
   public Button getSaveButton() {
     return saveButton;
   }
 
+  /**
+   * Returns the sell-all-and-quit action button.
+   *
+   * @return the sell all button
+   */
   public Button getSellAllButton() {
     return sellAllButton;
   }

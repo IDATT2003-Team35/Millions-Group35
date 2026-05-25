@@ -11,7 +11,6 @@ import javafx.scene.Scene;
  */
 public final class Styles {
 
-  /** Classpath location of the project stylesheet. */
   private static final String MAIN_STYLESHEET = "/styles.css";
 
   private Styles() {}

@@ -46,6 +46,11 @@ public class MarketController {
     applyFilter();
   }
 
+  /**
+   * Returns the market view managed by this controller.
+   *
+   * @return the market view
+   */
   public MarketView getView() {
     return view;
   }

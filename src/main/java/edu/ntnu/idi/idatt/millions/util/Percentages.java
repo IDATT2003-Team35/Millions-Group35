@@ -3,11 +3,20 @@ package edu.ntnu.idi.idatt.millions.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/** Utility methods for calculating and formatting percentage changes. */
 public final class Percentages {
   private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
 
-  private Percentages() {}
+  private Percentages() {
+  }
 
+  /**
+   * Calculates the percentage change from one value to another.
+   *
+   * @param from the original value
+   * @param to the new value
+   * @return the percentage change, or zero if either value is null or the original value is zero
+   */
   public static BigDecimal change(BigDecimal from, BigDecimal to) {
     if (from == null || to == null || from.signum() == 0) {
       return BigDecimal.ZERO;
@@ -15,6 +24,12 @@ public final class Percentages {
     return to.subtract(from).divide(from, 4, RoundingMode.HALF_UP).multiply(HUNDRED);
   }
 
+  /**
+   * Formats a percentage with a sign and two decimal places.
+   *
+   * @param pct the percentage value
+   * @return the formatted percentage, or an empty string if the value is null
+   */
   public static String format(BigDecimal pct) {
     if (pct == null) {
       return "";

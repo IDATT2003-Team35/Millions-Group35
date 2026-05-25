@@ -244,22 +244,49 @@ public class MarketView extends BorderPane implements Observer {
     }
   }
 
+  /**
+   * Returns the search field used for filtering market instruments.
+   *
+   * @return the search text field
+   */
   public TextField getSearchField() {
     return searchField;
   }
 
+  /**
+   * Returns the table that displays market stocks.
+   *
+   * @return the stock table
+   */
   public TableView<Stock> getStockTable() {
     return stockTable;
   }
 
+  /**
+   * Returns the currently selected market filter code.
+   *
+   * @return selected filter code
+   */
   public String getSelectedFilter() {
     return filterTabs.getSelectedCode();
   }
 
+  /**
+   * Updates the counts shown in the market filter tabs.
+   *
+   * @param all number of listed stocks
+   * @param gainers number of stocks with positive weekly change
+   * @param losers number of stocks with negative weekly change
+   */
   public void setFilterCounts(int all, int gainers, int losers) {
     filterTabs.setCounts(Map.of("ALL", all, "GAINERS", gainers, "LOSERS", losers));
   }
 
+  /**
+   * Sets the total number of instruments shown in the market header.
+   *
+   * @param count instrument count
+   */
   public void setInstrumentCount(int count) {
     instrumentCountLabel.setText(count + " INSTRUMENTS");
   }

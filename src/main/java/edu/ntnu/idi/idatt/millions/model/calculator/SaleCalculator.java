@@ -15,10 +15,10 @@ public class SaleCalculator implements TransactionCalculator {
   private final BigDecimal salesPrice;
   private final BigDecimal quantity;
 
-  /** Commission rate of 1% applied to gross sale amount. */
+  // Commission rate of 1% applied to gross sale amount.
   private static final BigDecimal COMMISSION_RATE = new BigDecimal("0.01");
 
-  /** Tax rate of 30% applied to profit. */
+  // Tax rate of 30% applied to profit.
   private static final BigDecimal TAX_RATE = new BigDecimal("0.3");
 
   /**

@@ -243,36 +243,80 @@ public class TransactionView extends BorderPane implements Observer {
     this.transactionHandler = handler;
   }
 
+  /**
+   * Returns the search field used for filtering transactions.
+   *
+   * @return the search text field
+   */
   public TextField getSearchField() {
     return searchField;
   }
 
+  /**
+   * Returns the table that displays completed transactions.
+   *
+   * @return the transaction table
+   */
   public TableView<Transaction> getTransactionTable() {
     return transactionTable;
   }
 
+  /**
+   * Returns the currently selected transaction filter code.
+   *
+   * @return selected filter code
+   */
   public String getSelectedFilter() {
     return filterTabs.getSelectedCode();
   }
 
+  /**
+   * Updates the counts shown in the transaction filter tabs.
+   *
+   * @param all number of all transactions
+   * @param buys number of purchase transactions
+   * @param sells number of sale transactions
+   */
   public void setFilterCounts(int all, int buys, int sells) {
     filterTabs.setCounts(Map.of("ALL", all, "BUYS", buys, "SELLS", sells));
   }
 
+  /**
+   * Sets the summary value for total bought.
+   *
+   * @param value formatted total bought amount
+   * @param orderCount number of buy orders
+   */
   public void setTotalBought(String value, int orderCount) {
     totalBoughtValue.setText(value);
     totalBoughtSubtitle.setText(orderCount + " buy orders");
   }
 
+  /**
+   * Sets the summary value for total sold.
+   *
+   * @param value formatted total sold amount
+   * @param orderCount number of sell orders
+   */
   public void setTotalSold(String value, int orderCount) {
     totalSoldValue.setText(value);
     totalSoldSubtitle.setText(orderCount + " sell orders");
   }
 
+  /**
+   * Sets the summary value for net transaction activity.
+   *
+   * @param value formatted net activity amount
+   */
   public void setNetActivity(String value) {
     netActivityValue.setText(value);
   }
 
+  /**
+   * Sets the number of transaction records shown in the summary.
+   *
+   * @param count transaction record count
+   */
   public void setRecordsCount(int count) {
     recordsValue.setText(String.valueOf(count));
   }

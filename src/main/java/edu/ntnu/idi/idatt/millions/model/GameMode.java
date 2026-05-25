@@ -10,7 +10,10 @@ package edu.ntnu.idi.idatt.millions.model;
  * </ul>
  */
 public enum GameMode {
+  /** Unlimited play mode with editable starting capital and no week limit. */
   SANDBOX(null),
+
+  /** Fixed-length mode with locked starting capital and automatic game-over. */
   CHALLENGE(52);
 
   private final Integer weekLimit;

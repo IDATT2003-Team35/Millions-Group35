@@ -60,6 +60,11 @@ public class MainController {
     showMarket();
   }
 
+  /**
+   * Returns the main view managed by this controller.
+   *
+   * @return the main view
+   */
   public MainView getView() {
     return view;
   }
@@ -68,10 +73,6 @@ public class MainController {
     view.getStatusBar().getAdvanceButton().setOnAction(e -> handleAdvance());
   }
 
-  /**
-   * Advances one week and shows the game-over screen if the session has reached its end condition
-   * (Challenge mode hitting the week limit).
-   */
   private void handleAdvance() {
     if (session.isGameOver()) {
       showEndGame();
@@ -168,11 +169,17 @@ public class MainController {
     scene.setRoot(gameOverView.getRoot());
   }
 
+  /**
+   * Shows the stock detail view for the selected stock.
+   *
+   * @param stock the stock to display
+   */
   public void showStockDetail(Stock stock) {
     stockDetailController.display(stock);
     view.showContent(stockDetailController.getView(), view.getSideBar().getMarketButton());
   }
 
+  /** Shows the transaction history view and marks the Transactions button active. */
   public void showTransaction() {
     view.showContent(transactionContent, view.getSideBar().getTransactionButton());
   }

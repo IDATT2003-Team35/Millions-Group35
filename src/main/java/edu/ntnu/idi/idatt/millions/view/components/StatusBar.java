@@ -82,7 +82,6 @@ public class StatusBar extends HBox {
     refreshDifficulty(session.getDifficulty());
   }
 
-  /** Updates the week label and progress bar based on the active mode. */
   private void refreshWeek(Exchange exchange, GameMode mode) {
     int week = exchange.getWeek();
     if (mode.hasWeekLimit()) {
@@ -98,7 +97,6 @@ public class StatusBar extends HBox {
     }
   }
 
-  /** Updates the difficulty label with text and color class. */
   private void refreshDifficulty(Difficulty difficulty) {
     difficultyValue.setText(formatDifficulty(difficulty));
     difficultyValue

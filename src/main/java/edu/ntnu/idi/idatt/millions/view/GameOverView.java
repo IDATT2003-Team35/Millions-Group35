@@ -76,26 +76,56 @@ public class GameOverView {
     return box;
   }
 
+  /**
+   * Returns the root node for the game-over screen.
+   *
+   * @return the root parent node
+   */
   public Parent getRoot() {
     return root;
   }
 
+  /**
+   * Returns the quit button used to close the application.
+   *
+   * @return the quit button
+   */
   public Button getQuitButton() {
     return quitButton;
   }
 
+  /**
+   * Sets the displayed player name.
+   *
+   * @param name player name text
+   */
   public void setPlayerName(String name) {
     playerNameValue.setText(name);
   }
 
+  /**
+   * Sets the displayed final net worth.
+   *
+   * @param netWorth formatted net worth text
+   */
   public void setNetWorth(String netWorth) {
     netWorthValue.setText(netWorth);
   }
 
+  /**
+   * Sets the displayed starting capital.
+   *
+   * @param startingCapital formatted starting capital text
+   */
   public void setStartingCapital(String startingCapital) {
     startingCapitalValue.setText(startingCapital);
   }
 
+  /**
+   * Sets the displayed gain/loss percentage.
+   *
+   * @param percentValue formatted percentage text
+   */
   public void setGainLossPercentValue(String percentValue) {
     gainLossPercentValue.setText(percentValue);
   }
@@ -118,14 +148,29 @@ public class GameOverView {
     }
   }
 
+  /**
+   * Sets the displayed final rank.
+   *
+   * @param rank rank text
+   */
   public void setRank(String rank) {
     rankValue.setText(rank);
   }
 
+  /**
+   * Sets the displayed number of played weeks.
+   *
+   * @param weeks played weeks text
+   */
   public void setWeeks(String weeks) {
     weeksValue.setText(weeks);
   }
 
+  /**
+   * Sets the displayed number of completed transactions.
+   *
+   * @param transactions transaction count text
+   */
   public void setTransactions(String transactions) {
     transactionsValue.setText(transactions);
   }

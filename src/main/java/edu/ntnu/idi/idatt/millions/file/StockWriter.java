@@ -10,6 +10,9 @@ import java.util.List;
 /** Writes stock data to a CSV file. */
 public class StockWriter {
 
+  /** Creates a stock writer. */
+  public StockWriter() {}
+
   /**
    * Writes the given stocks to the provided file path.
    *

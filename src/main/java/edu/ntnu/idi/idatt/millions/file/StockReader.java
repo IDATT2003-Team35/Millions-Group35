@@ -13,6 +13,9 @@ import java.util.Optional;
 /** Reads stock data from a CSV file into Stock objects. */
 public class StockReader {
 
+  /** Creates a stock reader. */
+  public StockReader() {}
+
   /**
    * Reads stock data from the given file path.
    *

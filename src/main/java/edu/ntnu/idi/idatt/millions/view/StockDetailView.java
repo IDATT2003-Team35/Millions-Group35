@@ -296,21 +296,23 @@ public class StockDetailView extends BorderPane implements Observer {
     return entries;
   }
 
-  /**
-   * Row entry for the price history table.
-   *
-   * @param week the week number
-   * @param price the closing price for that week
-   * @param movement change vs. previous week, or null for week 1
-   * @param percentMovement percentage change vs. previous week, or null for week 1
-   */
   private record PriceHistoryEntry(
       int week, BigDecimal price, BigDecimal movement, BigDecimal percentMovement) {}
 
+  /**
+   * Returns the button used to navigate back to the market view.
+   *
+   * @return the back button
+   */
   public Button getBackButton() {
     return backButton;
   }
 
+  /**
+   * Returns the button used to open the buy dialog.
+   *
+   * @return the buy button
+   */
   public Button getBuyButton() {
     return buyButton;
   }

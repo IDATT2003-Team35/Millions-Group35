@@ -13,13 +13,10 @@ import java.math.BigDecimal;
  */
 public class Share {
 
-  /** The stock represented by this share. */
   private final Stock stock;
 
-  /** The quantity of shares owned. */
   private final BigDecimal quantity;
 
-  /** The purchase price per share. */
   private final BigDecimal purchasePrice;
 
   /**

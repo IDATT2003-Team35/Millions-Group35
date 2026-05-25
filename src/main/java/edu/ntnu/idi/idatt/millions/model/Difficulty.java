@@ -19,8 +19,13 @@ import java.math.BigDecimal;
  * </ul>
  */
 public enum Difficulty {
+  /** Forgiving difficulty with high starting capital and low market volatility. */
   EASY(new BigDecimal("10000"), 0.05),
+
+  /** Balanced difficulty with medium starting capital and market volatility. */
   NORMAL(new BigDecimal("5000"), 0.10),
+
+  /** Challenging difficulty with low starting capital and high market volatility. */
   HARD(new BigDecimal("1000"), 0.20);
 
   private final BigDecimal defaultStartingCapital;

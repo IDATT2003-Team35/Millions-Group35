@@ -218,7 +218,6 @@ public class GameSession implements Subject {
     return netWorthHistory.getHistory();
   }
 
-  /** Records the player's current net worth for the current exchange week. */
   private void recordNewNetWorthPoint() {
     netWorthHistory.recordNewPoint(getExchange().getWeek(), getPlayer().getNetWorth());
   }

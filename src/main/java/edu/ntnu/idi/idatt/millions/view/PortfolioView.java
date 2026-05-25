@@ -47,7 +47,7 @@ public class PortfolioView extends BorderPane implements Observer {
 
   private final TableView<PortfolioHolding> holdingsTable = new TableView<>();
 
-  /** Handler invoked when a row's Sell button is clicked. No-op by default. */
+  // No-op default until the controller registers the sell handler.
   private Consumer<PortfolioHolding> sellHandler = holding -> {};
 
   private Runnable onUpdate = () -> {};

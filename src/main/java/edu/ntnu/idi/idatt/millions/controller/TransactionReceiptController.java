@@ -141,10 +141,6 @@ public class TransactionReceiptController {
     view.setWeek(String.valueOf(firstTransaction.getWeek()));
   }
 
-  /**
-   * Adds the cost basis row and the gain/loss header for Sale transactions. For Purchase
-   * transactions both are hidden, since no profit is realized yet.
-   */
   private void populateSaleSummary(Share share, TransactionCalculator calculator) {
     boolean isSale = transaction instanceof Sale;
     view.setCostBasisVisible(isSale);

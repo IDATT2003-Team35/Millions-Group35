@@ -13,7 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-/** Controller for the portfolio view. */
+/** Controller for the transaction history view. */
 public class TransactionController {
 
   private final GameSession session;
@@ -21,7 +21,7 @@ public class TransactionController {
   private final TransactionView view;
 
   /**
-   * Creates a new portfolio controller and the view it manages.
+   * Creates a new transaction controller and the view it manages.
    *
    * @param session the active game session, must not be null
    * @param mainController the parent controller used for navigation must not be null
@@ -44,6 +44,11 @@ public class TransactionController {
     applyFilter();
   }
 
+  /**
+   * Returns the transaction view managed by this controller.
+   *
+   * @return the transaction view
+   */
   public TransactionView getView() {
     return view;
   }

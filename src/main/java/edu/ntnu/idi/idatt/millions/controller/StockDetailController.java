@@ -39,6 +39,11 @@ public class StockDetailController {
     wireBuy();
   }
 
+  /**
+   * Returns the stock detail view managed by this controller.
+   *
+   * @return the stock detail view
+   */
   public StockDetailView getView() {
     return view;
   }

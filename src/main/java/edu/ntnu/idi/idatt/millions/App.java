@@ -21,6 +21,9 @@ import javafx.stage.Stage;
 public class App extends Application {
   private Stage primaryStage;
 
+  /** Creates the JavaFX application instance. */
+  public App() {}
+
   @Override
   public void start(Stage stage) {
     this.primaryStage = stage;
@@ -63,6 +66,11 @@ public class App extends Application {
     primaryStage.getScene().setRoot(controller.getView());
   }
 
+  /**
+   * Launches the JavaFX application.
+   *
+   * @param args command line arguments passed to JavaFX
+   */
   public static void main(String[] args) {
     launch(args);
   }
