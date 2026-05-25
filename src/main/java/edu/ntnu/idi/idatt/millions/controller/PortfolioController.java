@@ -15,10 +15,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /** Controller for the portfolio view. */
-public class PortfolioController {
+public class PortfolioController extends PageController {
 
-  private final GameSession session;
-  private final MainController mainController;
   private final PortfolioView view;
 
   /**
@@ -29,14 +27,7 @@ public class PortfolioController {
    * @throws IllegalArgumentException if session or mainController is null
    */
   public PortfolioController(GameSession session, MainController mainController) {
-    if (session == null) {
-      throw new IllegalArgumentException("Session cannot be null");
-    }
-    if (mainController == null) {
-      throw new IllegalArgumentException("MainController cannot be null");
-    }
-    this.session = session;
-    this.mainController = mainController;
+    super(session, mainController);
     this.view = new PortfolioView(session);
 
     view.setOnUpdate(this::applyRefresh);
@@ -49,6 +40,7 @@ public class PortfolioController {
    *
    * @return the portfolio view
    */
+  @Override
   public PortfolioView getView() {
     return view;
   }

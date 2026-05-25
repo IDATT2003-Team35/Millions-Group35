@@ -14,10 +14,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /** Controller for the transaction history view. */
-public class TransactionController {
+public class TransactionController extends PageController {
 
-  private final GameSession session;
-  private final MainController mainController;
   private final TransactionView view;
 
   /**
@@ -28,14 +26,7 @@ public class TransactionController {
    * @throws IllegalArgumentException if session or mainController is null
    */
   public TransactionController(GameSession session, MainController mainController) {
-    if (session == null) {
-      throw new IllegalArgumentException("Session cannot be null");
-    }
-    if (mainController == null) {
-      throw new IllegalArgumentException("MainController cannot be null");
-    }
-    this.session = session;
-    this.mainController = mainController;
+    super(session, mainController);
     this.view = new TransactionView(session);
 
     view.setOnUpdate(this::applyFilter);
@@ -49,6 +40,7 @@ public class TransactionController {
    *
    * @return the transaction view
    */
+  @Override
   public TransactionView getView() {
     return view;
   }

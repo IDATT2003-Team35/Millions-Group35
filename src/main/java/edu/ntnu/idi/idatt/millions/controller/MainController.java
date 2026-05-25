@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -30,9 +29,9 @@ public class MainController {
   private final MainView view;
   private final GameSaveService saveService;
 
-  private final Node marketContent;
-  private final Node portfolioContent;
-  private final Node transactionContent;
+  private final PageController marketController;
+  private final PageController portfolioController;
+  private final PageController transactionController;
   private final StockDetailController stockDetailController;
 
   /**
@@ -49,10 +48,10 @@ public class MainController {
     this.view = new MainView(session);
     this.saveService = createSaveService();
 
-    this.marketContent = new MarketController(session, this).getView();
-    this.portfolioContent = new PortfolioController(session, this).getView();
+    this.marketController = new MarketController(session, this);
+    this.portfolioController = new PortfolioController(session, this);
     this.stockDetailController = new StockDetailController(session, this);
-    this.transactionContent = new TransactionController(session, this).getView();
+    this.transactionController = new TransactionController(session, this);
     wireStatusBar();
     wireNavigation();
     wireSave();
@@ -123,12 +122,12 @@ public class MainController {
 
   /** Shows the market view in the center area and marks the Market button active. */
   public void showMarket() {
-    view.showContent(marketContent, view.getSideBar().getMarketButton());
+    view.showContent(marketController.getView(), view.getSideBar().getMarketButton());
   }
 
   /** Shows the portfolio view in the center area and marks the Portfolio button active. */
   public void showPortfolio() {
-    view.showContent(portfolioContent, view.getSideBar().getPortfolioButton());
+    view.showContent(portfolioController.getView(), view.getSideBar().getPortfolioButton());
   }
 
   private void handleSellAllAndQuit() {
@@ -181,6 +180,6 @@ public class MainController {
 
   /** Shows the transaction history view and marks the Transactions button active. */
   public void showTransaction() {
-    view.showContent(transactionContent, view.getSideBar().getTransactionButton());
+    view.showContent(transactionController.getView(), view.getSideBar().getTransactionButton());
   }
 }
