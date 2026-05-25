@@ -44,7 +44,6 @@ public class TransactionView extends BorderPane implements Observer {
   private final Label totalBoughtSubtitle = new Label();
   private final Label totalSoldValue = new Label();
   private final Label totalSoldSubtitle = new Label();
-  private final Label netActivityValue = new Label();
   private final Label recordsValue = new Label();
 
   private final FilterTabBar filterTabs = new FilterTabBar();
@@ -101,7 +100,6 @@ public class TransactionView extends BorderPane implements Observer {
     HBox bar = new HBox(
         buildSummaryBox("TOTAL BOUGHT", totalBoughtValue, totalBoughtSubtitle),
         buildSummaryBox("TOTAL SOLD", totalSoldValue, totalSoldSubtitle),
-        buildSummaryBox("NET ACTIVITY", netActivityValue, new Label("Capital deployed")),
         buildSummaryBox("RECORDS", recordsValue, new Label("All time"))
     );
     bar.getStyleClass().add("summary-bar");
@@ -260,10 +258,6 @@ public class TransactionView extends BorderPane implements Observer {
   public void setTotalSold(String value, int orderCount) {
     totalSoldValue.setText(value);
     totalSoldSubtitle.setText(orderCount + " sell orders");
-  }
-
-  public void setNetActivity(String value) {
-    netActivityValue.setText(value);
   }
 
   public void setRecordsCount(int count) {

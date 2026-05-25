@@ -10,8 +10,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.math.BigDecimal;
-
 /**
  * Controller for the portfolio view.
  */
@@ -63,8 +61,7 @@ public class PortfolioController {
 
     view.setHoldingsCount(portfolio.getHoldings().size());
     view.setStockValue(Money.format(portfolio.getNetWorth()));
-    BigDecimal totalGainLoss = player.getNetWorth().subtract(player.getStartingMoney());
-    view.setTotalGainLoss(Money.formatWithSign(totalGainLoss));
+    view.setTotalGainLoss(Money.formatWithSign(player.getTotalGainLoss()));
     view.setTotalGainLossPercent(Percentages.format(player.getTotalGainLossPercent()));
     view.setNetWorthHistory(session.getNetWorthHistory());
     view.setHoldings(portfolio.getHoldings());
