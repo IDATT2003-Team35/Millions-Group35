@@ -10,10 +10,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /** Controller for the stock detail view. */
-public class StockDetailController {
+public class StockDetailController extends PageController {
 
-  private final GameSession session;
-  private final MainController mainController;
   private final StockDetailView view;
   private Stock currentStock;
 
@@ -25,14 +23,7 @@ public class StockDetailController {
    * @throws IllegalArgumentException if session or mainController is null
    */
   public StockDetailController(GameSession session, MainController mainController) {
-    if (session == null) {
-      throw new IllegalArgumentException("Session cannot be null");
-    }
-    if (mainController == null) {
-      throw new IllegalArgumentException("MainController cannot be null");
-    }
-    this.session = session;
-    this.mainController = mainController;
+    super(session, mainController);
     this.view = new StockDetailView(session);
 
     wireBack();
@@ -44,6 +35,7 @@ public class StockDetailController {
    *
    * @return the stock detail view
    */
+  @Override
   public StockDetailView getView() {
     return view;
   }

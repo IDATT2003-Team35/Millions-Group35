@@ -13,12 +13,10 @@ import javafx.scene.input.MouseEvent;
  * Controller for the market view. Wires the search field to live filtering and the table row click
  * to opening a stock detail view.
  */
-public class MarketController {
+public class MarketController extends PageController {
 
   private static final int TOP_LIST_LIMIT = 5;
 
-  private final GameSession session;
-  private final MainController mainController;
   private final MarketView view;
 
   /**
@@ -29,14 +27,7 @@ public class MarketController {
    * @throws IllegalArgumentException if session or mainController is null
    */
   public MarketController(GameSession session, MainController mainController) {
-    if (session == null) {
-      throw new IllegalArgumentException("Session cannot be null");
-    }
-    if (mainController == null) {
-      throw new IllegalArgumentException("MainController cannot be null");
-    }
-    this.session = session;
-    this.mainController = mainController;
+    super(session, mainController);
     this.view = new MarketView(session);
 
     view.setOnUpdate(this::applyFilter);
@@ -51,6 +42,7 @@ public class MarketController {
    *
    * @return the market view
    */
+  @Override
   public MarketView getView() {
     return view;
   }
