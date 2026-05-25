@@ -108,6 +108,7 @@ public class StatusBar extends HBox {
       case EASY -> difficultyValue.getStyleClass().add("difficulty-easy");
       case NORMAL -> difficultyValue.getStyleClass().add("difficulty-normal");
       case HARD -> difficultyValue.getStyleClass().add("difficulty-hard");
+      default -> throw new IllegalArgumentException("Unknown difficulty: " + difficulty);
     }
   }
 

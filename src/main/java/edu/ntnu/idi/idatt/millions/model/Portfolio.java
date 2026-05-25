@@ -76,20 +76,6 @@ public class Portfolio {
   }
 
   /**
-   * Returns portfolio shares grouped as one holding per stock symbol.
-   *
-   * @return a list of grouped holdings in first-purchase order
-   */
-  public List<PortfolioHolding> getHoldings() {
-    Map<String, List<Share>> groupedShares = new LinkedHashMap<>();
-    for (Share share : shares) {
-      String symbol = share.getStock().getSymbol();
-      groupedShares.computeIfAbsent(symbol, ignored -> new ArrayList<>()).add(share);
-    }
-    return groupedShares.values().stream().map(PortfolioHolding::new).collect(Collectors.toList());
-  }
-
-  /**
    * Returns all shares in this portfolio that match the given stock symbol.
    *
    * @param symbol the stock symbol to filter by; must not be {@code null} or blank
@@ -103,6 +89,20 @@ public class Portfolio {
     return shares.stream()
         .filter(share -> share.getStock().getSymbol().equals(symbol))
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Returns portfolio shares grouped as one holding per stock symbol.
+   *
+   * @return a list of grouped holdings in first-purchase order
+   */
+  public List<PortfolioHolding> getHoldings() {
+    Map<String, List<Share>> groupedShares = new LinkedHashMap<>();
+    for (Share share : shares) {
+      String symbol = share.getStock().getSymbol();
+      groupedShares.computeIfAbsent(symbol, ignored -> new ArrayList<>()).add(share);
+    }
+    return groupedShares.values().stream().map(PortfolioHolding::new).collect(Collectors.toList());
   }
 
   /**

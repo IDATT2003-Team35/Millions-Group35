@@ -16,7 +16,9 @@ public final class Percentages {
   }
 
   public static String format(BigDecimal pct) {
-    if (pct == null) return "";
+    if (pct == null) {
+      return "";
+    }
     BigDecimal rounded = pct.setScale(2, RoundingMode.HALF_UP);
     String sign = rounded.signum() >= 0 ? "+" : "";
     return sign + rounded.toPlainString() + "%";
@@ -30,7 +32,9 @@ public final class Percentages {
    * @return the formatted string, e.g. "▲ 12.30%" or "▼ 3.50%" or "0.00%"
    */
   public static String formatWithArrow(BigDecimal pct) {
-    if (pct == null) return "";
+    if (pct == null) {
+      return "";
+    }
     BigDecimal rounded = pct.setScale(2, RoundingMode.HALF_UP);
     if (rounded.signum() == 0) {
       return "0.00%";
