@@ -202,11 +202,9 @@ public class GameSaveService {
   }
 
   private Path createSavePath(GameSession session) {
-    int week = session.getExchange().getWeek();
-    String playerName =
-        session
-            .getPlayer()
-            .getName()
+    String mode = session.getMode().toString().toLowerCase();
+    String difficulty = session.getDifficulty().toString().toLowerCase();
+    String playerName = session.getPlayer().getName()
             .trim()
             .toLowerCase()
             .replaceAll("[^a-z0-9]+", "-")
@@ -216,7 +214,7 @@ public class GameSaveService {
       playerName = "terminator";
     }
 
-    String fileName = playerName + "-week-" + week + ".json";
+    String fileName = playerName + "-" + mode + "-" + difficulty + ".json";
     return saveFolder.resolve(fileName);
   }
 
