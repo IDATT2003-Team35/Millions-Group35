@@ -150,4 +150,21 @@ class TransactionArchiveTest {
 
     assertEquals(0, archive.getTotalSold().compareTo(BigDecimal.ZERO));
   }
+
+  @Test
+  void getPurchaseCountReturnsNumberOfPurchases() {
+    archive.add(purchaseW1);
+    archive.add(saleW1);
+    archive.add(purchaseW2);
+
+    assertEquals(2, archive.getPurchaseCount());
+  }
+
+  @Test
+  void getSaleCountReturnsNumberOfSales() {
+    archive.add(purchaseW1);
+    archive.add(saleW1);
+
+    assertEquals(1, archive.getSaleCount());
+  }
 }

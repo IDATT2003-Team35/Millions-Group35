@@ -153,4 +153,26 @@ public class TransactionArchive {
         .map(t -> t.getCalculator().calculateGross())
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
+
+  /**
+   * Returns the number of purchase transactions in the archive.
+   *
+   * @return the purchase count (zero if none)
+   */
+  public int getPurchaseCount() {
+    return (int) transactions.stream()
+        .filter(t -> t instanceof Purchase)
+        .count();
+  }
+
+  /**
+   * Returns the number of sale transactions in the archive.
+   *
+   * @return the sale count (zero if none)
+   */
+  public int getSaleCount() {
+    return (int) transactions.stream()
+        .filter(t -> t instanceof Sale)
+        .count();
+  }
 }
