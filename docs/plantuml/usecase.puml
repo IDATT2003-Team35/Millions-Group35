@@ -1,0 +1,89 @@
+@startuml usecase
+title Use Case Diagram — Millions
+
+' Color palette from the app's design tokens (styles.css)
+!$bg = "#F4ECD6"
+!$surface = "#FFFFFF"
+!$ink = "#0E0E12"
+!$pink = "#C9303F"
+!$navy = "#14142B"
+!$gain = "#2940C5"
+!$borderSubtle = "#D8CDB2"
+!$textMuted = "#6B6660"
+
+skinparam backgroundColor $bg
+skinparam defaultFontName "Helvetica Neue"
+
+skinparam title {
+  FontColor $ink
+}
+
+skinparam actor {
+  BackgroundColor $pink
+  FontStyle bold
+}
+
+skinparam usecase {
+  BackgroundColor $surface
+  BorderThickness 1.2
+}
+
+skinparam rectangle {
+  BackgroundColor $bg
+  BorderColor $borderSubtle
+  FontSize 13
+}
+
+skinparam arrow {
+  Color $navy
+  FontColor $textMuted
+  FontSize 11
+}
+
+left to right direction
+
+actor "Spiller" as Player
+
+rectangle "Millions" {
+  usecase "Start nytt spill" as NewGame
+  usecase "Last lagret spill" as LoadGame
+  usecase "Lagre spill" as Save
+
+  usecase "Velg vanskelighetsgrad" as Difficulty
+  usecase "Velg spillmodus" as Mode
+  usecase "Last aksjedata fra CSV" as LoadCsv
+
+  usecase "Søk og filtrer aksjer" as Browse
+  usecase "Se aksje-detaljer" as Details
+  usecase "Se ukens vinnere og tapere" as Movers
+
+  usecase "Kjøp aksjer" as Buy
+  usecase "Selg aksjer" as Sell
+  usecase "Se transaksjonskvittering" as Receipt
+
+  usecase "Søk i transaksjonshistorikk" as History
+
+  usecase "Avancer uke" as Advance
+  usecase "Selg alt og avslutt" as SellAll
+}
+
+Player --> NewGame
+Player --> LoadGame
+Player --> Save
+Player --> Browse
+Player --> Details
+Player --> Movers
+Player --> Buy
+Player --> Sell
+Player --> History
+Player --> Advance
+Player --> SellAll
+
+NewGame .[#2940C5].> Difficulty : <<include>>
+NewGame .[#2940C5].> Mode : <<include>>
+NewGame .[#2940C5].> LoadCsv : <<include>>
+
+Buy .[#2940C5].> Receipt : <<extend>>
+Sell .[#2940C5].> Receipt : <<extend>>
+
+@enduml
