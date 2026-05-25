@@ -2,10 +2,20 @@ package edu.ntnu.idi.idatt.millions.file.save;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ntnu.idi.idatt.millions.factory.TransactionFactory;
-import edu.ntnu.idi.idatt.millions.file.save.dto.*;
-import edu.ntnu.idi.idatt.millions.model.*;
+import edu.ntnu.idi.idatt.millions.file.save.dto.ExchangeSaveData;
+import edu.ntnu.idi.idatt.millions.file.save.dto.GameSaveData;
+import edu.ntnu.idi.idatt.millions.file.save.dto.PlayerSaveData;
+import edu.ntnu.idi.idatt.millions.file.save.dto.ShareSaveData;
+import edu.ntnu.idi.idatt.millions.file.save.dto.StockSaveData;
+import edu.ntnu.idi.idatt.millions.file.save.dto.TransactionSaveData;
+import edu.ntnu.idi.idatt.millions.model.Difficulty;
+import edu.ntnu.idi.idatt.millions.model.Exchange;
+import edu.ntnu.idi.idatt.millions.model.GameMode;
+import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.Player;
+import edu.ntnu.idi.idatt.millions.model.Share;
+import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -17,8 +27,8 @@ import java.util.List;
 /**
  * Service responsible for saving and loading game sessions as JSON files.
  *
- * <p>The service converts between the game model and save DTOs before using
- * Jackson to read and write JSON.</p>
+ * <p>The service converts between the game model and save DTOs before using Jackson to read and
+ * write JSON.
  */
 public class GameSaveService {
   private static final Path DEFAULT_SAVE_FOLDER = Path.of("saves");
@@ -132,76 +142,68 @@ public class GameSaveService {
     Player player = session.getPlayer();
     Exchange exchange = session.getExchange();
 
-    PlayerSaveData playerData = new PlayerSaveData(
+    PlayerSaveData playerData =
+        new PlayerSaveData(
             player.getName(),
             player.getStartingMoney().toPlainString(),
-            player.getMoney().toPlainString()
-    );
+            player.getMoney().toPlainString());
 
-    ExchangeSaveData exchangeData = new ExchangeSaveData(
-            exchange.getName(),
-            exchange.getWeek()
-    );
+    ExchangeSaveData exchangeData = new ExchangeSaveData(exchange.getName(), exchange.getWeek());
 
-    List<StockSaveData> stockData = session.getExchange().getStocks().stream()
-            .map(this::createStockSaveData)
-            .toList();
+    List<StockSaveData> stockData =
+        session.getExchange().getStocks().stream().map(this::createStockSaveData).toList();
 
-    List<ShareSaveData> shareData = session.getPlayer().getPortfolio().getShares().stream()
+    List<ShareSaveData> shareData =
+        session.getPlayer().getPortfolio().getShares().stream()
             .map(this::createShareSaveData)
             .toList();
 
-    List<TransactionSaveData> transactionData = session.getPlayer().getTransactionArchive().getAll().stream()
+    List<TransactionSaveData> transactionData =
+        session.getPlayer().getTransactionArchive().getAll().stream()
             .map(this::createTransactionSaveData)
             .toList();
 
-    List<String> netWorthHistoryData = session.getNetWorthHistory().stream()
-            .map(BigDecimal::toPlainString)
-            .toList();
+    List<String> netWorthHistoryData =
+        session.getNetWorthHistory().stream().map(BigDecimal::toPlainString).toList();
 
     return new GameSaveData(
-            playerData,
-            exchangeData,
-            stockData,
-            shareData,
-            transactionData,
-            netWorthHistoryData,
-            session.getDifficulty().name(),
-            session.getMode().name()
-    );
+        playerData,
+        exchangeData,
+        stockData,
+        shareData,
+        transactionData,
+        netWorthHistoryData,
+        session.getDifficulty().name(),
+        session.getMode().name());
   }
 
   private StockSaveData createStockSaveData(Stock stock) {
     return new StockSaveData(
-            stock.getSymbol(),
-            stock.getCompany(),
-            stock.getHistoricalPrices().stream()
-                    .map(BigDecimal::toPlainString)
-                    .toList()
-    );
+        stock.getSymbol(),
+        stock.getCompany(),
+        stock.getHistoricalPrices().stream().map(BigDecimal::toPlainString).toList());
   }
 
   private ShareSaveData createShareSaveData(Share share) {
     return new ShareSaveData(
-            share.getStock().getSymbol(),
-            share.getQuantity().toPlainString(),
-            share.getPurchasePrice().toPlainString()
-    );
+        share.getStock().getSymbol(),
+        share.getQuantity().toPlainString(),
+        share.getPurchasePrice().toPlainString());
   }
 
   private TransactionSaveData createTransactionSaveData(Transaction transaction) {
     return new TransactionSaveData(
-            transaction.getClass().getSimpleName(),
-            transaction.getShare().getStock().getSymbol(),
-            transaction.getShare().getQuantity().toPlainString(),
-            transaction.getShare().getPurchasePrice().toPlainString(),
-            transaction.getWeek(),
-            transaction.isCommitted()
-    );
+        transaction.getClass().getSimpleName(),
+        transaction.getShare().getStock().getSymbol(),
+        transaction.getShare().getQuantity().toPlainString(),
+        transaction.getShare().getPurchasePrice().toPlainString(),
+        transaction.getWeek(),
+        transaction.isCommitted());
   }
 
   private Path createSavePath(GameSession session) {
-    int week = session.getExchange().getWeek();
+    String mode = session.getMode().toString().toLowerCase();
+    String difficulty = session.getDifficulty().toString().toLowerCase();
     String playerName = session.getPlayer().getName()
             .trim()
             .toLowerCase()
@@ -212,7 +214,7 @@ public class GameSaveService {
       playerName = "terminator";
     }
 
-    String fileName = playerName + "-week-" + week + ".json";
+    String fileName = playerName + "-" + mode + "-" + difficulty + ".json";
     return saveFolder.resolve(fileName);
   }
 
@@ -263,10 +265,9 @@ public class GameSaveService {
 
     try {
       return new Player(
-              playerData.name(),
-              new BigDecimal(playerData.startingMoney()),
-              new BigDecimal(playerData.money())
-      );
+          playerData.name(),
+          new BigDecimal(playerData.startingMoney()),
+          new BigDecimal(playerData.money()));
     } catch (IllegalArgumentException e) {
       throw new GameSaveException("Could not restore player data", e);
     }
@@ -285,19 +286,16 @@ public class GameSaveService {
     return stocks;
   }
 
-  private Exchange createExchange(ExchangeSaveData exchangeData, List<Stock> stocks,
-                                  Difficulty difficulty) throws GameSaveException {
+  private Exchange createExchange(
+      ExchangeSaveData exchangeData, List<Stock> stocks, Difficulty difficulty)
+      throws GameSaveException {
     if (exchangeData == null) {
       throw new GameSaveException("Save file does not contain game data.");
     }
 
     try {
       return new Exchange(
-              exchangeData.name(),
-              stocks,
-              exchangeData.week(),
-              difficulty.getVolatility()
-      );
+          exchangeData.name(), stocks, exchangeData.week(), difficulty.getVolatility());
     } catch (IllegalArgumentException e) {
       throw new GameSaveException("Could not restore exchange data", e);
     }
@@ -309,11 +307,11 @@ public class GameSaveService {
     }
 
     try {
-      Stock stock = new Stock(
+      Stock stock =
+          new Stock(
               stockData.symbol(),
               stockData.company(),
-              new BigDecimal(stockData.prices().getFirst())
-      );
+              new BigDecimal(stockData.prices().getFirst()));
 
       for (int i = 1; i < stockData.prices().size(); i++) {
         stock.addNewSalesPrice(new BigDecimal(stockData.prices().get(i)));
@@ -325,18 +323,19 @@ public class GameSaveService {
     }
   }
 
-  private void restoreShares(List<ShareSaveData> shareData, Player player, Exchange exchange) throws GameSaveException {
+  private void restoreShares(List<ShareSaveData> shareData, Player player, Exchange exchange)
+      throws GameSaveException {
     if (shareData == null) {
       return;
     }
 
     try {
       for (ShareSaveData data : shareData) {
-        Share share = new Share(
+        Share share =
+            new Share(
                 exchange.getStock(data.stockSymbol()),
                 new BigDecimal(data.quantity()),
-                new BigDecimal(data.purchasePrice())
-        );
+                new BigDecimal(data.purchasePrice()));
         player.getPortfolio().addShare(share);
       }
     } catch (IllegalArgumentException e) {
@@ -344,7 +343,9 @@ public class GameSaveService {
     }
   }
 
-  private void restoreTransactions(List<TransactionSaveData> transactionData, Player player, Exchange exchange) throws GameSaveException {
+  private void restoreTransactions(
+      List<TransactionSaveData> transactionData, Player player, Exchange exchange)
+      throws GameSaveException {
     if (transactionData == null) {
       return;
     }
@@ -369,11 +370,8 @@ public class GameSaveService {
     }
 
     Stock stock = exchange.getStock(data.stockSymbol());
-    Share share = new Share(
-            stock,
-            new BigDecimal(data.quantity()),
-            new BigDecimal(data.purchasePrice())
-    );
+    Share share =
+        new Share(stock, new BigDecimal(data.quantity()), new BigDecimal(data.purchasePrice()));
 
     if ("Purchase".equals(data.type())) {
       return TransactionFactory.createPurchase(share, data.week());
@@ -386,7 +384,8 @@ public class GameSaveService {
     throw new IllegalArgumentException("Unknown transaction type: " + data.type());
   }
 
-  private List<BigDecimal> createNetWorthHistory(List<String> netWorthHistoryData) throws GameSaveException {
+  private List<BigDecimal> createNetWorthHistory(List<String> netWorthHistoryData)
+      throws GameSaveException {
     if (netWorthHistoryData == null) {
       return List.of();
     }

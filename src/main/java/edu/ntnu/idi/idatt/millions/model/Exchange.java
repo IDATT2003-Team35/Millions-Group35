@@ -4,7 +4,6 @@ import edu.ntnu.idi.idatt.millions.factory.TransactionFactory;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -15,26 +14,18 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * Represents a stock exchange where players can buy and sell shares.
- * Stocks are stored internally by symbol, and the week advances via {@link #advance()}.
+ * Represents a stock exchange where players can buy and sell shares. Stocks are stored internally
+ * by symbol, and the week advances via {@link #advance()}.
  */
 public class Exchange {
 
-  /**
-   * Expected weekly drift (μ) in the GBM price model.
-   * 0.005 = 0.5% expected weekly return (~28% annualized).
-   * Shared across all difficulty levels; only volatility varies.
-   */
+  // Expected weekly drift in the GBM model. Shared across difficulties; only volatility varies.
   private static final double DRIFT = 0.005;
 
-  /**
-   * Default weekly volatility (σ) in the GBM price model, used when no
-   * difficulty is supplied. 0.10 = 10% weekly standard deviation of log
-   * returns, matching {@link Difficulty#NORMAL}.
-   */
+  // Default weekly volatility in the GBM model, matching Difficulty.NORMAL.
   private static final double DEFAULT_VOLATILITY = 0.10;
 
-  /** Lower floor on stock prices to prevent rounding artifacts. */
+  // Lower floor on stock prices to prevent rounding artifacts.
   private static final BigDecimal PRICE_FLOOR = BigDecimal.valueOf(0.01);
 
   private final String name;
@@ -44,8 +35,7 @@ public class Exchange {
   private final Random random;
 
   /**
-   * Creates a new Exchange with default volatility ({@link #DEFAULT_VOLATILITY}).
-   * Week starts at 1.
+   * Creates a new Exchange with default volatility ({@link #DEFAULT_VOLATILITY}). Week starts at 1.
    *
    * @param name the name of the exchange, must not be null or blank
    * @param stocks the list of stocks available, must not be null
@@ -60,8 +50,8 @@ public class Exchange {
    *
    * @param name the name of the exchange, must not be null or blank
    * @param stocks the list of stocks available, must not be null
-   * @param volatility the weekly volatility (σ) for the GBM price model;
-   *                   must be positive (typically 0.05–0.20)
+   * @param volatility the weekly volatility (σ) for the GBM price model; must be positive
+   *     (typically 0.05–0.20)
    * @throws IllegalArgumentException if any argument is invalid
    */
   public Exchange(String name, List<Stock> stocks, double volatility) {
@@ -71,8 +61,8 @@ public class Exchange {
   /**
    * Creates an exchange with a restored week number and default volatility.
    *
-   * <p>This constructor is used when loading a saved game where the exchange
-   * should continue from a previously saved week.</p>
+   * <p>This constructor is used when loading a saved game where the exchange should continue from a
+   * previously saved week.
    *
    * @param name the name of the exchange, must not be null or blank
    * @param stocks the list of stocks available, must not be null
@@ -86,15 +76,14 @@ public class Exchange {
   /**
    * Creates an exchange with a restored week number and custom volatility.
    *
-   * <p>This is the canonical constructor used by the {@link Difficulty}-aware
-   * game setup: callers should pass {@code difficulty.getVolatility()} as
-   * the volatility argument.</p>
+   * <p>This is the canonical constructor used by the {@link Difficulty}-aware game setup: callers
+   * should pass {@code difficulty.getVolatility()} as the volatility argument.
    *
    * @param name the name of the exchange, must not be null or blank
    * @param stocks the list of stocks available, must not be null
    * @param week the current trading week, must be positive
-   * @param volatility the weekly volatility (σ) for the GBM price model;
-   *                   must be positive (typically 0.05–0.20)
+   * @param volatility the weekly volatility (σ) for the GBM price model; must be positive
+   *     (typically 0.05–0.20)
    * @throws IllegalArgumentException if any argument is invalid
    */
   public Exchange(String name, List<Stock> stocks, int week, double volatility) {
@@ -114,8 +103,7 @@ public class Exchange {
     this.week = week;
     this.volatility = volatility;
     this.random = new Random();
-    this.stockMap = stocks.stream()
-        .collect(Collectors.toMap(Stock::getSymbol, stock -> stock));
+    this.stockMap = stocks.stream().collect(Collectors.toMap(Stock::getSymbol, stock -> stock));
   }
 
   /**
@@ -174,8 +162,8 @@ public class Exchange {
   }
 
   /**
-   * Finds all stocks whose symbol or company name contains the given search term.
-   * The search is case-insensitive.
+   * Finds all stocks whose symbol or company name contains the given search term. The search is
+   * case-insensitive.
    *
    * @param searchTerm the term to search for; must not be null or blank
    * @return a list of matching stocks
@@ -187,20 +175,22 @@ public class Exchange {
     }
     String searchTermLowerCase = searchTerm.toLowerCase();
     return stockMap.values().stream()
-        .filter(s -> s.getSymbol().toLowerCase().contains(searchTermLowerCase)
-            || s.getCompany().toLowerCase().contains(searchTermLowerCase))
+        .filter(
+            s ->
+                s.getSymbol().toLowerCase().contains(searchTermLowerCase)
+                    || s.getCompany().toLowerCase().contains(searchTermLowerCase))
         .collect(Collectors.toList());
   }
 
   /**
    * Buys shares of a stock for a player.
    *
-   * @param symbol   the stock symbol to buy; must be listed on this exchange
+   * @param symbol the stock symbol to buy; must be listed on this exchange
    * @param quantity the number of shares to buy; must not be null or negative
-   * @param player   the player making the purchase; must not be null
+   * @param player the player making the purchase; must not be null
    * @return the resulting {@link Purchase} transaction
-   * @throws IllegalArgumentException if the stock is not found, quantity is invalid,
-   *                                  or player is null
+   * @throws IllegalArgumentException if the stock is not found, quantity is invalid, or player is
+   *     null
    */
   public Transaction buy(String symbol, BigDecimal quantity, Player player) {
     if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
@@ -209,7 +199,7 @@ public class Exchange {
     if (player == null) {
       throw new IllegalArgumentException("Player cannot be null");
     }
-    if (!hasStock(symbol)){
+    if (!hasStock(symbol)) {
       throw new IllegalArgumentException("Stock does not exist with symbol: " + symbol);
     }
     Stock stock = getStock(symbol);
@@ -222,7 +212,7 @@ public class Exchange {
   /**
    * Sells a share for a player.
    *
-   * @param share  the share to sell; must not be null
+   * @param share the share to sell; must not be null
    * @param player the player making the sale; must not be null
    * @return the resulting {@link Sale} transaction
    * @throws IllegalArgumentException if share or player is null
@@ -245,12 +235,12 @@ public class Exchange {
   /**
    * Sells a quantity of one stock for a player.
    *
-   * <p>If the quantity spans multiple purchase lots, one sale transaction is
-   * created per affected lot.</p>
+   * <p>If the quantity spans multiple purchase lots, one sale transaction is created per affected
+   * lot.
    *
    * @param symbol the stock symbol to sell; must be listed on this exchange
-   * @param quantity the quantity to sell; must be greater than zero and no larger
-   *                 than the player's owned quantity
+   * @param quantity the quantity to sell; must be greater than zero and no larger than the player's
+   *     owned quantity
    * @param player the player making the sale; must not be null
    * @return the completed sale transactions created by the sale
    * @throws IllegalArgumentException if the symbol, quantity, or player is invalid
@@ -299,9 +289,7 @@ public class Exchange {
   }
 
   private BigDecimal getTotalQuantity(List<Share> shares) {
-    return shares.stream()
-        .map(Share::getQuantity)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return shares.stream().map(Share::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private Transaction sellFullShare(Share share, Player player) {
@@ -311,16 +299,16 @@ public class Exchange {
   }
 
   private Transaction sellPartialShare(Share originalShare, BigDecimal quantity, Player player) {
-    Share soldShare = new Share(
-        originalShare.getStock(),
-        quantity,
-        originalShare.getPurchasePrice());
-    Share remainingShare = new Share(
-        originalShare.getStock(),
-        originalShare.getQuantity().subtract(quantity),
-        originalShare.getPurchasePrice());
+    Share soldShare =
+        new Share(originalShare.getStock(), quantity, originalShare.getPurchasePrice());
+    Share remainingShare =
+        new Share(
+            originalShare.getStock(),
+            originalShare.getQuantity().subtract(quantity),
+            originalShare.getPurchasePrice());
 
-    boolean replaced = player.getPortfolio().replaceShare(originalShare, List.of(soldShare, remainingShare));
+    boolean replaced =
+        player.getPortfolio().replaceShare(originalShare, List.of(soldShare, remainingShare));
     if (!replaced) {
       throw new IllegalStateException("Player does not have this share");
     }
@@ -330,20 +318,21 @@ public class Exchange {
   }
 
   /**
-   * Advances to the next trading week and updates each stock's price using
-   * Geometric Brownian Motion (GBM).
+   * Advances to the next trading week and updates each stock's price using Geometric Brownian
+   * Motion (GBM).
    *
    * <p>The price evolves according to the discrete GBM step formula:
+   *
    * <pre>
    *   S_{t+1} = S_t * exp[(μ − σ²/2) + σ·Z],   Z ~ N(0,1)
    * </pre>
-   * derived from the GBM stochastic differential equation
+   *
+   * <p>Derived from the GBM stochastic differential equation
    * {@code dS_t = μS_t dt + σS_t dW_t} with Δt = 1 week. The {@code −σ²/2}
-   * correction term in the exponent compensates for volatility drag
-   * (a consequence of Jensen's inequality on multiplicative noise) — without
-   * it, symmetric random returns would cause all prices to drift toward zero
-   * over time. A floor of {@link #PRICE_FLOOR} prevents rounding artifacts
-   * from producing non-positive prices.</p>
+   * correction term in the exponent compensates for volatility drag (a consequence of Jensen's
+   * inequality on multiplicative noise) — without it, symmetric random returns would cause all
+   * prices to drift toward zero over time. A floor of {@link #PRICE_FLOOR} prevents rounding
+   * artifacts from producing non-positive prices.
    */
   public void advance() {
     week++;
@@ -353,23 +342,21 @@ public class Exchange {
       double z = random.nextGaussian();
       double exponent = driftAdjusted + volatility * z;
       double multiplier = Math.exp(exponent);
-      BigDecimal newPrice = currentPrice
-          .multiply(BigDecimal.valueOf(multiplier))
-          .setScale(2, RoundingMode.HALF_UP);
+      BigDecimal newPrice =
+          currentPrice.multiply(BigDecimal.valueOf(multiplier)).setScale(2, RoundingMode.HALF_UP);
       newPrice = newPrice.max(PRICE_FLOOR);
       stock.addNewSalesPrice(newPrice);
     }
   }
 
   /**
-   * Returns the weekly volatility (σ) used by the GBM price model for this
-   * exchange. Set at construction time (typically from
-   * {@link Difficulty#getVolatility()}).
+   * Returns the weekly volatility (σ) used by the GBM price model for this exchange. Set at
+   * construction time (typically from {@link Difficulty#getVolatility()}).
    *
    * @return the weekly volatility
    */
   public double getVolatility() {
-      return volatility;
+    return volatility;
   }
 
   /**
@@ -385,10 +372,10 @@ public class Exchange {
     }
 
     return stockMap.values().stream()
-            .filter(stock -> stock.getLatestPercentChange().compareTo(BigDecimal.ZERO) > 0)
-            .sorted(Comparator.comparing(Stock::getLatestPercentChange).reversed())
-            .limit(limit)
-            .toList();
+        .filter(stock -> stock.getLatestPercentChange().compareTo(BigDecimal.ZERO) > 0)
+        .sorted(Comparator.comparing(Stock::getLatestPercentChange).reversed())
+        .limit(limit)
+        .toList();
   }
 
   /**
@@ -404,9 +391,9 @@ public class Exchange {
     }
 
     return stockMap.values().stream()
-            .filter(stock -> stock.getLatestPercentChange().compareTo(BigDecimal.ZERO) < 0)
-            .sorted(Comparator.comparing(Stock::getLatestPercentChange))
-            .limit(limit)
-            .toList();
+        .filter(stock -> stock.getLatestPercentChange().compareTo(BigDecimal.ZERO) < 0)
+        .sorted(Comparator.comparing(Stock::getLatestPercentChange))
+        .limit(limit)
+        .toList();
   }
 }

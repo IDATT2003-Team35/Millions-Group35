@@ -10,9 +10,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 
 /**
- * Row of filter toggle tabs (e.g. ALL/GAINERS/LOSERS). Each tab carries
- * a label and a small count badge; selection state is exposed via a code
- * supplied when building the bar.
+ * Row of filter toggle tabs (e.g. ALL/GAINERS/LOSERS). Each tab carries a label and a small count
+ * badge; selection state is exposed via a code supplied when building the bar.
  */
 public class FilterTabBar extends HBox {
 
@@ -21,20 +20,24 @@ public class FilterTabBar extends HBox {
   private final Map<String, Label> badgesByCode = new LinkedHashMap<>();
   private String defaultCode;
 
+  /** Creates an empty filter tab bar with single-selection behavior. */
   public FilterTabBar() {
     setAlignment(Pos.CENTER_LEFT);
     setSpacing(0);
 
-    group.selectedToggleProperty().addListener((obs, oldT, newT) -> {
-      if (newT == null && defaultCode != null) {
-        tabsByCode.get(defaultCode).setSelected(true);
-      }
-    });
+    group
+        .selectedToggleProperty()
+        .addListener(
+            (obs, oldT, newT) -> {
+              if (newT == null && defaultCode != null) {
+                tabsByCode.get(defaultCode).setSelected(true);
+              }
+            });
   }
 
   /**
-   * Adds a tab to the bar. The first tab added gets the rounded-edge styling
-   * and is selected by default.
+   * Adds a tab to the bar. The first tab added gets the rounded-edge styling and is selected by
+   * default.
    *
    * @param code internal identifier returned by {@link #getSelectedCode()}
    * @param label tab text shown to the user
@@ -64,17 +67,26 @@ public class FilterTabBar extends HBox {
     getChildren().add(tab);
   }
 
-  /** Sets the badge counts. Map keys must match the codes used in {@link #addTab}. */
+  /**
+   * Sets the badge counts. Map keys must match the codes used in {@link #addTab}.
+   *
+   * @param counts map from tab code to visible badge count
+   */
   public void setCounts(Map<String, Integer> counts) {
-    counts.forEach((code, count) -> {
-      Label badge = badgesByCode.get(code);
-      if (badge != null) {
-        badge.setText(String.valueOf(count));
-      }
-    });
+    counts.forEach(
+        (code, count) -> {
+          Label badge = badgesByCode.get(code);
+          if (badge != null) {
+            badge.setText(String.valueOf(count));
+          }
+        });
   }
 
-  /** Returns the code of the currently selected tab, or the default if none. */
+  /**
+   * Returns the code of the currently selected tab, or the default if none.
+   *
+   * @return selected tab code
+   */
   public String getSelectedCode() {
     Toggle selected = group.getSelectedToggle();
     for (Map.Entry<String, ToggleButton> entry : tabsByCode.entrySet()) {
@@ -85,12 +97,19 @@ public class FilterTabBar extends HBox {
     return defaultCode;
   }
 
-  /** Registers a listener invoked whenever the selected tab changes. */
+  /**
+   * Registers a listener invoked whenever the selected tab changes.
+   *
+   * @param callback callback to run when the selected tab changes
+   */
   public void setOnSelectionChange(Runnable callback) {
-    group.selectedToggleProperty().addListener((obs, oldT, newT) -> {
-      if (newT != null) {
-        callback.run();
-      }
-    });
+    group
+        .selectedToggleProperty()
+        .addListener(
+            (obs, oldT, newT) -> {
+              if (newT != null) {
+                callback.run();
+              }
+            });
   }
 }

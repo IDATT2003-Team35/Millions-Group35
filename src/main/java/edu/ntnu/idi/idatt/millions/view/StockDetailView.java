@@ -29,9 +29,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
- * Detail view for a single stock. Shows a vertical info list and BUY action
- * on the left, with the price history chart and weekly breakdown on the right.
- * Refreshes when the session updates.
+ * Detail view for a single stock. Shows a vertical info list and BUY action on the left, with the
+ * price history chart and weekly breakdown on the right. Refreshes when the session updates.
  */
 public class StockDetailView extends BorderPane implements Observer {
 
@@ -51,8 +50,7 @@ public class StockDetailView extends BorderPane implements Observer {
 
   private final CategoryAxis weekAxis = new CategoryAxis();
   private final NumberAxis priceAxis = new NumberAxis();
-  private final AreaChart<String, Number> historyChart =
-      new AreaChart<>(weekAxis, priceAxis);
+  private final AreaChart<String, Number> historyChart = new AreaChart<>(weekAxis, priceAxis);
   private final TableView<PriceHistoryEntry> historyTable = new TableView<>();
 
   /**
@@ -115,14 +113,14 @@ public class StockDetailView extends BorderPane implements Observer {
     Label sectionHeader = new Label("STOCK INFORMATION");
     sectionHeader.getStyleClass().add("detail-section-header");
 
-    VBox rows = new VBox(
-        infoRow("SYMBOL", symbolValue),
-        infoRow("COMPANY", companyValue),
-        infoRow("CURRENT PRICE", priceValue),
-        infoRow("PRICE CHANGE", changeValue),
-        infoRow("52-WEEK HIGH", highValue),
-        infoRow("52-WEEK LOW", lowValue)
-    );
+    VBox rows =
+        new VBox(
+            infoRow("SYMBOL", symbolValue),
+            infoRow("COMPANY", companyValue),
+            infoRow("CURRENT PRICE", priceValue),
+            infoRow("PRICE CHANGE", changeValue),
+            infoRow("52-WEEK HIGH", highValue),
+            infoRow("52-WEEK LOW", lowValue));
 
     VBox panel = new VBox(sectionHeader, rows, buyButton);
     panel.setSpacing(14);
@@ -166,35 +164,40 @@ public class StockDetailView extends BorderPane implements Observer {
 
   private void setupHistoryColumns() {
     TableColumn<PriceHistoryEntry, String> weekCol = new TableColumn<>("WEEK");
-    weekCol.setCellValueFactory(c ->
-        new SimpleStringProperty("W" + c.getValue().week()));
-    weekCol.setCellFactory(col -> {
-      TableCell<PriceHistoryEntry, String> cell = new TableCell<>() {
-        @Override
-        protected void updateItem(String item, boolean empty) {
-          super.updateItem(item, empty);
-          setText(empty || item == null ? "" : item);
-        }
-      };
-      cell.getStyleClass().add("week-cell");
-      return cell;
-    });
+    weekCol.setCellValueFactory(c -> new SimpleStringProperty("W" + c.getValue().week()));
+    weekCol.setCellFactory(
+        col -> {
+          TableCell<PriceHistoryEntry, String> cell =
+              new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                  super.updateItem(item, empty);
+                  setText(empty || item == null ? "" : item);
+                }
+              };
+          cell.getStyleClass().add("week-cell");
+          return cell;
+        });
 
     TableColumn<PriceHistoryEntry, String> priceCol = new TableColumn<>("PRICE ($)");
-    priceCol.setCellValueFactory(c ->
-        new SimpleStringProperty(Money.format(c.getValue().price()).substring(1)));
+    priceCol.setCellValueFactory(
+        c -> new SimpleStringProperty(Money.format(c.getValue().price()).substring(1)));
 
     TableColumn<PriceHistoryEntry, String> movementCol = new TableColumn<>("MOVEMENT ($)");
-    movementCol.setCellValueFactory(c ->
-        new SimpleStringProperty(c.getValue().movement() == null
-            ? "—" : Money.formatWithArrow(c.getValue().movement())));
+    movementCol.setCellValueFactory(
+        c ->
+            new SimpleStringProperty(
+                c.getValue().movement() == null
+                    ? "—"
+                    : Money.formatWithArrow(c.getValue().movement())));
     movementCol.setCellFactory(col -> coloredCell(PriceHistoryEntry::movement));
 
     TableColumn<PriceHistoryEntry, String> percentMovementCol = new TableColumn<>("MOVEMENT (%)");
-    percentMovementCol.setCellValueFactory(c -> {
-      BigDecimal pct = c.getValue().percentMovement();
-      return new SimpleStringProperty(pct == null ? "—" : Percentages.formatWithArrow(pct));
-    });
+    percentMovementCol.setCellValueFactory(
+        c -> {
+          BigDecimal pct = c.getValue().percentMovement();
+          return new SimpleStringProperty(pct == null ? "—" : Percentages.formatWithArrow(pct));
+        });
     percentMovementCol.setCellFactory(col -> coloredCell(PriceHistoryEntry::percentMovement));
 
     historyTable.getColumns().addAll(weekCol, priceCol, movementCol, percentMovementCol);
@@ -293,21 +296,23 @@ public class StockDetailView extends BorderPane implements Observer {
     return entries;
   }
 
-  /**
-   * Row entry for the price history table.
-   *
-   * @param week     the week number
-   * @param price    the closing price for that week
-   * @param movement change vs. previous week, or null for week 1
-   * @param percentMovement percentage change vs. previous week, or null for week 1
-   */
-  private record PriceHistoryEntry(int week, BigDecimal price, BigDecimal movement,
-                                   BigDecimal percentMovement) {}
+  private record PriceHistoryEntry(
+      int week, BigDecimal price, BigDecimal movement, BigDecimal percentMovement) {}
 
+  /**
+   * Returns the button used to navigate back to the market view.
+   *
+   * @return the back button
+   */
   public Button getBackButton() {
     return backButton;
   }
 
+  /**
+   * Returns the button used to open the buy dialog.
+   *
+   * @return the buy button
+   */
   public Button getBuyButton() {
     return buyButton;
   }

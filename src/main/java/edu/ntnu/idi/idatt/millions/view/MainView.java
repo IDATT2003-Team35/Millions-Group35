@@ -9,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 
 /**
- * Main application shell. Keeps the status bar on top and the sidebar on the left,
- * while the center area is swapped via {@link #showContent(Node, Button)}. Observes
- * the game session and refreshes its display whenever model state changes.
+ * Main application shell. Keeps the status bar on top and the sidebar on the left, while the center
+ * area is swapped via {@link #showContent(Node, Button)}. Observes the game session and refreshes
+ * its display whenever model state changes.
  */
 public class MainView extends BorderPane implements Observer {
 
@@ -84,10 +84,10 @@ public class MainView extends BorderPane implements Observer {
   }
 
   private void markActive(Button active) {
-    for (Button b : new Button[] {
-        sideBar.getMarketButton(),
-        sideBar.getPortfolioButton(),
-        sideBar.getTransactionButton()}) {
+    for (Button b :
+        new Button[] {
+          sideBar.getMarketButton(), sideBar.getPortfolioButton(), sideBar.getTransactionButton()
+        }) {
       b.getStyleClass().remove("active");
       if (b == active) {
         b.getStyleClass().add("active");

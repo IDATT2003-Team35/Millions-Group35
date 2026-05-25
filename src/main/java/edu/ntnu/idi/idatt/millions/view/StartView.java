@@ -19,8 +19,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * View for the start screen where the user enters game setup information.
- * Provides the layout and UI controls used by the start controller.
+ * View for the start screen where the user enters game setup information. Provides the layout and
+ * UI controls used by the start controller.
  */
 public class StartView {
   private final StackPane root;
@@ -40,9 +40,7 @@ public class StartView {
   private final RadioButton normalRadio;
   private final RadioButton hardRadio;
 
-  /**
-   * Creates the start screen layout and initializes its controls.
-   */
+  /** Creates the start screen layout and initializes its controls. */
   public StartView() {
     Label titleLabel = new Label("MILLIONS");
     titleLabel.getStyleClass().add("start-title");
@@ -125,7 +123,8 @@ public class StartView {
     HBox startBox = new HBox(10, backButton, startButton);
     startBox.setAlignment(Pos.CENTER);
 
-    VBox inputBox = new VBox(
+    VBox inputBox =
+        new VBox(
             10,
             nameLabel,
             nameField,
@@ -139,8 +138,7 @@ public class StartView {
             fileBox,
             new Separator(),
             errorLabel,
-            startBox
-    );
+            startBox);
     inputBox.getStyleClass().add("start-card-body");
 
     VBox card = new VBox(titleBox, inputBox);
@@ -170,7 +168,7 @@ public class StartView {
    * @return the player name field
    */
   public TextField getNameField() {
-   return nameField;
+    return nameField;
   }
 
   /**
@@ -179,7 +177,7 @@ public class StartView {
    * @return the starting capital field
    */
   public TextField getCapitalField() {
-   return capitalField;
+    return capitalField;
   }
 
   /**
@@ -188,7 +186,7 @@ public class StartView {
    * @return the stock file field
    */
   public TextField getFileField() {
-   return fileField;
+    return fileField;
   }
 
   /**
@@ -197,7 +195,7 @@ public class StartView {
    * @return the browse button
    */
   public Button getBrowseButton() {
-   return browseButton;
+    return browseButton;
   }
 
   /**
@@ -215,7 +213,7 @@ public class StartView {
    * @return the start button
    */
   public Button getStartButton() {
-   return startButton;
+    return startButton;
   }
 
   /**
@@ -254,9 +252,7 @@ public class StartView {
     errorLabel.setText(message);
   }
 
-  /**
-   * Clears any displayed error message.
-   */
+  /** Clears any displayed error message. */
   public void clearErrorMessage() {
     errorLabel.setText("");
   }

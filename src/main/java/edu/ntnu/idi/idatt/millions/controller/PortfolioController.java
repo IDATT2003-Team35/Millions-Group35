@@ -1,18 +1,20 @@
 package edu.ntnu.idi.idatt.millions.controller;
 
-import edu.ntnu.idi.idatt.millions.model.*;
+import edu.ntnu.idi.idatt.millions.model.GameSession;
+import edu.ntnu.idi.idatt.millions.model.Player;
+import edu.ntnu.idi.idatt.millions.model.Portfolio;
+import edu.ntnu.idi.idatt.millions.model.PortfolioHolding;
 import edu.ntnu.idi.idatt.millions.util.Money;
 import edu.ntnu.idi.idatt.millions.util.Percentages;
 import edu.ntnu.idi.idatt.millions.view.PortfolioView;
 import edu.ntnu.idi.idatt.millions.view.SellView;
+import java.math.BigDecimal;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-/**
- * Controller for the portfolio view.
- */
+/** Controller for the portfolio view. */
 public class PortfolioController {
 
   private final GameSession session;

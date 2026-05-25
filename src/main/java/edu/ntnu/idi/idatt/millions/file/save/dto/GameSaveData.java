@@ -15,13 +15,11 @@ import java.util.List;
  * @param mode the game mode name (SANDBOX/CHALLENGE), may be null
  */
 public record GameSaveData(
-        PlayerSaveData player,
-        ExchangeSaveData exchange,
-        List<StockSaveData> stocks,
-        List<ShareSaveData> shares,
-        List<TransactionSaveData> transactions,
-        List<String> netWorthHistory,
-        String difficulty,
-        String mode
-) {
-}
+    PlayerSaveData player,
+    ExchangeSaveData exchange,
+    List<StockSaveData> stocks,
+    List<ShareSaveData> shares,
+    List<TransactionSaveData> transactions,
+    List<String> netWorthHistory,
+    String difficulty,
+    String mode) {}

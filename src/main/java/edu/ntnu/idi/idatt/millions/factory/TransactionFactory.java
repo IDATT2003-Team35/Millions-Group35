@@ -5,16 +5,12 @@ import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 
 /**
- * Factory class for creating transaction objects.
- * Provides centralized creation and validation of purchases and sales.
+ * Factory class for creating transaction objects. Provides centralized creation and validation of
+ * purchases and sales.
  */
 public final class TransactionFactory {
 
-  /**
-   * Private constructor to prevent instantiation of this utility class.
-   */
-  private TransactionFactory() {
-  }
+  private TransactionFactory() {}
 
   /**
    * Creates a new purchase transaction for the given share and week.
@@ -42,13 +38,6 @@ public final class TransactionFactory {
     return new Sale(share, week);
   }
 
-  /**
-   * Validates common input used when creating transactions.
-   *
-   * @param share the share used in the transaction
-   * @param week the transaction week
-   * @throws IllegalArgumentException if share is {@code null} or week is not positive
-   */
   private static void validateInput(Share share, int week) {
     if (share == null) {
       throw new IllegalArgumentException("Share cannot be null");

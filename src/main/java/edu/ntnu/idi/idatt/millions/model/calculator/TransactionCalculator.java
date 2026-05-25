@@ -5,8 +5,7 @@ import java.math.BigDecimal;
 /**
  * Defines operations to compute monetary values for a transaction.
  *
- * Implementations must return non-null {@link BigDecimal} results.
- *
+ * <p>Implementations must return non-null {@link BigDecimal} results.
  */
 public interface TransactionCalculator {
 
@@ -32,8 +31,8 @@ public interface TransactionCalculator {
   BigDecimal calculateTax();
 
   /**
-   * Calculates the final total for the transaction, typically including gross,
-   * commission and tax as defined by the implementation.
+   * Calculates the final total for the transaction, typically including gross, commission and tax
+   * as defined by the implementation.
    *
    * @return the total amount as a non-null {@link BigDecimal}
    */

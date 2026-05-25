@@ -1,16 +1,15 @@
 package edu.ntnu.idi.idatt.millions.factory;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.ntnu.idi.idatt.millions.model.Share;
 import edu.ntnu.idi.idatt.millions.model.Stock;
 import edu.ntnu.idi.idatt.millions.model.transaction.Purchase;
 import edu.ntnu.idi.idatt.millions.model.transaction.Sale;
 import edu.ntnu.idi.idatt.millions.model.transaction.Transaction;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TransactionFactoryTest {
   private Share share;
@@ -35,14 +34,13 @@ class TransactionFactoryTest {
 
   @Test
   void createPurchaseWithNullShareThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-            () -> TransactionFactory.createPurchase(null, week));
+    assertThrows(
+        IllegalArgumentException.class, () -> TransactionFactory.createPurchase(null, week));
   }
 
   @Test
   void createPurchaseWithInvalidWeekThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-            () -> TransactionFactory.createPurchase(share, 0));
+    assertThrows(IllegalArgumentException.class, () -> TransactionFactory.createPurchase(share, 0));
   }
 
   @Test
@@ -57,13 +55,11 @@ class TransactionFactoryTest {
 
   @Test
   void createSaleWithNullShareThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-            () -> TransactionFactory.createSale(null, week));
+    assertThrows(IllegalArgumentException.class, () -> TransactionFactory.createSale(null, week));
   }
 
   @Test
   void createSaleWithInvalidWeekThrowsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-            () -> TransactionFactory.createSale(share, 0));
+    assertThrows(IllegalArgumentException.class, () -> TransactionFactory.createSale(share, 0));
   }
 }

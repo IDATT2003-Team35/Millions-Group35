@@ -11,11 +11,9 @@ package edu.ntnu.idi.idatt.millions.file.save.dto;
  * @param committed whether the transaction was committed
  */
 public record TransactionSaveData(
-        String type,
-        String stockSymbol,
-        String quantity,
-        String purchasePrice,
-        int week,
-        boolean committed
-) {
-}
+    String type,
+    String stockSymbol,
+    String quantity,
+    String purchasePrice,
+    int week,
+    boolean committed) {}

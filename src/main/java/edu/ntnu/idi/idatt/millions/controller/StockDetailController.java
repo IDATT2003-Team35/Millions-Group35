@@ -9,9 +9,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-/**
- * Controller for the stock detail view.
- */
+/** Controller for the stock detail view. */
 public class StockDetailController {
 
   private final GameSession session;
@@ -41,6 +39,11 @@ public class StockDetailController {
     wireBuy();
   }
 
+  /**
+   * Returns the stock detail view managed by this controller.
+   *
+   * @return the stock detail view
+   */
   public StockDetailView getView() {
     return view;
   }
@@ -56,22 +59,24 @@ public class StockDetailController {
   }
 
   private void wireBuy() {
-    view.getBuyButton().setOnAction(e -> {
-      if (currentStock == null) {
-        return;
-      }
+    view.getBuyButton()
+        .setOnAction(
+            e -> {
+              if (currentStock == null) {
+                return;
+              }
 
-      BuyView buyView = new BuyView();
+              BuyView buyView = new BuyView();
 
-      Stage dialogStage = new Stage();
-      dialogStage.initModality(Modality.APPLICATION_MODAL);
-      dialogStage.initOwner(view.getScene().getWindow());
-      dialogStage.initStyle(StageStyle.UNDECORATED);
-      dialogStage.setTitle("Buy Order");
-      dialogStage.setScene(new Scene(buyView.getRoot()));
-      new BuyController(buyView, dialogStage, session, currentStock);
-      dialogStage.showAndWait();
-    });
+              Stage dialogStage = new Stage();
+              dialogStage.initModality(Modality.APPLICATION_MODAL);
+              dialogStage.initOwner(view.getScene().getWindow());
+              dialogStage.initStyle(StageStyle.UNDECORATED);
+              dialogStage.setTitle("Buy Order");
+              dialogStage.setScene(new Scene(buyView.getRoot()));
+              new BuyController(buyView, dialogStage, session, currentStock);
+              dialogStage.showAndWait();
+            });
   }
 
   private void wireBack() {
