@@ -1,0 +1,60 @@
+@startuml klassediagram-transaksjoner
+' Transaksjons-hierarki med Template Method, Strategy og Factory
+skinparam shadowing false
+skinparam defaultFontName "Helvetica Neue"
+skinparam DefaultFontSize 12
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 40
+skinparam ranksep 55
+hide empty members
+
+' === Template Method ===
+abstract class Transaction {
+  -committed: boolean
+  +commit(player)
+  #{abstract} executeTransaction()
+}
+class Purchase {
+  #executeTransaction()
+}
+class Sale {
+  #executeTransaction()
+  +getCostBasis(): BigDecimal
+  +getRealizedGain(): BigDecimal
+}
+
+' === Strategy ===
+interface TransactionCalculator {
+  +calculateGross(): BigDecimal
+  +calculateCommission(): BigDecimal
+  +calculateTax(): BigDecimal
+  +calculateTotal(): BigDecimal
+}
+class PurchaseCalculator
+class SaleCalculator
+
+' === Factory ===
+class TransactionFactory <<utility>> {
+  +{static} createPurchase(): Purchase
+  +{static} createSale(): Sale
+}
+
+' === Relasjoner ===
+Purchase --|> Transaction
+Sale --|> Transaction
+Transaction "1" *-- "1" TransactionCalculator
+
+PurchaseCalculator ..|> TransactionCalculator
+SaleCalculator ..|> TransactionCalculator
+
+TransactionFactory ..> Purchase : <<creates>>
+TransactionFactory ..> Sale : <<creates>>
+
+Purchase ..> PurchaseCalculator : <<uses>>
+Sale ..> SaleCalculator : <<uses>>
+
+' === Layout ===
+TransactionFactory -[hidden]down- Transaction
+Transaction -[hidden]right- TransactionCalculator
+@enduml

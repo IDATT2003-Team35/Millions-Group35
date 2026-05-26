@@ -1,0 +1,66 @@
+@startuml sekvensdiagram-kjop
+skinparam shadowing false
+skinparam defaultFontName "Helvetica Neue"
+skinparam DefaultFontSize 12
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.5
+
+actor Spiller as user
+participant "BuyController" as bc
+participant "GameSession\n(Subject)" as gs
+participant "Exchange" as ex
+participant "TransactionFactory\n<<static>>" as tf
+participant "Purchase\n: Transaction" as p
+participant "Player" as pl
+participant "5 views\n(Observer)" as views
+
+user -> bc : trykker \"Kjøp\"
+activate bc
+
+bc -> gs : buyStock(symbol, qty)
+activate gs
+
+gs -> ex : buy(symbol, qty, player)
+activate ex
+
+ex -> tf : createPurchase(share, week)
+activate tf
+tf --> ex : Purchase
+deactivate tf
+
+ex -> p : commit(player)
+activate p
+note right of p : Transaction.commit()\n= Template Method:\n  1. sjekk !committed\n  2. executeTransaction()\n  3. arkivér\n  4. marker committed
+
+p -> p : executeTransaction(player)
+activate p
+note right of p : Overstyrt av Purchase
+p -> pl : withdrawMoney(total)
+p -> pl : getPortfolio().addShare(share)
+deactivate p
+
+p -> pl : getTransactionArchive().add(this)
+note right of p : Tilbake i\nTransaction.commit()
+
+p --> ex : void
+deactivate p
+
+ex --> gs : Transaction
+deactivate ex
+
+gs -> gs : recordNewNetWorthPoint()
+gs -> gs : notifyObservers()
+activate gs
+
+gs -> views : update()
+note right of views : MainView,\nMarketView,\nPortfolioView,\nStockDetailView,\nTransactionView
+views --> gs
+deactivate gs
+
+gs --> bc : Transaction
+deactivate gs
+
+bc --> user : viser kvittering
+deactivate bc
+
+@enduml

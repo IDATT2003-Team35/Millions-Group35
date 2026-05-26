@@ -1,0 +1,46 @@
+@startuml pakkediagram
+' Lagdelt arkitektur for Millions
+skinparam shadowing false
+skinparam defaultFontName "Helvetica Neue"
+skinparam DefaultFontSize 12
+skinparam roundCorner 8
+
+skinparam rectangle {
+  FontStyle bold
+}
+
+' === Lag 1: Presentasjon ===
+rectangle "Presentasjonslag" as L1 {
+  rectangle "controller" as ctrl
+  rectangle "view" as view
+}
+
+' === Lag 2: Domene + mønstre ===
+rectangle "Domenelag og designmønstre" as L2 {
+  rectangle "model" as model
+  rectangle "observer" as obs
+  rectangle "factory" as fact
+}
+
+' === Lag 3: Infrastruktur ===
+rectangle "Infrastruktur" as L3 {
+  rectangle "file" as file
+  rectangle "util" as util
+}
+
+' === Avhengigheter ===
+ctrl  --> view
+ctrl  --> model
+ctrl  --> file  : I/O
+
+view  --> model : leser
+view  ..|> obs
+
+model ..|> obs
+model --> fact
+file  --> model : (de)serialiserer
+
+' === Layout ===
+L1 -[hidden]down- L2
+L2 -[hidden]down- L3
+@enduml
