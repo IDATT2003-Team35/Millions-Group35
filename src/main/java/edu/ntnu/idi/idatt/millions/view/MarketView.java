@@ -135,6 +135,7 @@ public class MarketView extends BorderPane implements Observer {
 
     TableColumn<Stock, String> companyCol = new TableColumn<>("COMPANY");
     companyCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCompany()));
+    companyCol.getStyleClass().add("company-column");
 
     TableColumn<Stock, BigDecimal> priceCol =
         TableColumns.numericColumn(

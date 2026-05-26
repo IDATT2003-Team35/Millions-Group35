@@ -214,6 +214,7 @@
 /* ---------- 5. Form fields ---------- */
 
 .text-field {
+  -fx-font-family: "Arial", "Helvetica Neue", sans-serif;
   -fx-background-color: -fx-surface;
   -fx-text-fill: -fx-text;
   -fx-prompt-text-fill: -fx-text-muted;
@@ -738,6 +739,10 @@
   -fx-text-fill: -fx-text;
   -fx-padding: 12 14;
   -fx-font-size: 14px;
+}
+
+.table-view .table-cell.company-column {
+  -fx-font-family: "Arial", "Helvetica Neue", sans-serif;
 }
 
 .market-table .open-column,
