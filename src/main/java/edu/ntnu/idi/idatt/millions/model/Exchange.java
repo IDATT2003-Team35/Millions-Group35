@@ -227,9 +227,7 @@ public class Exchange {
     if (!player.getPortfolio().contains(share)) {
       throw new IllegalStateException("Player does not have this share");
     }
-    Sale sale = TransactionFactory.createSale(share, week);
-    sale.commit(player);
-    return sale;
+    return sellFullShare(share, player);
   }
 
   /**
