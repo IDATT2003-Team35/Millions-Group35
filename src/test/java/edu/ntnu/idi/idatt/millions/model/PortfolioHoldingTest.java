@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.millions.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,15 @@ class PortfolioHoldingTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> new PortfolioHolding(List.of(firstShare, teslaShare)));
+  }
+
+  @Test
+  void constructorSharesWithNullValueThrowsIllegalArgumentException() {
+    List<Share> shares = new ArrayList<>();
+    shares.add(firstShare);
+    shares.add(null);
+
+    assertThrows(IllegalArgumentException.class, () -> new PortfolioHolding(shares));
   }
 
   @Test
@@ -105,5 +115,58 @@ class PortfolioHoldingTest {
     PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
 
     assertEquals(new BigDecimal("7.8300"), holding.getTotalGainLossPercent());
+  }
+
+  @Test
+  void getEstimatedSaleValueForFullQuantityUsesAllLots() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertEquals(new BigDecimal("223.24"), holding.getEstimatedSaleValue(new BigDecimal("8")));
+  }
+
+  @Test
+  void getEstimatedSaleValueForPartialQuantityUsesFifoLots() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertEquals(new BigDecimal("170.78"), holding.getEstimatedSaleValue(new BigDecimal("6")));
+  }
+
+  @Test
+  void getEstimatedGainLossForPartialQuantityUsesFifoLots() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertEquals(new BigDecimal("3.95"), holding.getEstimatedGainLoss(new BigDecimal("6")));
+  }
+
+  @Test
+  void getEstimatedSaleValueNullQuantityThrowsIllegalArgumentException() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertThrows(IllegalArgumentException.class, () -> holding.getEstimatedSaleValue(null));
+  }
+
+  @Test
+  void getEstimatedSaleValueZeroQuantityThrowsIllegalArgumentException() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertThrows(
+        IllegalArgumentException.class, () -> holding.getEstimatedSaleValue(BigDecimal.ZERO));
+  }
+
+  @Test
+  void getEstimatedSaleValueNegativeQuantityThrowsIllegalArgumentException() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> holding.getEstimatedSaleValue(new BigDecimal("-1")));
+  }
+
+  @Test
+  void getEstimatedSaleValueGreaterThanOwnedQuantityThrowsIllegalArgumentException() {
+    PortfolioHolding holding = new PortfolioHolding(List.of(firstShare, secondShare));
+
+    assertThrows(
+        IllegalArgumentException.class, () -> holding.getEstimatedSaleValue(new BigDecimal("9")));
   }
 }
