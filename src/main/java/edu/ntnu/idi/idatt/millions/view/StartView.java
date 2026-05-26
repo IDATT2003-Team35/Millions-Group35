@@ -181,15 +181,6 @@ public class StartView {
   }
 
   /**
-   * Returns the read-only text field showing the selected file path.
-   *
-   * @return the stock file field
-   */
-  public TextField getFileField() {
-    return fileField;
-  }
-
-  /**
    * Returns the browse button used to choose a CSV file.
    *
    * @return the browse button
@@ -223,15 +214,6 @@ public class StartView {
    */
   public Button getBackButton() {
     return backButton;
-  }
-
-  /**
-   * Returns the label used to show validation errors.
-   *
-   * @return the error label
-   */
-  public Label getErrorLabel() {
-    return errorLabel;
   }
 
   /**

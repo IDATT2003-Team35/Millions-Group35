@@ -188,15 +188,6 @@ public class SellView {
   }
 
   /**
-   * Sets the quantity currently entered for the sell order.
-   *
-   * @param quantity quantity text to set
-   */
-  public void setQuantityToSell(String quantity) {
-    quantityInput.setText(quantity);
-  }
-
-  /**
    * Sets the purchase price per share displayed in the popup.
    *
    * @param purchasePrice purchase price to display

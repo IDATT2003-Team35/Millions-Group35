@@ -251,15 +251,6 @@ public class TransactionView extends BorderPane implements Observer {
   }
 
   /**
-   * Returns the table that displays completed transactions.
-   *
-   * @return the transaction table
-   */
-  public TableView<Transaction> getTransactionTable() {
-    return transactionTable;
-  }
-
-  /**
    * Returns the currently selected transaction filter code.
    *
    * @return selected filter code
