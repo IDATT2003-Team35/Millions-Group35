@@ -134,6 +134,7 @@ public class PortfolioView extends BorderPane implements Observer {
     TableColumn<PortfolioHolding, String> companyCol = new TableColumn<>("COMPANY");
     companyCol.setCellValueFactory(
         c -> new SimpleStringProperty(c.getValue().getStock().getCompany()));
+    companyCol.getStyleClass().add("company-column");
 
     TableColumn<PortfolioHolding, BigDecimal> qtyCol =
         TableColumns.numericColumn("QTY", PortfolioHolding::getQuantity, BigDecimal::toPlainString);
