@@ -8,47 +8,25 @@ import org.junit.jupiter.api.Test;
 class MoneyTest {
 
   @Test
-  void formatNullReturnsZeroDollars() {
+  void formatReturnsDollarValues() {
     assertEquals("$0.00", Money.format(null));
-  }
-
-  @Test
-  void formatRoundsAndUsesThousandsSeparator() {
+    assertEquals("$0.00", Money.format(BigDecimal.ZERO));
     assertEquals("$1,234.57", Money.format(new BigDecimal("1234.567")));
   }
 
   @Test
-  void formatWithArrowPositiveValueUsesUpArrow() {
+  void formatWithArrowReturnsDirectionalValues() {
     assertEquals("▲ 1,234.57", Money.formatWithArrow(new BigDecimal("1234.567")));
-  }
-
-  @Test
-  void formatWithArrowNegativeValueUsesDownArrow() {
     assertEquals("▼ 1,234.57", Money.formatWithArrow(new BigDecimal("-1234.567")));
-  }
-
-  @Test
-  void formatWithArrowZeroValueReturnsPlainZero() {
     assertEquals("0.00", Money.formatWithArrow(BigDecimal.ZERO));
-  }
-
-  @Test
-  void formatWithArrowNullValueReturnsPlainZero() {
     assertEquals("0.00", Money.formatWithArrow(null));
   }
 
   @Test
-  void formatWithSignPositiveValueUsesPlusPrefix() {
+  void formatWithSignReturnsSignedDollarValues() {
     assertEquals("+$1,234.57", Money.formatWithSign(new BigDecimal("1234.567")));
-  }
-
-  @Test
-  void formatWithSignNegativeValueUsesMinusPrefix() {
     assertEquals("-$1,234.57", Money.formatWithSign(new BigDecimal("-1234.567")));
-  }
-
-  @Test
-  void formatWithSignNullValueReturnsPositiveZeroDollars() {
+    assertEquals("+$0.00", Money.formatWithSign(BigDecimal.ZERO));
     assertEquals("+$0.00", Money.formatWithSign(null));
   }
 }
