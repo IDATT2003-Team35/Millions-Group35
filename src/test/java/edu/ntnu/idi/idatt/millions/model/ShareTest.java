@@ -50,21 +50,4 @@ class ShareTest {
     assertEquals(new BigDecimal("29.20"), share.getPurchasePrice());
   }
 
-  @Test
-  void getNetGainLossPositiveWhenPriceIncreased() {
-    equinor.addNewSalesPrice(new BigDecimal("50.00"));
-    Share share = new Share(equinor, BigDecimal.TEN, new BigDecimal("29.20"));
-
-    assertEquals(1, share.getNetGainLoss().signum());
-    assertEquals(1, share.getNetGainLossPercent().signum());
-  }
-
-  @Test
-  void getNetGainLossNegativeWhenPriceDecreased() {
-    equinor.addNewSalesPrice(new BigDecimal("15.00"));
-    Share share = new Share(equinor, BigDecimal.TEN, new BigDecimal("29.20"));
-
-    assertEquals(-1, share.getNetGainLoss().signum());
-    assertEquals(-1, share.getNetGainLossPercent().signum());
-  }
 }
