@@ -1,44 +1,9 @@
 @startuml usecase
-title Use Case Diagram — Millions
+title Use Case Diagram -- Millions
 
-' Color palette from the app's design tokens (styles.css)
-!$bg = "#F4ECD6"
-!$surface = "#FFFFFF"
-!$ink = "#0E0E12"
-!$pink = "#C9303F"
-!$navy = "#14142B"
-!$gain = "#2940C5"
-!$borderSubtle = "#D8CDB2"
-!$textMuted = "#6B6660"
-
-skinparam backgroundColor $bg
+skinparam shadowing false
 skinparam defaultFontName "Helvetica Neue"
-
-skinparam title {
-  FontColor $ink
-}
-
-skinparam actor {
-  BackgroundColor $pink
-  FontStyle bold
-}
-
-skinparam usecase {
-  BackgroundColor $surface
-  BorderThickness 1.2
-}
-
-skinparam rectangle {
-  BackgroundColor $bg
-  BorderColor $borderSubtle
-  FontSize 13
-}
-
-skinparam arrow {
-  Color $navy
-  FontColor $textMuted
-  FontSize 11
-}
+skinparam DefaultFontSize 12
 
 left to right direction
 
@@ -63,7 +28,7 @@ rectangle "Millions" {
 
   usecase "Søk i transaksjonshistorikk" as History
 
-  usecase "Avancer uke" as Advance
+  usecase "Avansere uke" as Advance
   usecase "Selg alt og avslutt" as SellAll
 }
 
@@ -79,11 +44,11 @@ Player --> History
 Player --> Advance
 Player --> SellAll
 
-NewGame .[#2940C5].> Difficulty : <<include>>
-NewGame .[#2940C5].> Mode : <<include>>
-NewGame .[#2940C5].> LoadCsv : <<include>>
+NewGame ..> Difficulty : <<include>>
+NewGame ..> Mode : <<include>>
+NewGame ..> LoadCsv : <<include>>
 
-Buy .[#2940C5].> Receipt : <<extend>>
-Sell .[#2940C5].> Receipt : <<extend>>
+Buy ..> Receipt : <<extend>>
+Sell ..> Receipt : <<extend>>
 
 @enduml

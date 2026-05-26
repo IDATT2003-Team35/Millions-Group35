@@ -1,0 +1,108 @@
+@startuml klassediagram
+' Domenemodell: hvordan GameSession binder spiller og marked
+skinparam shadowing false
+skinparam defaultFontName "Helvetica Neue"
+skinparam DefaultFontSize 12
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 45
+skinparam ranksep 55
+hide empty members
+
+' === Observer-paret (mønster) ===
+package "observer" {
+  interface Subject {
+    +addObserver()
+    +notifyObservers()
+  }
+  interface Observer {
+    +update()
+  }
+}
+
+' === Kjerne ===
+class GameSession {
+  +buyStock(): Transaction
+  +sellShare(): Transaction
+  +advanceWeek()
+  +isGameOver(): boolean
+}
+
+' === Spiller-siden ===
+class Player {
+  +withdrawMoney()
+  +getNetWorth(): BigDecimal
+  +getStatus(): PlayerRank
+}
+class Portfolio {
+  +addShare()
+  +getHoldings(): List<PortfolioHolding>
+}
+class PortfolioHolding {
+  +getAveragePurchasePrice()
+  +getTotalGainLoss()
+}
+class Share
+
+' === Marked-siden ===
+class Exchange {
+  +buy(): Transaction
+  +sell(): Transaction
+  +advance()
+}
+class Stock {
+  +getSalesPrice()
+}
+
+' === Transaksjoner (vises i detalj i klassediagram-transaksjoner) ===
+class TransactionArchive {
+  +add()
+  +getTotalBought(): BigDecimal
+}
+abstract class Transaction
+
+' === Enums ===
+together {
+  enum Difficulty {
+    EASY
+    NORMAL
+    HARD
+  }
+  enum GameMode {
+    SANDBOX
+    CHALLENGE
+  }
+  enum PlayerRank {
+    NOVICE
+    INVESTOR
+    SPECULATOR
+  }
+}
+
+' === Relasjoner ===
+GameSession ..|> Subject
+Subject "1" o-- "*" Observer
+
+GameSession "1" *-- "1" Player
+GameSession "1" *-- "1" Exchange
+GameSession ..> Difficulty
+GameSession ..> GameMode
+
+Player "1" *-- "1" Portfolio
+Player "1" *-- "1" TransactionArchive
+Player ..> PlayerRank
+
+Portfolio "1" o-- "*" Share
+Portfolio ..> PortfolioHolding : <<creates>>
+PortfolioHolding "1" o-- "*" Share
+
+Exchange "1" *-- "*" Stock
+Share "*" --> "1" Stock
+
+TransactionArchive "1" o-- "*" Transaction
+Transaction "*" --> "1" Share
+
+' === Layout ===
+GameSession -[hidden]down- Player
+Player -[hidden]right- Exchange
+@enduml
